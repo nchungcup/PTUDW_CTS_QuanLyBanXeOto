@@ -1,0 +1,59 @@
+﻿<div>
+    <section class="templatemo-top-section">
+        @await Component.InvokeAsync("MenuView")
+        <div class="templatemo-welcome">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                        <img src="~/img/welcome-img.png" class="img-responsive welcome-img" alt="Welcome">
+                    </div>
+                    <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                        <h2 class="text-uppercase">
+                            <span class="welcome-title-1">Chúng tôi</span>
+                            <span class="welcome-title-2">tôn trọng quyết định của bạn</span>
+                        </h2>
+                        <p class="welcome-message">
+                            Chúng tôi luôn đồng hành cùng quý khách hàng, sẵn sàng <span class="blue">
+                            lắng nghe</span> và <span class="green">thấu hiểu</span>
+                            để đem lại những giá trị tuyệt vời nhất!
+                        </p>
+                        <a href="#" class="welcome-read-more">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container margin-bottom-50">
+        <div class="row">
+            <h2 class="col-lg-12 text-center text-uppercase margin-bottom-30">Mẫu mã đa dạng</h2>
+            <p class="col-lg-12 text-center margin-bottom-30">Với hơn 100 hãng xe và 500 dòng xe.</p>
+            <div class="col-lg-12 tm-overflow-hidden">
+                <div class="tm-img-1-container">
+                    <img src="~/img/0.jpg" alt="Image description">
+                    <p class="tm-img-1-description">Porsche</p>
+                </div>
+                <div class="tm-img-1-container">
+                    <img src="~/img/1.jpg" alt="Image description">
+                    <p class="tm-img-1-description">Mercedes</p>
+                </div>
+                <div class="tm-img-1-container">
+                    <img src="~/img/0.jpg" alt="Image description">
+                    <p class="tm-img-1-description">BMW</p>
+                </div>
+                <div class="tm-img-1-container">
+                    <img src="~/img/1.jpg" alt="Image description">
+                    <p class="tm-img-1-description">Lexus</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Main content-->
+    <section class="container margin-bottom-50">
+
+        @await Component.InvokeAsync("Category")
+
+        @await Component.InvokeAsync("Banner")
+
+    </section> <!-- Main content -->
+</div>

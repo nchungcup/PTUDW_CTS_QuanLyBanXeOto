@@ -1,0 +1,21 @@
+﻿@model IList<Menu>
+    <div class="templatemo-header">
+        <img class="templatemo-header-img" src="~/img/header.png" alt="Header">
+        <h1 class="templatemo-site-name">Motor</h1>
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <div class="templatemo-nav-container">
+            <nav class="templatemo-nav">
+                <ul>
+                    @{var mn = Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder).ToList();
+                        <li><a href="@Url.Action("Index", "Home")">@mn[0].MenuName</a></li>
+                        <li><a href="@Url.Action("Products", "Products")">@mn[1].MenuName</a></li>
+                        <li><a href="@Url.Action("Services", "Services")">@mn[2].MenuName</a></li>
+                        <li><a href="@Url.Action("Gallery", "Gallery")">@mn[3].MenuName</a></li>
+                        <li><a href="@Url.Action("Contact", "Contact")">@mn[4].MenuName</a></li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
