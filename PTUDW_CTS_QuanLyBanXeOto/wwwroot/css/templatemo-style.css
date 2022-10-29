@@ -383,6 +383,10 @@ body {
   box-shadow: 0 2px 5px 0 rgba(224,224,224,1);
   max-width: 220px;
 }
+.tm-image-container {
+    height: 190px;
+    width: 200px;
+}
 .tm-item-description,
 .tm-item-price {
   font-weight: 700;

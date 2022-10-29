@@ -10,5 +10,10 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     { 
         public string TenHangXe { get; set; }
         public string TenDongXe { get; set; }
+        public int DoiXe { get; set; }
+        public string MauSac { get; set; }
+        public string DongCo { get; set; }
+        public int GiaBan { get; set; }
+        public string CarImage { get; set; }
     }
 }

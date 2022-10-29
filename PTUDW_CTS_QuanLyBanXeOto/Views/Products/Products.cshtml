@@ -1,4 +1,8 @@
-﻿<div>
+﻿@model List<HangXeDetail>
+@{
+    var dshangxe = Model.Select(hx => hx.TenHangXe);
+}
+<div>
     <section class="templatemo-top-section">
         @await Component.InvokeAsync("MenuView")
         <div class="templatemo-welcome">
@@ -14,7 +18,8 @@
                         </h2>
                         <p class="welcome-message">
                             Chúng tôi luôn đồng hành cùng quý khách hàng, sẵn sàng <span class="blue">
-                            lắng nghe</span> và <span class="green">thấu hiểu</span>
+                                lắng nghe
+                            </span> và <span class="green">thấu hiểu</span>
                             để đem lại những giá trị tuyệt vời nhất!
                         </p>
                         <a href="#" class="welcome-read-more">Read More</a>
@@ -50,10 +55,51 @@
 
     <!--Main content-->
     <section class="container margin-bottom-50">
+        <div class="tm-overflow-hidden row">
+            <div id="DongXe" class="tm-gallery col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                    @await Component.InvokeAsync("LoadDongXe")
+            </div>
+            <aside class="tm-gallery-aside col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                <nav class="tm-gallery-nav">
+                    <h2 class="tm-gallery-nav-title"> Category <i class="fa fa-caret-up"></i></h2>
+                    <ul>
+                        <li>
+                            @foreach (var hangxe in dshangxe)
+                            {
 
-        @await Component.InvokeAsync("Category")
+                                <a onclick="loadDongXe('@hangxe')">
+                                    <img src="~/img/gallery-list-icon.png" class="tm-gallery-list-img" alt="Image">@hangxe
+                                    <i class="fa fa-caret-right tm-gallery-list-fa"></i>
+                                </a>
+                            }
+                            <i class="fa fa-caret-right tm-gallery-list-fa"></i>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="tm-call-us">
+                    <h3 class="text-uppercase tm-call-us-title">Đường dây nóng</h3>
+                    <a href="tel:" class="tm-call-us-link">+84 987 654 321</a>
+                </div>
+            </aside>
+        </div>
 
+        
         @await Component.InvokeAsync("Banner")
 
     </section> <!-- Main content -->
 </div>
+
+<script>
+    function loadDongXe(TenHangXe) {
+        console.log(TenHangXe)
+        $.ajax({
+            url: '@Url.Action("LoadDongXe", "Products")',
+            data: { TenHangXe: TenHangXe },
+            type: 'POST',
+            dataType: 'html',
+            success: function (data) {
+                $("#DongXe").html(data)
+            }
+        });
+    };
+</script>

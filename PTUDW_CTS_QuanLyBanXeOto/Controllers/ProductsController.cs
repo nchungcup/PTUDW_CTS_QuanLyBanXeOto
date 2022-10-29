@@ -12,16 +12,25 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
     public class ProductsController : Controller
     {
         private readonly ILogger<ProductsController> _logger;
+        private readonly DataContext _context;
 
-        public ProductsController(ILogger<ProductsController> logger)
+        public ProductsController(ILogger<ProductsController> logger, DataContext dataContext)
         {
             _logger = logger;
+            _context = dataContext;
         }
 
         public IActionResult Products()
         {
-            
-            return View();
+            var HangXe = (from hx in _context.HangXe
+                          select hx
+                          );
+            return View(HangXe.ToList());
+        }
+
+        public IActionResult LoadDongXe(string TenHangXe)
+        {
+            return ViewComponent("LoadDongXe", new { TenHangXe = TenHangXe });
         }
 
 

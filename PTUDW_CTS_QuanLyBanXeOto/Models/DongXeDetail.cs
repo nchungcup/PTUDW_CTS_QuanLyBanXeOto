@@ -13,7 +13,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         [Key]
         public int DongXeID { get; set; }
         public int HangXeID { get; set; }
-        public string? TenDongXe { get; set; }
-        public string? NoiSanXuat { get; set; }    
+        public string TenDongXe { get; set; }
+        public string NoiSanXuat { get; set; }    
     }
 }
