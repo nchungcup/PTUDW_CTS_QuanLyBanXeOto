@@ -315,8 +315,9 @@ body {
   color: #b53636;
 }
 
-.tm-gallery-list-img {
-  margin-right: 5px;
+.tm-gallery-img {
+  height: 250px;
+  width: 200px;
 }
 .tm-gallery-list-fa {
   color: transparent;
@@ -403,6 +404,7 @@ body {
 .tm-item-link:hover .tm-item-action {
   color: #b53636;
 }
+.tm-gallery-list-img
 .tm-item-price-container {
   display: -webkit-box;
   display: -webkit-flex;
@@ -652,17 +654,22 @@ ol.flex-control-nav { display: none; }
   display: flex;
   margin-bottom: 50px;
 }
+.about-container-3 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 40px;
+}
 .about-container-2 {
-  background: white;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  padding: 40px;
+    background: white;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 40px;
 }
 .about-container-inner {
   max-width: 414px;
@@ -836,6 +843,10 @@ ol.flex-control-nav { display: none; }
   text-align: center;
 }
 .services-container-inner { max-width: 266px; }
+.leader-image {
+    height: 250px;
+    width: 270px;
+}
 
 @media screen and (max-width: 1199px) {
  .templatemo-header {

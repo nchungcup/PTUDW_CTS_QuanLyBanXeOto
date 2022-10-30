@@ -1,0 +1,16 @@
+﻿@model List<Category>
+@foreach (var hp in Model)
+{
+    <div class="about-container-left">
+        <img src="~/img/Car/@hp.CarImage" alt="Image" class="img-responsive">
+    </div>
+    
+    <div class="about-container-right">
+        <h2 class="about-title">@hp.TenHangXe - @hp.TenDongXe</h2>
+        <p class="about-description"><b>Giá trị hiện tại: </b>@hp.GiaBan</p>
+        <p class="about-description"><b>Đời Xe: </b>@hp.DoiXe</p>
+        <p class="about-description"><b>Động Cơ: </b>@hp.DongCo</p>
+        <p class="about-description"><b>Màu Sắc: </b>@hp.MauSac</p>
+        <a href="#" class="about-link">Chi tiết</a>
+    </div>
+}

@@ -1,0 +1,14 @@
+﻿@model List<HangXeDetail>
+@foreach (var hx in Model)
+{
+<div class="tm-item-container">
+    <img src="~/img/Logo/@hx.LogoImage" alt="Image" class="tm-gallery-img">
+    <div class="tm-item-price-container tm-gallery-item-info">
+        <span class="tm-item-price">@hx.TenHangXe</span>
+        <a href="#" class="tm-item-link">
+            <span class="tm-item-action">Xem thêm</span>
+            <img src="~/img/plus.png" class="tm-item-add-icon" alt="Image">
+        </a>
+    </div>
+</div>
+}

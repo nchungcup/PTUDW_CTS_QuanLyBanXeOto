@@ -1,0 +1,11 @@
+﻿@model List<Category>
+@foreach (var c in Model)
+{
+<div class="about-container-inner">
+    <h3 class="about-title-2">@c.TenHangXe - @c.TenDongXe</h3>
+    <img src="~/img/Car/@c.CarImage" alt="Image" class="img-responsive margin-bottom-15">
+    <p class="about-description"><b>Vừa Nhập Lúc: </b>@c.NgayNhap</p>
+    <p class="about-description"><b>Màu Sắc: </b>@c.MauSac</p>
+    <a href="#" class="about-link about-link-2">Chi tiết</a>
+</div>
+}

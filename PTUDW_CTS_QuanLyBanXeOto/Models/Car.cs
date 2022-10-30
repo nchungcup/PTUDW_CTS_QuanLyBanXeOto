@@ -19,8 +19,10 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public string DongCo { get; set; }
         public int GiaBan { get; set; }
         public string CarImage { get; set; }
-        public int PhieuNhapID { get; set; }
         public int PhieuXuatID { get; set; }
+        public DateTime NgayNhap { get; set; }
+        public int GiaNhap { get; set; }
+        public int NguoiNhapID { get; set; }
 
     }
 }

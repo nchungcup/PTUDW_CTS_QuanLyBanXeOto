@@ -15,5 +15,6 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public DbSet<HangXeDetail> HangXe { get; set; }
         public DbSet<Car> Car { get; set; }
         public DbSet<DongXeDetail> DongXe { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }

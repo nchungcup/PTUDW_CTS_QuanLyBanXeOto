@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Shared\Components\Home\**" />
+    <Content Remove="Views\Shared\Components\Home\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\Home\**" />
+    <None Remove="Views\Shared\Components\Home\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
   </ItemGroup>
 
