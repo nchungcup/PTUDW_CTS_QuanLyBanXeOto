@@ -22,6 +22,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
                                    on c.DongXeID equals dx.DongXeID
                                    join hx in _context.HangXe
                                    on dx.HangXeID equals hx.HangXeID
+                                   orderby c.GiaBan descending
                                    select new
                                    {
                                        TenHangXe = hx.TenHangXe,
@@ -40,7 +41,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
                                        DongCo = cate.DongCo,
                                        GiaBan = cate.GiaBan,
                                        CarImage = cate.CarImage
-                                   }).OrderBy(cate => cate.GiaBan).ToList();
+                                   }).ToList();
             return await Task.FromResult((IViewComponentResult)View("HighestPrice", HighestPrice));
         }
     }

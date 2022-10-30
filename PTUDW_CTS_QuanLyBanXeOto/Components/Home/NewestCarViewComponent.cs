@@ -22,6 +22,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                        on c.DongXeID equals dx.DongXeID
                                        join hx in _context.HangXe
                                        on dx.HangXeID equals hx.HangXeID
+                                       orderby c.NgayNhap descending
                                         select new
                                         {
                                         TenHangXe = hx.TenHangXe,
@@ -30,7 +31,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                         MauSac = c.MauSac,
                                         DongCo = c.DongCo,
                                         GiaBan = c.GiaBan,
-                                        CarImage = c.CarImage
+                                        CarImage = c.CarImage,
+                                        NgayNhap = c.NgayNhap
                                         }).Take(2).AsEnumerable().Select(cate => new Category
                                         {
                                         TenHangXe = cate.TenHangXe,
@@ -39,8 +41,9 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                         MauSac = cate.MauSac,
                                         DongCo = cate.DongCo,
                                         GiaBan = cate.GiaBan,
-                                        CarImage = cate.CarImage
-                                    }).OrderByDescending(cate => cate.NgayNhap).ToList();
+                                        CarImage = cate.CarImage,
+                                        NgayNhap = cate.NgayNhap
+                                    }).ToList();
                 return await Task.FromResult((IViewComponentResult)View("NewestCar", listofNewestCar));
             }
         }

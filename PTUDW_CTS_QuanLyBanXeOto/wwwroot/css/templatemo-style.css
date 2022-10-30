@@ -398,22 +398,22 @@ body {
   font-weight: 700;
   padding-top: 2px;
 }
-.tm-item-add-icon {
-  margin-left: 5px;
-}
 .tm-item-link:hover .tm-item-action {
   color: #b53636;
 }
+.tm-item-add-btn{
+    margin-left: 49px;
+}
 .tm-gallery-list-img
 .tm-item-price-container {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
 }
 
 /* Banner */
