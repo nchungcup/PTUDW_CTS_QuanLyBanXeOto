@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Components
 {
+    //Tạo viewcomponent để trả về view banner
     [ViewComponent(Name = "Banner")]
     public class BannerComponent : ViewComponent
     {

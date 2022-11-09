@@ -1,9 +1,11 @@
-﻿
-<div class="contact-page">
+﻿<div class="contact-page">
     <section class="templatemo-top-section">
+        @*Gọi view Menu*@
         @await Component.InvokeAsync("MenuView")
-        @await Component.InvokeAsync("Slide")
+        @*Gọi view Slide*@
+        @await Component.InvokeAsync("Slide")  
     </section>
+
     <!-- Main content -->
     <section class="container tm-contact-main">
         <div class="row">
@@ -37,8 +39,17 @@
             </div>
         </div>
         <!--banner-->
-        @await Component.InvokeAsync("Banner")
+        <div class="row">
+            <div class="tm-banner">
+                <h2 class="tm-banner-title">Maecenas</h2>
+                <p class="tm-banner-description">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium</p>
+                <a href="#" class="tm-banner-link"><i class="fa fa-play"></i></a>
+            </div>
+        </div>
     </section>
-
+    
     <!-- End Main content -->
 </div>
+
+
+

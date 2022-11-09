@@ -12,7 +12,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     {
         [Key]
         public int CarID { get; set; }
-        public int VIN { get; set; }
+        public string VIN { get; set; }
         public int DongXeID { get; set; }
         public int DoiXe { get; set; }
         public string MauSac { get; set; }

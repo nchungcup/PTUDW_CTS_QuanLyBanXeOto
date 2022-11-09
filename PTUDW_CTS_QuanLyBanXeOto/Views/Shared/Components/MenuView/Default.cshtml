@@ -1,21 +1,40 @@
 ﻿@model IList<Menu>
-    <div class="templatemo-header">
-        <img class="templatemo-header-img" src="~/img/header.png" alt="Header">
-        <h1 class="templatemo-site-name">CAR</h1>
-        <div class="mobile-menu-icon">
-            <i class="fa fa-bars"></i>
-        </div>
-        <div class="templatemo-nav-container">
-            <nav class="templatemo-nav">
-                <ul>
-                    @{var mn = Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder).ToList();
-                        <li><a href="/Home/Index">@mn[0].MenuName</a></li>
-                        <li><a href="/Products/Products">@mn[1].MenuName</a></li>
-                        <li><a href="/Services/Services">@mn[2].MenuName</a></li>
-                        <li><a href="/Gallery/Gallery">@mn[3].MenuName</a></li>
-                        <li><a href="/Contact/Contact">@mn[4].MenuName</a></li>
-                    }
-                </ul>
-            </nav>
-        </div>
+@using Microsoft.AspNetCore.Http;
+<div class="templatemo-header">
+    <img class="templatemo-header-img" src="~/img/header.png" alt="Header">
+    <h1 class="templatemo-site-name">CAR</h1>
+    <div class="mobile-menu-icon">
+        <i class="fa fa-bars"></i>
     </div>
+    <div class="templatemo-nav-container">
+        <nav class="templatemo-nav">
+            <ul>
+                @{var mn = Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder).ToList();
+                    foreach (var item in mn)
+                    {
+                        <li><a href="/@item.ControllerName/@item.ActionName">@item.MenuName</a></li>
+                    }
+                }
+                @if (Context.Session.GetString("username") == null)
+                {
+                    <li>
+                        <a href="/SigninSignup/Signin" class="btn5-hover btn5">Sign In</a>
+                    </li>
+                    <li>
+                        <a href="/SigninSignup/Signup" class="btn5-hover btn5">Sign Up</a>
+                    </li>
+
+                }
+                else
+                {
+                    <li style="color: white">
+                        <a style="font-weight:500">WELCOME</a>@Context.Session.GetString("username")
+                    </li>
+                    <li>
+                        <a href='@Url.Action("Logout", "SigninSignup")' class="btn5-hover btn5"> Logout </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Components
 {
+    //Tạo viewcomponent để hiển thị xe mới nhất vừa nhập trong sql
         [ViewComponent(Name = "NewestCar")]
         public class NewestCarViewComponent : ViewComponent
         {
@@ -17,6 +18,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
             }
             public async Task<IViewComponentResult> InvokeAsync()
             {
+                //Lấy dữ liệu từ sql
                 var listofNewestCar = (from c in _context.Car
                                        join dx in _context.DongXe
                                        on c.DongXeID equals dx.DongXeID
@@ -44,6 +46,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                         CarImage = cate.CarImage,
                                         NgayNhap = cate.NgayNhap
                                     }).ToList();
+            //Trả về view NewestCar với dữ liệu là listofNewestCar là những chiếc xe vừa được nhập mới nhất
                 return await Task.FromResult((IViewComponentResult)View("NewestCar", listofNewestCar));
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public DbSet<Car> Car { get; set; }
         public DbSet<DongXeDetail> DongXe { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<AdminMenu> AdminMenus { get; set; }
+        public DbSet<Car_Trans> CarTrans { get; set; }
+        public DbSet<Transaction> Transaction { get; set; }
     }
 }

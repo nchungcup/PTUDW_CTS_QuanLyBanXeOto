@@ -20,5 +20,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public string SoDienThoai { get; set; }
         public int TypeID { get; set; }
         public string UserImage { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

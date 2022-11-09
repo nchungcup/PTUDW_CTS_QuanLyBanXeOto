@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Components
 {
+    //Tạo viewcomponent để trả về view slide hiển thị trong giao diện
     [ViewComponent(Name = "Slide")]
     public class SlideComponent : ViewComponent
     {

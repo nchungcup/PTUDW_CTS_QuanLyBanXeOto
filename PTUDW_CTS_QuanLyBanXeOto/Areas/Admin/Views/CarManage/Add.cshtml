@@ -1,0 +1,50 @@
+﻿
+<form method="post" asp-controller="CarManage" asp-action="Add" class="login-form">
+    <div class="form-group">
+        <b>VIN</b><input name="VIN" type="text" class="form-control rounded-left" placeholder="VIN" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Hãng Xe</b><select name="test">
+            @foreach (var item in ViewBag.Item)
+            {
+<option value="@item.ID">@item.NAME</option>}
+        </select>
+    </div>
+    <div class="form-group">
+        <b>Dòng Xe</b>
+    </div>
+    <div class="form-group">
+        <b>Đời Xe</b><input name="DoiXe" type="text" class="form-control rounded-left" placeholder="FullName" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Màu Sắc</b><input name="MauSac" type="text" class="form-control rounded-left" placeholder="Address" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" placeholder="Identity Card Number" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Giá Nhập</b><input name="GiaNhap" type="text" class="form-control rounded-left" placeholder="Year Of Birth" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>GiaBan</b><input name="GiaBan" type="text" class="form-control rounded-left" placeholder="Phone Number" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Ngày Nhập</b><input name="NgayNhap" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Người Nhập</b><input name="HoTen" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
+    </div>
+    <div class="form-group">
+        <b>Trạng Thái</b><input name="TrangThai" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
+    </div>
+    <div class="form-group d-flex align-items-center">
+        <div class="d-flex justify-content-end" style="margin-left: 125px">
+            <button type="submit" class="btn btn-primary rounded submit">Lưu</button>
+        </div>
+    </div>
+    <div class="form-group mt-4">
+        <div class="w-100 text-center">
+            <p class="mb-1"><a href="@Url.Action("XeChuaBan", "CarManage")">Hủy</a></p>
+        </div>
+    </div>
+</form>

@@ -214,16 +214,25 @@ body {
   text-transform: uppercase;
 }
 .templatemo-nav li a {
-  color: white;
-  font-weight: 300;
-  padding: 15px 15px;
-  width: 124px;
-  display: inline-block;
-  box-sizing: border-box;
-  text-align: center;
+    color: white;
+    font-weight: 300;
+    padding: 15px 15px;
+    width: 124px;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
 }
-.templatemo-nav li a:hover,
-.templatemo-nav li .active {
+.templatemo-nav li button {
+    font-weight: 300;
+    padding: 15px 15px;
+    width: 111px;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    margin-left: 125px;
+}
+
+.templatemo-nav li a:hover, .templatemo-nav li .active {
   color: #b53636;
   background: url(../img/nav-underline.png) center 80% no-repeat;
 }
@@ -1061,3 +1070,38 @@ ol.flex-control-nav { display: none; }
   }
 }
 
+
+.btn5-hover {
+    width: 160px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+    height: 55px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 50px;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn5-hover:hover {
+    background-position: 100% 0;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn5-hover:focus {
+    outline: none;
+}
+
+.btn5-hover.btn5 {
+    background-image: linear-gradient( to right, #25aae1, #4481eb, #04befe, #3f86ed );
+    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+}

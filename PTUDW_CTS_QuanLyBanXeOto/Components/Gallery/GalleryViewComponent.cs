@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace PTUDW_CTS_QuanLyBanXeOto.Components.Gallery
 {
+    //Component Gallery để hiển thị bộ sưu tập
     [ViewComponent(Name = "Gallery")]
     public class GalleryViewComponent : ViewComponent
     {
@@ -16,6 +17,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Gallery
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            //Lấy dữ liệu từ sql
             var listofGallery = (from hx in _context.HangXe
                                  select new
                                  {
@@ -31,6 +33,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Gallery
                                      XuatXu = hx.XuatXu,
                                      LogoImage = hx.LogoImage
                                  }).ToList();
+            //Trả về view default với dữ liệu là listofGallery
             return await Task.FromResult((IViewComponentResult)View("Default", listofGallery));
         }
     }

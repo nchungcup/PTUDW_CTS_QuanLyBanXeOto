@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
 {
+    //Tạo viewcomponent xe giá cao nhất để hiển thị ở trang chủ
     [ViewComponent(Name = "HighestPrice")]
     public class HighestPriceViewComponent : ViewComponent
     {
@@ -17,6 +18,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            //Lấy dữ liệu từ sql
             var HighestPrice = (from c in _context.Car
                                    join dx in _context.DongXe
                                    on c.DongXeID equals dx.DongXeID
@@ -42,6 +44,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
                                        GiaBan = cate.GiaBan,
                                        CarImage = cate.CarImage
                                    }).ToList();
+            //Trả về view HighestPrice trong View, HighestPrice là xe có giá cao nhất trong sql
             return await Task.FromResult((IViewComponentResult)View("HighestPrice", HighestPrice));
         }
     }
