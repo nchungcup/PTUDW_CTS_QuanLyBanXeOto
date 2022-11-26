@@ -18,10 +18,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            var listofLeader = _context.User.Where(u => u.TypeID.Equals(1)).Select(u => u).ToList();
             //Lấy dữ liệu từ sql
-            var listofLeader = (from us in _context.User
-                                where us.TypeID == 1 
-                                select us).ToList();
             //Trả về view Leader với dữ liệu là listofLeader là những user là Admin trong sql
             return await Task.FromResult((IViewComponentResult)View("Leader", listofLeader));
         }

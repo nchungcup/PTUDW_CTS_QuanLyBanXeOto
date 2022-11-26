@@ -1,50 +1,92 @@
-﻿
-<form method="post" asp-controller="CarManage" asp-action="Add" class="login-form">
-    <div class="form-group">
-        <b>VIN</b><input name="VIN" type="text" class="form-control rounded-left" placeholder="VIN" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Hãng Xe</b><select name="test">
-            @foreach (var item in ViewBag.Item)
-            {
-<option value="@item.ID">@item.NAME</option>}
-        </select>
-    </div>
-    <div class="form-group">
-        <b>Dòng Xe</b>
-    </div>
-    <div class="form-group">
-        <b>Đời Xe</b><input name="DoiXe" type="text" class="form-control rounded-left" placeholder="FullName" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Màu Sắc</b><input name="MauSac" type="text" class="form-control rounded-left" placeholder="Address" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" placeholder="Identity Card Number" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Giá Nhập</b><input name="GiaNhap" type="text" class="form-control rounded-left" placeholder="Year Of Birth" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>GiaBan</b><input name="GiaBan" type="text" class="form-control rounded-left" placeholder="Phone Number" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Ngày Nhập</b><input name="NgayNhap" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Người Nhập</b><input name="HoTen" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
-    </div>
-    <div class="form-group">
-        <b>Trạng Thái</b><input name="TrangThai" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
-    </div>
-    <div class="form-group d-flex align-items-center">
-        <div class="d-flex justify-content-end" style="margin-left: 125px">
-            <button type="submit" class="btn btn-primary rounded submit">Lưu</button>
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models
+@model CarManage
+@using Microsoft.AspNetCore.Http;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="login-wrap p-4 p-md-5">
+                    <form method="post" action="/Admin/CarManage/AddNewCar" class="login-form">
+                        <div class="form-group">
+                            <b>VIN</b><input name="VIN" type="text" class="form-control rounded-left" placeholder="VIN" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group" style="max-width: min-content;">
+                            <b>Hãng Xe</b>
+                            <select name="TenHangXe" id="HangXe" onchange="loadDongXe(this.value)">
+                                <option selected="selected">--Chọn Hãng Xe--</option>
+                                @foreach (var hx in Model.ListHangXe)
+                                {
+                                    <option value="@hx.TenHangXe">@hx.TenHangXe</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group" style="max-width: min-content;">
+                            <b>Dòng Xe</b>
+                            <select name="TenDongXe" id="DongXe">
+                                <option selected="selected">--Chọn Dòng Xe--</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <b>Đời Xe</b><input name="DoiXe" type="text" class="form-control rounded-left" placeholder="Đời Xe" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Màu Sắc</b><input name="MauSac" type="text" class="form-control rounded-left" placeholder="Màu Sắc" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" placeholder="Động Cơ" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Ngày Nhập</b><input id="NgayNhap" name="NgayNhap" type="text" class="form-control rounded-left" placeholder="Ngày Nhập" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Người Nhập</b><input name="HoTenNguoiNhap" type="text" value="@Context.Session.GetString("username")" class="form-control rounded-left" style="text-align: center" readonly>
+                        </div>
+                        <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
+                            <button type="submit" class="btn btn-primary rounded submit">Lưu</button>
+                        </div>
+                        <div class="form-group mt-4">
+                            <div class="w-100 text-center">
+                                <p class="mb-1"><a href='/Admin/CarManage/XeChuaBan'>Hủy</a></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group mt-4">
-        <div class="w-100 text-center">
-            <p class="mb-1"><a href="@Url.Action("XeChuaBan", "CarManage")">Hủy</a></p>
-        </div>
-    </div>
-</form>
+</main>
+<script>
+    @*Ajax xử lý hiển thị dòng xe khi 1 hãng xe được nhấp vào *@
+
+    function loadDongXe(TenHangXe) {
+        console.log(TenHangXe)
+        $.ajax({
+            url: '/Admin/CarManage/loadDongXe?TenHangXe=' + TenHangXe,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $('#DongXe').empty();
+                $('#DongXe').append("<option selected="+'selected'+">--Chọn Dòng Xe--</option>");
+                $.each(data, function (id, option) {
+                    $("#DongXe").append("<option value=" + option.tenDongXe + ">" + option.tenDongXe + "</option>")
+                })
+
+                }
+            });
+    };
+
+    $(function () {
+        $("#NgayNhap").datetimepicker();
+    });
+</script>

@@ -12,12 +12,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
 {
     //Tạo controller cho phần quản lý người dùng trong Admin
     [Area("Admin")]
-    public class UserManageController : Controller
+    public class UserManageController : BaseController
     {
         private readonly ILogger<UserManageController> _logger;
         private readonly DataContext _context;
 
-        public UserManageController(ILogger<UserManageController> logger, DataContext dataContext)
+        public UserManageController(ILogger<UserManageController> logger, DataContext dataContext) : base()
         {
             _logger = logger;
             _context = dataContext;
@@ -31,6 +31,51 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                            orderby ctm.UserID
                            select ctm).ToList();
             return View(ctmlist);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            var delUser = _context.User.Find(id);
+            return View("Delete", delUser);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(User _user)
+        {
+            var delUser = _context.User.Find(_user.UserID);
+            _context.User.Remove(delUser);
+            await _context.SaveChangesAsync();
+            TempData["alertMessage"] = "Action Completed";
+            return RedirectToAction("UserManage", "UserManage");
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            var editUser = _context.User.Find(id);
+            return View("Edit", editUser);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(User _u)
+        {
+            var editUser = new User
+            {
+                UserID = _u.UserID,
+                CMND = _u.CMND,
+                HoTen = _u.HoTen,
+                DiaChi = _u.DiaChi,
+                NamSinh = _u.NamSinh,
+                Email = _u.Email,
+                SoDienThoai = _u.SoDienThoai,
+                TypeID = _u.TypeID,
+                UserImage = _u.UserImage,
+                Username = _u.Username,
+                Password = _u.Password
+            };
+            _context.User.Update(editUser);
+            await _context.SaveChangesAsync();
+            TempData["alertMessage"] = "Action Completed";
+            return RedirectToAction("UserManage", "UserManage");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

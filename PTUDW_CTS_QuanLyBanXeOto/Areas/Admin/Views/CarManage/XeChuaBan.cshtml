@@ -146,6 +146,13 @@
     }
 </style>
 
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+
+}
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Car Not Sold Yet</h1>
@@ -153,7 +160,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Home</a></li>
                 <li class="breadcrumb-item active">Dashboard</li>
-                <li><a asp-area="Admin" asp-controller="" asp-action="" asp-route-id="" class="btn btn-primary btn-sm" style="margin-left: 800px; color: black" title="Thêm">Add</a></li>
+                <li><a href="/Admin/CarManage/Add" class="btn btn-primary btn-sm" style="margin-left: 800px; color: black" title="Thêm">Add</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -168,10 +175,10 @@
                     <th>Đời Xe</th>
                     <th>Màu Sắc</th>
                     <th>Động Cơ</th>
-                    <th>Giá Nhập</th>
-                    <th>Giá Bán</th>
                     <th>Ngày Nhập</th>
                     <th>Người Nhập</th>
+                    <th>Giá Nhập</th>
+                    <th>Giá Bán</th>
                     <th>Trạng Thái</th>
                     <th>Chức Năng</th>
                 </tr>
@@ -186,19 +193,18 @@
                     <td>@cm.DoiXe</td>
                     <td>@cm.MauSac</td>
                     <td>@cm.DongCo</td>
-                    <td>@cm.GiaNhap</td>
-                    <td>@cm.GiaBan</td>
                     <td>@cm.NgayNhap</td>
                     <td>@cm.HoTenNguoiNhap</td>
+                    <td>@cm.GiaNhap</td>
+                    <td>@cm.GiaBan</td>
                     <td>@cm.TrangThai</td>
                     <td>
-                        <a asp-area="Admin" asp-controller="" asp-action="" asp-route-id="" class="btn btn-primary btn-sm" title="Sửa"><i class="bi bi-pencil"></i></a>
-                        <a asp-area="Admin" asp-controller="" asp-action="" asp-route-id="" class="btn btn-danger btn-sm" title="Xóa"><i class="bi bi-trash"></i></a>
+                        <a method="get" asp-area="Admin" asp-controller="CarManage" asp-action="Edit" asp-route-id="@cm.CarID" class="btn btn-primary btn-sm" title="Sửa"><i class="bi bi-pencil"></i></a>
+                        <a method="get" asp-area="Admin" asp-controller="CarManage" asp-action="Delete" asp-route-id="@cm.CarID" class="btn btn-danger btn-sm" title="Xóa"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 }
             <tbody>
         </table>
     </div>
-
-</main><!-- End #main -->
+</main>

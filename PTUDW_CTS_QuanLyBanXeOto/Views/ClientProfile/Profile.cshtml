@@ -1,0 +1,79 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
+@model User
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+    alert("@TempData["alertMessage"]");
+    </script>
+}
+<section class="templatemo-top-section" style="margin-bottom: -20px">
+    @await Component.InvokeAsync("MenuView")
+    <div class="templatemo-welcome" style="margin: -63px">
+        <div class="container">
+            <div class="row gutters">
+                <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12" style="width: 100%;">
+                    <div class="card h-100">
+                        <form asp-controller="ClientProfile" asp-action="Update" class="card-body" style="padding: 25px;">
+                            <input type="hidden" name="UserID" value="@Model.UserID">
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6 class="mb-2 text-primary">Chi Tiết Người Dùng</h6>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="HoTen">Họ Tên</label>
+                                        <input type="text" class="form-control" name="HoTen" value="@Model.HoTen" autocomplete="off" required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="CMND">CMND</label>
+                                        <input type="number" class="form-control" name="CMND" value="@Model.CMND" autocomplete="off" required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="SDT">Số Điện Thoại</label>
+                                        <input type="text" class="form-control" name="SoDienThoai" value="@Model.SoDienThoai" autocomplete="off" required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="Email">Email</label>
+                                        <input type="text" class="form-control" name="Email" value="@Model.Email" autocomplete="off" required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="NamSinh">Năm Sinh</label>
+                                        <input type="number" class="form-control" name="NamSinh" value="@Model.NamSinh" autocomplete="off" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6 class="mt-3 mb-2 text-primary">Address</h6>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="DiaChi">Địa Chỉ</label>
+                                        <input type="text" class="form-control" name="DiaChi" value="@Model.DiaChi" autocomplete="off" required>
+                                    </div>
+                                </div>
+                                <div class="row gutters" style="margin-top: 20px;">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="text-right">
+                                            <a href="@Url.Action("Index", "Home")" class="btn btn-danger">Cancel</a>
+                                            <button type="submit" id="submit" class="btn btn-success">Update</button>
+                                            <a href="@Url.Action("ChangePass", "ClientProfile")" class="btn btn-primary">Change Password</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,21 +1,10 @@
 ﻿@model List<User>
-@{
+@foreach(var ld in Model)
+{
     <div class="services-container-inner">
-        <h3 class="about-title-2">Chủ Tịch HĐQT</h3>
-        <img src="~/img/User/@Model[1].UserImage" alt="Image" class="leader-image margin-bottom-15">
-        <p class="about-description">@Model[1].HoTen</p>
-        <a href="#" class="about-link about-link-2">Chi tiết</a>
-    </div>
-    <div class="services-container-inner">
-        <h3 class="about-title-2">Tổng Giám Đốc</h3>
-        <img src="~/img/User/@Model[0].UserImage" alt="Image" class="leader-image margin-bottom-15">
-        <p class="about-description">@Model[0].HoTen</p>
-        <a href="#" class="about-link about-link-2">Chi tiết</a>
-    </div>
-    <div class="services-container-inner">
-        <h3 class="about-title-2">Thư Ký</h3>
-        <img src="~/img/User/@Model[2].UserImage" alt="Image" class="leader-image margin-bottom-15">
-        <p class="about-description">@Model[2].HoTen</p>
+        <h3 class="about-title-2">Nhà Phát Triển</h3>
+        <img src="~/img/User/@ld.UserImage" alt="Image" class="leader-image margin-bottom-15">
+        <p class="about-description">@ld.HoTen</p>
         <a href="#" class="about-link about-link-2">Chi tiết</a>
     </div>
 }

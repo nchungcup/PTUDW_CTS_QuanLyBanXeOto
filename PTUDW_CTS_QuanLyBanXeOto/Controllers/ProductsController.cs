@@ -22,18 +22,15 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
 
         public IActionResult Products()
         {
-            var HangXe = (from hx in _context.HangXe
-                          select hx
-                          );
+            var HangXe = _context.HangXe.Select(hx => hx).ToList();
             return View(HangXe.ToList());
         }
 
-        public IActionResult LoadDongXe(string TenHangXe)
+        public IActionResult LoadDongXe(string TenHangXe, string MauSac, string DongCo)
         {
-            return ViewComponent("LoadDongXe", new { TenHangXe = TenHangXe });
+            return ViewComponent("LoadDongXe", new { TenHangXe = TenHangXe, MauSac = MauSac, DongCo = DongCo });
         }
-
-
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

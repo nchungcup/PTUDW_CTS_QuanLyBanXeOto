@@ -2,6 +2,12 @@
 @{
     var dshangxe = Model.Select(hx => hx.TenHangXe);
 }
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+}
 <div>
     <section class="templatemo-top-section">
         @await Component.InvokeAsync("MenuView")
@@ -53,15 +59,26 @@
     <!--Main content-->
     <section class="container margin-bottom-50">
         <div class="tm-overflow-hidden row">
+            <div style="margin-left: 550px;">
+                <div><b style="font-size:large">Find Your Car</b></div>
+                <div style="display: contents;">
+                    <input id="searchMauSac" type="text" placeholder="Màu Sắc" autocomplete="off" />
+                    <input id="searchDongCo" type="text" placeholder="Động Cơ" autocomplete="off" />
+                </div>
+            </div>
             <div id="DongXe" class="tm-gallery col-lg-9 col-md-9 col-sm-8 col-xs-12">
-                    @* Trả về viewcomponent Dòng xe trong Hãng xe được chọn *@
-                    @await Component.InvokeAsync("LoadDongXe")
+                @* Trả về viewcomponent Dòng xe trong Hãng xe được chọn *@
+                @await Component.InvokeAsync("LoadDongXe")
             </div>
             <aside class="tm-gallery-aside col-lg-3 col-md-3 col-sm-4 col-xs-12">
                 <nav class="tm-gallery-nav">
                     <h2 class="tm-gallery-nav-title"> Category <i class="fa fa-caret-up"></i></h2>
                     <ul>
                         <li>
+                            <a onclick="loadDongXe('All')">
+                                <img src="~/img/gallery-list-icon.png" class="tm-gallery-list-img" alt="Image">All
+                                <i class="fa fa-caret-right tm-gallery-list-fa"></i>
+                            </a>
                             @foreach (var hangxe in dshangxe)
                             {
 
@@ -81,7 +98,7 @@
             </aside>
         </div>
 
-        
+
         @await Component.InvokeAsync("Banner")
 
     </section> <!-- Main content -->
@@ -93,7 +110,7 @@
         console.log(TenHangXe)
         $.ajax({
             url: '@Url.Action("LoadDongXe", "Products")',
-            data: { TenHangXe: TenHangXe },
+            data: { TenHangXe: TenHangXe, MauSac: $('#searchMauSac').val(), DongCo: $('#searchDongCo').val() },
             type: 'POST',
             dataType: 'html',
             success: function (data) {

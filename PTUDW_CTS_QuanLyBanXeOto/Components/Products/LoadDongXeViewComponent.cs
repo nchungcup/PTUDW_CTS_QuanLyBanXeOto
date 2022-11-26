@@ -16,36 +16,176 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
         {
             _context = context;
         }
-        public async Task<IViewComponentResult> InvokeAsync(string TenHangXe)
+        public async Task<IViewComponentResult> InvokeAsync(string TenHangXe, string MauSac, string DongCo)
         {
-            //Lấy dữ liệu từ sql
-            var listofDongXe = (from hx in _context.HangXe
-                                join dx in _context.DongXe                                
-                                on hx.HangXeID equals dx.HangXeID
-                                join c in _context.Car
-                                on dx.DongXeID equals c.DongXeID
-                                where hx.TenHangXe == TenHangXe
-                                select new
-                                {
-                                    TenHangXe = TenHangXe,
-                                    TenDongXe = dx.TenDongXe,
-                                    DoiXe = c.DoiXe,
-                                    MauSac = c.MauSac,
-                                    DongCo = c.DongCo,
-                                    GiaBan = c.GiaBan,
-                                    CarImage = c.CarImage
-                                }).AsEnumerable().Select(c => new Category
-                                {
-                                    TenHangXe = c.TenHangXe,
-                                    TenDongXe = c.TenDongXe,
-                                    DoiXe = c.DoiXe,
-                                    MauSac = c.MauSac,
-                                    DongCo = c.DongCo,
-                                    GiaBan = c.GiaBan,
-                                    CarImage = c.CarImage
-                                }).ToList();
-            //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
-            return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            if (TenHangXe == "All" && DongCo == null && MauSac == null)
+            {
+                var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
+                //Lấy dữ liệu từ sql
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
+            else if (TenHangXe == "All" && DongCo != null && MauSac == null)
+            {
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where c.DongCo == DongCo && ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
+            else if (TenHangXe == "All" && DongCo == null && MauSac != null)
+            {
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where c.MauSac == MauSac && ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
+            else if(TenHangXe != null && MauSac == null && DongCo == null)
+            {     
+                var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
+                //Lấy dữ liệu từ sql
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where dx.HangXeID == hxid && ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
+            else if (TenHangXe != null && DongCo != null && MauSac == null)
+            {
+                var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where dx.HangXeID == hxid && c.DongCo == DongCo && ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
+            else if (TenHangXe != null && DongCo == null && MauSac != null)
+            {
+                var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where dx.HangXeID == hxid && c.MauSac == MauSac && ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
+            else
+            {
+                var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
+                var listofDongXe = (from dx in _context.DongXe
+                                    join c in _context.Car on dx.DongXeID equals c.DongXeID
+                                    join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
+                                    from ct in ctc.DefaultIfEmpty()
+                                    where dx.HangXeID == hxid && c.MauSac == MauSac && c.DongCo == DongCo && ct.TransID == null
+                                    group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                    select new Category
+                                    {
+                                        TenHangXe = TenHangXe,
+                                        DongXeID = groupc.Key.DongXeID,
+                                        TenDongXe = groupc.Key.TenDongXe,
+                                        DoiXe = groupc.Key.DoiXe,
+                                        MauSac = groupc.Key.MauSac,
+                                        DongCo = groupc.Key.DongCo,
+                                        GiaBan = groupc.Key.GiaBan,
+                                        CarImage = groupc.Key.CarImage,
+                                        SoLuong = groupc.Count()
+                                    }).ToList();
+                //Trả về view default với dữ liệu listofDongXe là những dòng xe thuộc hãng xe mình chọn
+                return await Task.FromResult((IViewComponentResult)View("Default", listofDongXe));
+            }
         }
     }
 }

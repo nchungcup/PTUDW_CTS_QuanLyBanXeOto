@@ -20,5 +20,6 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public DbSet<AdminMenu> AdminMenus { get; set; }
         public DbSet<Car_Trans> CarTrans { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Cart> Cart { get; set; }
     }
 }

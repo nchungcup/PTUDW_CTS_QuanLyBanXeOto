@@ -7,7 +7,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link" href="@Url.Action("Index", "Home" )">
+            <a id="dashboard" class="nav-link" href="@Url.Action("Index", "Home" )">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
@@ -19,21 +19,23 @@
             @if (Smenu.Count() > 0)
             {
                 <li class="nav-item">
-                    <a href="/Admin/@item.ControllerName/@item.ActionName" class="nav-link collapsed" data-bs-target="#@item.ItemTarget" data-bs-toggle="collapse">
+                    <a id="@item.ItemName" href="/Admin/@item.ControllerName/@item.ActionName" class="nav-link collapsed" data-bs-target="#@item.ItemTarget" data-bs-toggle="collapse">
                         <i class="@item.Icon"></i><span>@item.ItemName</span>
                         <i class="bi bi-chevron-down ms-auto"></i>
                     </a>
                 </li>
-                <ul id="@item.IDName" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    @foreach (var smn in Smenu)
-                    {
-                        <li>
-                            <a href="/Admin/@smn.ControllerName/@smn.ActionName">
-                                <i class="@smn.Icon"></i><span>@smn.ItemName</span>
-                            </a>
-                        </li>
-                    }
-                </ul>
+                <li>
+                    <ul id="@item.IDName" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        @foreach (var smn in Smenu)
+                        {
+                            <li>
+                                <a href="/Admin/@smn.ControllerName/@smn.ActionName">
+                                    <i class="@smn.Icon"></i><span>@smn.ItemName</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
             }
             else
             {

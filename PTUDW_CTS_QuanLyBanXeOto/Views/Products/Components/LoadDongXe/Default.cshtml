@@ -1,28 +1,30 @@
 ﻿@model List<Category>
-
 <h3 class="tm-gallery-title">@Model.Select(dx => dx.TenHangXe).FirstOrDefault() (@Model.Count())</h3>
-@foreach (var dx in Model)
-{
-    <div class="tm-item-container">
-        <img src="~/img/Car/@dx.CarImage" alt="Image" class="tm-image-container">
-        <p class="tm-item-description">
-            @dx.TenDongXe
-        </p>
-        <p>
-            <b>Đời Xe:</b> @dx.DoiXe
-        </p>
-        <p>
-            <b>Màu Sắc:</b> @dx.MauSac
-        </p>
-        <p>
-            <b>Động Cơ:</b> @dx.DongCo
-        </p>
-        <div class="tm-item-price-container">
-            <span class="tm-item-price">@dx.GiaBan $</span>
-                <a href="#" class="tm-item-add-btn">
+    @foreach (var dx in Model)
+    {
+        <div id="filter" class="tm-item-container">
+            <img src="~/img/Car/@dx.CarImage" alt="Image" class="tm-image-container">
+            <p class="tm-item-description">
+                @dx.TenDongXe
+            </p>
+            <p>
+                <b>Đời Xe:</b> @dx.DoiXe
+            </p>
+            <p>
+                <b>Màu Sắc:</b> @dx.MauSac
+            </p>
+            <p>
+                <b>Động Cơ:</b> @dx.DongCo
+            </p>
+            <p>
+                <b>Số Lượng Còn:</b> @dx.SoLuong
+            </p>
+            <div class="tm-item-price-container">
+                <span class="tm-item-price">@dx.GiaBan $</span>
+                <a href="@Url.Action("AddCart", "Cart", new { dxid = dx.DongXeID, mausac = dx.MauSac, doixe = dx.DoiXe, dongco = dx.DongCo })" class="tm-item-add-btn">
                     <span class="tm-item-action">Thêm vào giỏ</span>
                     <img src="~/img/plus.png" alt="Image">
                 </a>
+            </div>
         </div>
-    </div>
-}
+    }

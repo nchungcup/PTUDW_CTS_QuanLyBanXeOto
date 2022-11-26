@@ -1,0 +1,58 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models
+@model TransView
+@using Microsoft.AspNetCore.Http;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="login-wrap p-4 p-md-5">
+                    <form method="post" asp-area="Admin" asp-controller="TransactionManage" asp-action="WaittingConfirmed" class="login-form">
+                        <input type="hidden" name="TransID" value="@Model.TransID">
+                        <input type="hidden" name="KhachHangID" value="@Model.KhachHangID">
+                        <div class="form-group">
+                            <b>Họ Tên Khách Hàng</b><input name="HoTenKhachHang" type="text" class="form-control rounded-left" value="@Model.HoTenKhachHang" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Số Điện Thoại</b><input name="SoDienThoai" type="text" class="form-control rounded-left" value="@Model.SoDienThoai" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Thanh Toán</b><input name="ThanhToan" type="text" class="form-control rounded-left" placeholder="Phương Thức Thanh Toán" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Ngày Tạo Đơn</b><input name="NgayTaoDon" type="datetime" class="form-control rounded-left" value="@Model.NgayTaoDon" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Trạng Thái</b><input name="TrangThai" type="text" class="form-control rounded-left" value="@Model.TrangThai" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Người Xử Lý</b><input name="HoTenNguoiXuLy" type="text" class="form-control rounded-left" value="@Context.Session.GetString("username")" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <input type="hidden" name="Thue" value="@Model.Thue">
+                        <input type="hidden" name="ChietKhau" value="@Model.ChietKhau">
+                        <div class="form-group">
+                            <b>Tổng Giá Trị Đơn Hàng</b><input name="TongTien" type="number" class="form-control rounded-left" value="@Model.TongTien" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
+                            <button type="submit" class="btn btn-success rounded submit">Xác Nhận Xử Lý</button>
+                        </div>
+                        <div class="form-group mt-4">
+                            <div class="w-100 text-center">
+                                <p class="mb-1"><a href='/Admin/TransactionManage/Waitting' class="btn btn-danger">Hủy</a></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

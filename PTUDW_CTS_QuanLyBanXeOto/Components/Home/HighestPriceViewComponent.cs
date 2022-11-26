@@ -20,12 +20,10 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
         {
             //Lấy dữ liệu từ sql
             var HighestPrice = (from c in _context.Car
-                                   join dx in _context.DongXe
-                                   on c.DongXeID equals dx.DongXeID
-                                   join hx in _context.HangXe
-                                   on dx.HangXeID equals hx.HangXeID
+                                   join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
+                                   join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
                                    orderby c.GiaBan descending
-                                   select new
+                                   select new Category
                                    {
                                        TenHangXe = hx.TenHangXe,
                                        TenDongXe = dx.TenDongXe,
@@ -34,16 +32,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
                                        DongCo = c.DongCo,
                                        GiaBan = c.GiaBan,
                                        CarImage = c.CarImage
-                                   }).Take(1).AsEnumerable().Select(cate => new Category
-                                   {
-                                       TenHangXe = cate.TenHangXe,
-                                       TenDongXe = cate.TenDongXe,
-                                       DoiXe = cate.DoiXe,
-                                       MauSac = cate.MauSac,
-                                       DongCo = cate.DongCo,
-                                       GiaBan = cate.GiaBan,
-                                       CarImage = cate.CarImage
-                                   }).ToList();
+                                   }).Take(1).ToList();
             //Trả về view HighestPrice trong View, HighestPrice là xe có giá cao nhất trong sql
             return await Task.FromResult((IViewComponentResult)View("HighestPrice", HighestPrice));
         }

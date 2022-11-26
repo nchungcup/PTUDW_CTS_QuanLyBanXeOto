@@ -1,0 +1,76 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
+@model List<Transaction>
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+}
+<div>
+    <section class="templatemo-top-section" style="margin-bottom: -20px">
+        @await Component.InvokeAsync("MenuView")
+        <div class="templatemo-welcome" style="margin: 0px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                    </div>
+                    <section class="ftco-section">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead class="thead-primary">
+                                                <tr>
+                                                    <th>Ngày Tạo Đơn</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Tổng Tiền</th>
+                                                    <th>Hình Thức Thanh Toán</th>
+                                                    <th>Ngày Nhận Xe Và Xuất Đơn</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var tran in Model)
+                                                {
+                                                <tr class="alert" role="alert">
+                                                    @{ var nd = tran.NgayDuyet.ToString();}
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@tran.NgayTaoDon</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@tran.TrangThai</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@tran.TongTien</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@(tran.ThanhToan == null ? "Đơn Bị Hủy Tại Khâu Này" : tran.ThanhToan)</span>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@(nd == "" ? "Đơn Bị Hủy Tại Khâu Này" : nd)</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

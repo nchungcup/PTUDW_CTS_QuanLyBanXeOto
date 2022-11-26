@@ -27,11 +27,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto
         {
             services.AddDistributedMemoryCache();
             services.AddMvc().AddSessionStateTempDataProvider();
-            services.AddSession();
+            services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(24); });
             services.AddMvc().AddControllersAsServices();
-            services.AddMvc();
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
             services.AddControllersWithViews();
-            services.AddDbContext<DataContext>(options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+            services.AddDbContext<DataContext>(o => o.UseSqlServer("name=ConnectionStrings:DefaultConnection").UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +51,6 @@ namespace PTUDW_CTS_QuanLyBanXeOto
             
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseSession();
@@ -59,18 +59,18 @@ namespace PTUDW_CTS_QuanLyBanXeOto
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
+                    endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseEndpoints(endpoints =>
-                {
-                  endpoints.MapControllerRoute(
-                    name : "areas",
-                    pattern : "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                  );
-                });
-            }
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                  name: "areas",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+            });
+        }
     }
 }

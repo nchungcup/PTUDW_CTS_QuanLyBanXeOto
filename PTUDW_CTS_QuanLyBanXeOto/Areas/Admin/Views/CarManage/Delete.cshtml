@@ -16,35 +16,24 @@
         <div class="row justify-content-center">
             <div class="col-md-7 col-lg-5">
                 <div class="login-wrap p-4 p-md-5">
-                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="Edit" class="login-form">
-                        <input type="hidden" name="CarID" value="@Model.CarID">
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="Delete" asp-route-id="@Model.CarID" class="login-form">
                         <div class="form-group">
-                            <b>VIN</b><input name="VIN" type="text" class="form-control rounded-left" value="@Model.VIN" style="text-align: center" autocomplete="off" required>
-                        </div>
-                        <div class="form-group" style="max-width: min-content;">
-                            <b>Hãng Xe</b>
-                            <select name="TenHangXe" id="HangXe" onchange="loadDongXe(this.value)">
-                                <option selected="selected">--Chọn Hãng Xe--</option>
-                                @foreach (var hx in Model.ListHangXe)
-                                {
-                                    <option value="@hx.TenHangXe">@hx.TenHangXe</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group" style="max-width: min-content;">
-                            <b>Dòng Xe</b>
-                            <select name="TenDongXe" id="DongXe">
-                                <option selected="selected">--Chọn Dòng Xe--</option>
-                            </select>
+                            <b>VIN</b><input name="VIN" type="text" class="form-control rounded-left" value="@Model.VIN" style="text-align: center" autocomplete="off" readonly>
                         </div>
                         <div class="form-group">
-                            <b>Đời Xe</b><input name="DoiXe" type="text" class="form-control rounded-left" value="@Model.DoiXe" style="text-align: center" autocomplete="off" required>
+                            <b>Hãng Xe</b><input name="TenHangXe" type="text" class="form-control rounded-left" value="@Model.TenHangXe" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Dòng Xe</b><input name="TenDongXe" type="text" class="form-control rounded-left" value="@Model.TenDongXe" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Đời Xe</b><input name="DoiXe" type="number" class="form-control rounded-left" value="@Model.DoiXe" style="text-align: center" autocomplete="off" readonly>
                         </div>
                         <div class="form-group">
                             <b>Màu Sắc</b><input name="MauSac" type="text" class="form-control rounded-left" value="@Model.MauSac" style="text-align: center" autocomplete="off" required>
                         </div>
                         <div class="form-group">
-                            <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" value="@Model.DongCo" style="text-align: center" autocomplete="off" required>
+                            <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" value="@Model.DongCo" style="text-align: center" autocomplete="off" readonly>
                         </div>
                         <div class="form-group">
                             <b>Ngày Nhập</b><input id="NgayNhap" name="NgayNhap" type="text" class="form-control rounded-left" value="@Model.NgayNhap" style="text-align: center" autocomplete="off" readonly>
@@ -53,7 +42,7 @@
                             <b>Người Nhập</b><input name="HoTenNguoiNhap" type="text" value="@Model.HoTenNguoiNhap" class="form-control rounded-left" style="text-align: center" readonly>
                         </div>
                         <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
-                            <button type="submit" class="btn btn-primary rounded submit">Xác nhận</button>
+                            <button type="submit" class="btn btn-danger rounded submit">Xác Nhận Xóa</button>
                         </div>
                         <div class="form-group mt-4">
                             <div class="w-100 text-center">
@@ -66,24 +55,3 @@
         </div>
     </div>
 </main>
-<script>
-    @*Ajax xử lý hiển thị dòng xe khi 1 hãng xe được nhấp vào *@
-
-    function loadDongXe(TenHangXe) {
-        console.log(TenHangXe)
-        $.ajax({
-            url: '/Admin/CarManage/loadDongXe?TenHangXe=' + TenHangXe,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                $('#DongXe').empty();
-                $('#DongXe').append("<option selected="+'selected'+">--Chọn Dòng Xe--</option>");
-                $.each(data, function (id, option) {
-                    $("#DongXe").append("<option value=" + option.tenDongXe + ">" + option.tenDongXe + "</option>")
-                })
-
-                }
-            });
-    };
-</script>

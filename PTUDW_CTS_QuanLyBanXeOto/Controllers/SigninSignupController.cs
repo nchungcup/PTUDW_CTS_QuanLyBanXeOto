@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers;
+using Microsoft.Extensions.Configuration;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
 {
@@ -26,28 +27,72 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Signin(string username, string password)
+        public IActionResult Signin(string username, string password, string remember = "off")
         {
             var data = _context.User.Where(u => u.Username.Equals(username) && u.Password.Equals(password)).ToList();
+            CookieOptions cookieOptions = new CookieOptions();
+            cookieOptions.Expires = new DateTimeOffset(DateTime.Now.AddDays(1));
+            CookieOptions cookieOptions1 = new CookieOptions();
+            cookieOptions1.Expires = new DateTimeOffset(DateTime.Now.AddDays(-1));
             if (data.Count() > 0)
             {
-                HttpContext.Session.SetString("username", username);
                 var usession = (from u in _context.User
                             where u.Username == username && u.Password == password
                             select u.TypeID).FirstOrDefault();
                 if(usession == 1)
                 {
-                    return RedirectToAction("Index", "Home", new { Area = "Admin" } );
+                    if (remember == "on")
+                    {
+                        HttpContext.Response.Cookies.Append("username", username, cookieOptions);
+                        HttpContext.Response.Cookies.Append("password", password, cookieOptions);
+                        HttpContext.Response.Cookies.Append("remember", remember, cookieOptions);
+                    }
+                    else
+                    {
+                        if(HttpContext.Request.Cookies["username"] != null && HttpContext.Request.Cookies["password"] != null)
+                        {     
+                        HttpContext.Response.Cookies.Append("username", username, cookieOptions1);
+                        HttpContext.Response.Cookies.Append("password", password, cookieOptions1);
+                        HttpContext.Response.Cookies.Append("remember", remember, cookieOptions1);
+                        }
+                    }
+                    HttpContext.Session.SetString("username", username);
+                    HttpContext.Session.Remove("client");
+                    return RedirectToAction("Index", "Home", new { area = "Admin" } );
                 }    
                 else
                 {
+                    if (remember == "on")
+                    {
+                        HttpContext.Response.Cookies.Append("username", username, cookieOptions);
+                        HttpContext.Response.Cookies.Append("password", password, cookieOptions);
+                        HttpContext.Response.Cookies.Append("remember", remember, cookieOptions);
+                    }
+                    else
+                    {
+                        if (HttpContext.Request.Cookies["username"] != null && HttpContext.Request.Cookies["password"] != null)
+                        {
+                            HttpContext.Response.Cookies.Append("username", username, cookieOptions1);
+                            HttpContext.Response.Cookies.Append("password", password, cookieOptions1);
+                            HttpContext.Response.Cookies.Append("remember", remember, cookieOptions1);
+                        }
+                    }
+                    HttpContext.Session.SetString("client", username);
+                    HttpContext.Session.Remove("username");
                     return RedirectToAction("Index", "Home");
                 }    
+
              }    
             else
             {
-                TempData["alertMessage"] = "This Account Does Not Exist In The System! Try Creating A New Account";
-                return RedirectToAction("Signup","SigninSignup");
+                var u = _context.User.Where(u => u.Username.Equals(username) && u.Password != password).Select(u => u).Count();
+                if ( u == 1)
+                {
+                    TempData["alertMessage"] = "Wrong Password! Try Again";
+                    return RedirectToAction("Signin", "SigninSignup");
+                }    
+                TempData["alertMessage"] = "This Account Does Not Exist In The System! Try Again";
+                return RedirectToAction("Signin","SigninSignup");
             }                
         }
         public IActionResult Signup()
@@ -105,6 +150,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("username");
+            HttpContext.Session.Remove("client");
             return RedirectToAction("Index", "Home");
         }
 

@@ -8,14 +8,14 @@
     </div>
     <div class="templatemo-nav-container">
         <nav class="templatemo-nav">
-            <ul>
+            <ul class="nav-item">
                 @{var mn = Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder).ToList();
                     foreach (var item in mn)
                     {
                         <li><a href="/@item.ControllerName/@item.ActionName">@item.MenuName</a></li>
                     }
                 }
-                @if (Context.Session.GetString("username") == null)
+                @if (Context.Session.GetString("client") == null)
                 {
                     <li>
                         <a href="/SigninSignup/Signin" class="btn5-hover btn5">Sign In</a>
@@ -27,12 +27,18 @@
                 }
                 else
                 {
-                    <li style="color: white">
-                        <a style="font-weight:500">WELCOME</a>@Context.Session.GetString("username")
-                    </li>
-                    <li>
-                        <a href='@Url.Action("Logout", "SigninSignup")' class="btn5-hover btn5"> Logout </a>
-                    </li>
+            <li style="color: white">
+                <a style="padding: 0px;" class="btn" href="/ClientProfile/Profile">
+                    <p>WELCOME <b>@Context.Session.GetString("client")</b></p>
+                </a>
+                <a href='@Url.Action("Logout", "SigninSignup")' class="btn5-hover btn5"> Logout </a>
+                <a href="@Url.Action("CartList", "Cart")" class="nav-link nav-icon">
+                    <i class="btn5-hover btn5 bi bi-basket-fill" style="font-size: xx-large; display: block; width: initial;"></i>
+                </a>
+                <a href="@Url.Action("TransHis", "Cart")" class="nav-link nav-icon">
+                    <i class="btn5-hover btn5 bi bi-clock-history" style="font-size: xx-large; display: block; width: initial;"></i>
+                </a>
+            </li>
                 }
             </ul>
         </nav>

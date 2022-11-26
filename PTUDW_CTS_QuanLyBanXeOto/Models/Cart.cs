@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Models
 {
-    [Table("DongXeDetail")]
-    public class DongXeDetail
+    [Table("Cart")]
+    public class Cart
     {
         [Key]
-        public int DongXeID { get; set; }
-        public int HangXeID { get; set; }
-        public string TenDongXe { get; set; }
-        public string NoiSanXuat { get; set; }
+        public int CartID { get; set; }
+        public int UserID { get; set; }
+        public int CarID { get; set; }
     }
 }

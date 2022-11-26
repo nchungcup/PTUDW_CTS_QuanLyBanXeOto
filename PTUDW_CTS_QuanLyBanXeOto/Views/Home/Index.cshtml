@@ -1,4 +1,18 @@
-﻿<div class="about-page">
+﻿@{
+    if (null != TempData["ThieuXeMessage"])
+    {
+        <script type="text/javascript">
+            alert("@TempData["ThieuXeMessage"]");
+        </script>
+    }
+    if (null != TempData["alertMessage"])
+    {
+        <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+        </script>
+    }
+}
+<div class="about-page">
     <section class="templatemo-top-section">
         @await Component.InvokeAsync("MenuView")
         @await Component.InvokeAsync("Slide")

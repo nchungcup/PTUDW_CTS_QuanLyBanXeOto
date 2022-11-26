@@ -1,0 +1,40 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
+@model User
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+    alert("@TempData["alertMessage"]");
+    </script>
+}
+<section class="templatemo-top-section" style="margin-bottom: -20px">
+    @await Component.InvokeAsync("MenuView")
+    <div class="templatemo-welcome" style="margin: -63px">
+        <div class="container">
+            <div class="row gutters">
+                <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12" style="width: 100%;">
+                    <div class="card h-100">
+                        <form asp-controller="ClientProfile" asp-action="UpdatePass" class="card-body" style="padding: 25px;">
+                            <input type="hidden" name="UserID" value="@Model.UserID">
+                            <div class="row gutters">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="Password">Nhập Mật Khẩu Cũ:</label>
+                                        <input type="password" class="form-control" name="Password" autocomplete="off" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Password">Nhập Mật Khẩu Mới:</label>
+                                        <input type="password" class="form-control" name="NewPassword1" autocomplete="off" required>
+                                        <label for="Password">Nhập Lại Mật Khẩu Mới:</label>
+                                        <input type="password" class="form-control" name="NewPassword2" autocomplete="off" required>
+                                    </div>
+                                    <a href="@Url.Action("Index", "Home")" class="btn btn-danger">Cancel</a>
+                                    <button type="submit" id="submit" class="btn btn-success">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

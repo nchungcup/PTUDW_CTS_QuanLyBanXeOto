@@ -1,0 +1,96 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
+@model List<CartView>
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+}
+<div>
+    <section class="templatemo-top-section" style="margin-bottom: -20px">
+        @await Component.InvokeAsync("MenuView")
+        <div class="templatemo-welcome" style="margin: 0px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                    </div>
+                    <section class="ftco-section">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead class="thead-primary">
+                                                <tr>
+                                                    <th>&nbsp;</th>
+                                                    <th>&nbsp;</th>
+                                                    <th>Product</th>
+                                                    <th>Color</th>
+                                                    <th>Price</th>
+                                                    <th style="text-align: center">Quantity</th>
+                                                    <th>Total</th>
+                                                    <th>&nbsp;</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var ca in Model)
+                                                {
+                                                <tr class="alert" role="alert">
+                                                    <td>
+                                                        <div class="img" style="background-image: url(img/Car/@ca.CarImage);"></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@ca.TenDongXe</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@ca.MauSac</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@ca.DoiXe</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="email">
+                                                            <span>@ca.DongCo</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>@ca.GiaBan</td>
+                                                    <td class="quantity" style="text-align: center">
+                                                        <div class="input-group" style="display: inline-flex;">
+                                                            <a class="btn btn-success" href="@Url.Action("Minus", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">-</a>
+                                                            <input type="text" name="quantity" class="quantity form-control input-number" value="@ca.SoLuong" min="1" max="100" readonly>
+                                                            <a class="btn btn-success" href="@Url.Action("Plus", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">+</a>
+                                                        </div>
+                                                    </td>
+                                                    <td>@(ca.GiaBan * ca.SoLuong)</td>
+                                                    <td>
+                                                        <a class="btn btn-danger" href="@Url.Action("Remove", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">
+                                                            x
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <div style="display: inline-grid; justify-content: end; width: 100%; text-align: end;">
+                                            <p>Tổng Giá Trị Sản Phẩm: <b>@Model.Sum(s => s.GiaBan * s.SoLuong) $</b></p> 
+                                            <p>Thuế: <b>@Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10) $</b></p>
+                                            <p>Chiết khấu: <input type="text" value="Chưa Áp Dụng" style="text-align: end;color: black;width: 41%;" readonly ></p>
+                                            <p>Tổng Tiền: <b>@(Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)) $</b></p>
+                                            <a class="btn btn-success" href="@Url.Action("ThanhToan", "Cart", new { tongtien = (Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)), thue = Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10), cartview = Model})">Thanh Toán</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

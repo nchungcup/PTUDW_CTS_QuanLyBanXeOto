@@ -20,12 +20,10 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
             {
                 //Lấy dữ liệu từ sql
                 var listofNewestCar = (from c in _context.Car
-                                       join dx in _context.DongXe
-                                       on c.DongXeID equals dx.DongXeID
-                                       join hx in _context.HangXe
-                                       on dx.HangXeID equals hx.HangXeID
+                                       join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
+                                       join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
                                        orderby c.NgayNhap descending
-                                        select new
+                                        select new Category
                                         {
                                         TenHangXe = hx.TenHangXe,
                                         TenDongXe = dx.TenDongXe,
@@ -35,17 +33,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                         GiaBan = c.GiaBan,
                                         CarImage = c.CarImage,
                                         NgayNhap = c.NgayNhap
-                                        }).Take(2).AsEnumerable().Select(cate => new Category
-                                        {
-                                        TenHangXe = cate.TenHangXe,
-                                        TenDongXe = cate.TenDongXe,
-                                        DoiXe = cate.DoiXe,
-                                        MauSac = cate.MauSac,
-                                        DongCo = cate.DongCo,
-                                        GiaBan = cate.GiaBan,
-                                        CarImage = cate.CarImage,
-                                        NgayNhap = cate.NgayNhap
-                                    }).ToList();
+                                        }).Take(2).ToList();
             //Trả về view NewestCar với dữ liệu là listofNewestCar là những chiếc xe vừa được nhập mới nhất
                 return await Task.FromResult((IViewComponentResult)View("NewestCar", listofNewestCar));
             }

@@ -1,0 +1,57 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
+@model User
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+@if (null != TempData["alertMessage"])
+{
+    <script type="text/javascript">
+            alert("@TempData["alertMessage"]");
+    </script>
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="login-wrap p-4 p-md-5">
+                    <form method="post" action="/Admin/UserManage/Edit" class="login-form">
+                        <input type="hidden" name="UserID" value="@Model.UserID">
+                        <div class="form-group">
+                            <b>CMND</b><input name="CMND" type="number" class="form-control rounded-left" value="@Model.CMND" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Họ Tên</b><input name="HoTen" type="text" class="form-control rounded-left" value="@Model.HoTen" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Địa Chỉ</b><input name="DiaChi" type="text" class="form-control rounded-left" value="@Model.DiaChi" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Năm Sinh</b><input name="NamSinh" type="number" class="form-control rounded-left" value="@Model.NamSinh" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Email</b><input name="Email" type="text" class="form-control rounded-left" value="@Model.Email" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Số Điện Thoại</b><input name="SoDienThoai" type="text" value="@Model.SoDienThoai" class="form-control rounded-left" style="text-align: center" required>
+                        </div>
+                        <input type="hidden" name="TypeID" value="@Model.TypeID">
+                        <input type="hidden" name="UserImage" value="@Model.UserImage">
+                        <div class="form-group">
+                            <b>Username</b><input name="Username" type="text" value="@Model.Username" class="form-control rounded-left" style="text-align: center" required>
+                        </div>
+                        <input type="hidden" name="Password" value="@Model.Password">
+                        <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
+                            <button type="submit" class="btn btn-primary rounded submit">Lưu</button>
+                        </div>
+                        <div class="form-group mt-4">
+                            <div class="w-100 text-center">
+                                <p class="mb-1"><a href='/Admin/UserManage/UserManage'>Hủy</a></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

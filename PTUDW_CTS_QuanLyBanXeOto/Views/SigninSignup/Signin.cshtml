@@ -17,7 +17,14 @@
     @{ Layout = null; }
 </head>
 <body>
-    
+    @if (null != TempData["alertMessage"])
+    {
+<script type="text/javascript">
+                       alert("@TempData["alertMessage"]");
+</script>}
+    @{
+        string check = "on".Equals(@Context.Request.Cookies["remember"]) ? "checked" : "";
+     }
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">
@@ -42,17 +49,17 @@
                         <form method="post" asp-controller="SigninSignup" asp-action="Signin" class="login-form">
                             <div class="form-group">
                                 <div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-user"></span></div>
-                                <input type="text" class="form-control rounded-left" placeholder="Username" name="username" required>
+                                <input type="text" class="form-control rounded-left" name="username" value="@Context.Request.Cookies["username"]" autocomplete="off" required>
                             </div>
                             <div class="form-group">
                                 <div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-lock"></span></div>
-                                <input type="password" class="form-control rounded-left" placeholder="Password" name="password" required>
+                                <input type="password" class="form-control rounded-left" name="password" value="@Context.Request.Cookies["password"]" autocomplete="off" required>
                             </div>
                             <div class="form-group d-flex align-items-center">
                                 <div class="w-100">
                                     <label class="checkbox-wrap checkbox-primary mb-0">
-                                        Save Password
-                                        <input type="checkbox">
+                                        Remember Me
+                                        <input type="checkbox" name="remember" @check>
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>

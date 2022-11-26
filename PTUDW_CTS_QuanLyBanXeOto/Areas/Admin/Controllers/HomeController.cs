@@ -12,12 +12,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
     //Tạo controller cho phần home của Admin
     [Area("Admin")]
     [Route(nameof(Admin) + "/Home")]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DataContext _context;
 
-        public HomeController(ILogger<HomeController> logger, DataContext dataContext)
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext) : base()
         {
             _logger = logger;
             _context = dataContext;
