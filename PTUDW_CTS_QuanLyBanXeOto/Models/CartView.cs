@@ -10,15 +10,17 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class CartView
     {
         [Key]
-        public int UserID { get; set; }
-        public int DongXeID { get; set; }
+        public long UserID { get; set; }
+        public long DongXeID { get; set; }
+        public long HangXeID { get; set; }
         public string CarImage { get; set; }
         public string TenDongXe { get; set; }
+        public string TenHangXe { get; set; }
         public string MauSac { get; set; }
-        public int DoiXe { get; set; }
+        public long DoiXe { get; set; }
         public string DongCo { get; set; }
-        public int GiaBan { get; set; }
-        public int SoLuong { get; set; }
+        public long GiaBan { get; set; }
+        public long SoLuong { get; set; }
 
     }
 }

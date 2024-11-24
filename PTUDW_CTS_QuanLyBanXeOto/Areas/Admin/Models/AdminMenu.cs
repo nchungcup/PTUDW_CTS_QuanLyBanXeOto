@@ -12,11 +12,11 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models
     {
         //Tạo đối tượng tương ứng với bảng AdminMenu để hiện Menu trong Admin
         [Key]
-        public int AdminMenuID { get; set; }
+        public long AdminMenuID { get; set; }
         public string ItemName { get; set; }
-        public int ItemLevel { get; set; }
-        public int ParentLevel { get; set; }
-        public int ItemOrder { get; set; }
+        public long ItemLevel { get; set; }
+        public long ParentLevel { get; set; }
+        public long ItemOrder { get; set; }
         public bool IsActive { get; set; }
         public string ItemTarget { get; set; }
         public string AreaName { get; set; }

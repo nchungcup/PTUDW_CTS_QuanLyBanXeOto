@@ -1,4 +1,4 @@
-// stylelint-disable declaration-no-important, selector-no-qualifying-type
+﻿// stylelint-disable declaration-no-important, selector-no-qualifying-type
 
 // Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css
 
@@ -14,7 +14,7 @@
     *::before,
     *::after {
       // Bootstrap specific; comment out `color` and `background`
-      //color: $black !important; // Black prints faster
+      //color: $black !important; // black prints faster
       text-shadow: none !important;
       //background: transparent !important;
       box-shadow: none !important;

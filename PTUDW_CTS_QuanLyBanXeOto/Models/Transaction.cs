@@ -11,16 +11,16 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class Transaction
     {
         [Key]
-        public int TransID { get; set; }
-        public int KhachHangID { get; set; }
+        public long TransID { get; set; }
+        public long KhachHangID { get; set; }
         public DateTime? NgayTaoDon { get; set; }
         public string ThanhToan { get; set; }
         public string TrangThai { get; set; }
-        public int? NguoiXuLyID { get; set; }
+        public long? NguoiXuLyID { get; set; }
         public DateTime? NgayDuyet { get; set; }
-        public int? NguoiDuyetID { get; set; }
-        public int ChietKhau { get; set; }
-        public int Thue { get; set; }
-        public int TongTien { get; set; }
+        public long? NguoiDuyetID { get; set; }
+        public long ChietKhau { get; set; }
+        public long Thue { get; set; }
+        public long TongTien { get; set; }
     }
 }

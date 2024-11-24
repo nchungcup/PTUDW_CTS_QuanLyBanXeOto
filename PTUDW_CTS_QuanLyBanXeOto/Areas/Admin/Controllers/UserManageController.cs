@@ -34,7 +34,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(long? id)
         {
             var delUser = _context.User.Find(id);
             return View("Delete", delUser);
@@ -45,12 +45,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
             var delUser = _context.User.Find(_user.UserID);
             _context.User.Remove(delUser);
             await _context.SaveChangesAsync();
-            TempData["alertMessage"] = "Action Completed";
+            TempData["alertMessage"] = "Xóa người dùng thành công!";
             return RedirectToAction("UserManage", "UserManage");
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(long? id)
         {
             var editUser = _context.User.Find(id);
             return View("Edit", editUser);
@@ -58,24 +58,64 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(User _u)
         {
-            var editUser = new User
+            var userduplicate = _context.User
+                .Where(u => u.Username.Equals(_u.Username) && u.UserID != _u.UserID)
+                .ToList();
+
+            var emailduplicate = _context.User
+                .Where(u => u.Email.Equals(_u.Email) && u.UserID != _u.UserID)
+                .ToList();
+
+            var phoneduplicate = _context.User
+                .Where(u => u.SoDienThoai.Equals(_u.SoDienThoai) && u.UserID != _u.UserID)
+                .ToList();
+
+            var CMNDduplicate = _context.User
+                .Where(u => u.CMND.Equals(_u.CMND) && u.UserID != _u.UserID)
+                .ToList();
+
+            if (userduplicate.Count() > 0)
             {
-                UserID = _u.UserID,
-                CMND = _u.CMND,
-                HoTen = _u.HoTen,
-                DiaChi = _u.DiaChi,
-                NamSinh = _u.NamSinh,
-                Email = _u.Email,
-                SoDienThoai = _u.SoDienThoai,
-                TypeID = _u.TypeID,
-                UserImage = _u.UserImage,
-                Username = _u.Username,
-                Password = _u.Password
-            };
-            _context.User.Update(editUser);
-            await _context.SaveChangesAsync();
-            TempData["alertMessage"] = "Action Completed";
-            return RedirectToAction("UserManage", "UserManage");
+                TempData["alertMessage"] = "Tên đăng nhập đã tồn tại!";
+                return RedirectToAction("Edit", "UserManage", new { id = _u.UserID });
+            }
+            else if (emailduplicate.Count() > 0)
+            {
+                TempData["alertMessage"] = "Email đã tồn tại!";
+                return RedirectToAction("Edit", "UserManage", new { id = _u.UserID });
+            }
+            else if (phoneduplicate.Count() > 0)
+            {
+                TempData["alertMessage"] = "Số điện thoại đã tồn tại!";
+                return RedirectToAction("Edit", "UserManage", new { id = _u.UserID });
+            }
+            else if (CMNDduplicate.Count() > 0)
+            {
+                TempData["alertMessage"] = "Số CMND/CCCD đã tồn tại!";
+                return RedirectToAction("Edit", "UserManage", new { id = _u.UserID });
+            }
+            else
+            {
+                var editUser = new User
+                {
+                    UserID = _u.UserID,
+                    CMND = _u.CMND,
+                    HoTen = _u.HoTen,
+                    DiaChi = _u.DiaChi,
+                    NamSinh = _u.NamSinh,
+                    Email = _u.Email,
+                    SoDienThoai = _u.SoDienThoai,
+                    TypeID = _u.TypeID,
+                    UserImage = _u.UserImage,
+                    Username = _u.Username,
+                    Password = _u.Password,
+                    IsActive = _u.IsActive
+                };
+                _context.User.Update(editUser);
+                await _context.SaveChangesAsync();
+                TempData["alertMessage"] = "Cập nhật người dùng thành công!";
+                return RedirectToAction("UserManage", "UserManage");
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * TinyMCE version 6.2.0 (2022-09-08)
  */
 
@@ -8396,7 +8396,7 @@
       });
       registerOption('font_family_formats', {
         processor: 'string',
-        default: 'Andale Mono=andale mono,monospace;' + 'Arial=arial,helvetica,sans-serif;' + 'Arial Black=arial black,sans-serif;' + 'Book Antiqua=book antiqua,palatino,serif;' + 'Comic Sans MS=comic sans ms,sans-serif;' + 'Courier New=courier new,courier,monospace;' + 'Georgia=georgia,palatino,serif;' + 'Helvetica=helvetica,arial,sans-serif;' + 'Impact=impact,sans-serif;' + 'Symbol=symbol;' + 'Tahoma=tahoma,arial,helvetica,sans-serif;' + 'Terminal=terminal,monaco,monospace;' + 'Times New Roman=times new roman,times,serif;' + 'Trebuchet MS=trebuchet ms,geneva,sans-serif;' + 'Verdana=verdana,geneva,sans-serif;' + 'Webdings=webdings;' + 'Wingdings=wingdings,zapf dingbats'
+        default: 'Andale Mono=andale mono,monospace;' + 'Arial=arial,helvetica,sans-serif;' + 'Arial black=arial black,sans-serif;' + 'Book Antiqua=book antiqua,palatino,serif;' + 'Comic Sans MS=comic sans ms,sans-serif;' + 'Courier New=courier new,courier,monospace;' + 'Georgia=georgia,palatino,serif;' + 'Helvetica=helvetica,arial,sans-serif;' + 'Impact=impact,sans-serif;' + 'Symbol=symbol;' + 'Tahoma=tahoma,arial,helvetica,sans-serif;' + 'Terminal=terminal,monaco,monospace;' + 'Times New Roman=times new roman,times,serif;' + 'Trebuchet MS=trebuchet ms,geneva,sans-serif;' + 'Verdana=verdana,geneva,sans-serif;' + 'Webdings=webdings;' + 'Wingdings=wingdings,zapf dingbats'
       });
       registerOption('font_size_formats', {
         processor: 'string',
@@ -10360,7 +10360,7 @@
           '#34495E',
           'Navy Blue',
           '#000000',
-          'Black',
+          'black',
           '#ffffff',
           'White'
         ]
@@ -13858,10 +13858,10 @@
         grdWhite.addColorStop(1, 'rgba(255,255,255,0)');
         ctx.fillStyle = grdWhite;
         ctx.fillRect(0, 0, width, height);
-        const grdBlack = ctx.createLinearGradient(0, 0, 0, height);
-        grdBlack.addColorStop(0, 'rgba(0,0,0,0)');
-        grdBlack.addColorStop(1, 'rgba(0,0,0,1)');
-        ctx.fillStyle = grdBlack;
+        const grdblack = ctx.createLinearGradient(0, 0, 0, height);
+        grdblack.addColorStop(0, 'rgba(0,0,0,0)');
+        grdblack.addColorStop(1, 'rgba(0,0,0,1)');
+        ctx.fillStyle = grdblack;
         ctx.fillRect(0, 0, width, height);
       };
       const setPaletteHue = (slider, hue) => {

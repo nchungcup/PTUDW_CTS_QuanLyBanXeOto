@@ -11,16 +11,18 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class User
     {
         [Key]
-        public int UserID { get; set; }
-        public int CMND { get; set; }
+        public long UserID { get; set; }
+        public string CMND { get; set; }
         public string HoTen { get; set; }
         public string DiaChi { get; set; }
-        public int NamSinh { get; set; }
+        public long NamSinh { get; set; }
         public string Email { get; set; }
         public string SoDienThoai { get; set; }
-        public int TypeID { get; set; }
+        public long TypeID { get; set; }
         public string UserImage { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }

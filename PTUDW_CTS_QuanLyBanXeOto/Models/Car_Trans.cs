@@ -11,7 +11,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class Car_Trans
     {
         [Key]
-        public int CarID { get; set; }
-        public int? TransID { get; set; }
+        public long CarID { get; set; }
+        public long? TransID { get; set; }
     }
 }

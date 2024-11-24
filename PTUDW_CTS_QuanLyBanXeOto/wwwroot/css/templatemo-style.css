@@ -1,4 +1,4 @@
-/*
+﻿/*
  
 Motor Template
 
@@ -481,15 +481,12 @@ body {
 
 /* Footer */
 footer.tm-footer {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.7)), to(rgba(0, 0, 0, 0.7))), url(../img/footer-bg.jpg) no-repeat left top;
-  background: -webkit-linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(../img/footer-bg.jpg) no-repeat left top;
-  background: linear-gradient(
-      rgba(0, 0, 0, 0.7), 
-      rgba(0, 0, 0, 0.7)
-    ), url(../img/footer-bg.jpg) no-repeat left top;
-  background-size: cover;
-  color: #B4B4B4;
-  padding-top: 50px;
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.7)), to(rgba(0, 0, 0, 0.7))), url(../img/welcome-bg.jpg) no-repeat left top;
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(../img/welcome-bg.jpg) no-repeat left top;
+    background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url(../img/welcome-bg.jpg) no-repeat left top;
+    background-size: cover;
+    color: #B4B4B4;
+    padding-top: 50px;
 }
 
 .tm-footer-div-title {
@@ -852,8 +849,8 @@ ol.flex-control-nav { display: none; }
 }
 .services-container-inner { max-width: 266px; }
 .leader-image {
-    height: 250px;
-    width: 270px;
+    height: 20vw;
+    max-width: 25vw;
 }
 
 @media screen and (max-width: 1199px) {

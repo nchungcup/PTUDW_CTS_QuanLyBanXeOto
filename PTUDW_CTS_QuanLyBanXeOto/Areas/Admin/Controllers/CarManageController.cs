@@ -8,6 +8,11 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.ConstrainedExecution;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
 {
@@ -51,7 +56,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                                     GiaBan = c.GiaBan,
                                     NgayNhap = c.NgayNhap,
                                     CarImage = c.CarImage,
-                                    HoTenNguoiNhap = u.HoTen,
+                                    Username = u.Username,
                                     TrangThai = ct.TransID == null ? "Còn Trong Kho" : t.TrangThai
 
                                 }).ToList();
@@ -81,7 +86,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                                    DongCo = c.DongCo,
                                    NgayNhap = c.NgayNhap,
                                    CarImage = c.CarImage,
-                                   HoTenNguoiNhap = u.HoTen,
+                                   Username = u.Username,
                                    TrangThai = t.TrangThai
 
                                }).ToList();
@@ -108,26 +113,52 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewCar(CarManage _carmanage)
+        public async Task<IActionResult> AddNewCar(CarManage _carmanage, IList<IFormFile> images)
         {
+            // Kiểm tra trùng VIN
             var VINduplicate = _context.Car.Where(c => c.VIN.Equals(_carmanage.VIN)).ToList();
             if (VINduplicate.Count() > 0)
             {
-                TempData["alertMessage"] = "This VIN Already Exists On The System";
+                TempData["alertMessage"] = "Mã VIN này đã tồn tại!";
                 return RedirectToAction("Add", "CarManage");
             }
-            else if (_context.User.Where(u => u.TypeID != 1 && u.HoTen.Equals(_carmanage.HoTenNguoiNhap)).Select(u => u.UserID).ToList().Count() > 0)
+            else if (_context.User.Where(u => u.TypeID != 1 && u.Username.Equals(_carmanage.Username)).Select(u => u.UserID).ToList().Count() > 0)
             {
-                TempData["alertMessage"] = "This User Does Not Have Permission To Perform This Action";
+                TempData["alertMessage"] = "Tài khoản này không đủ quyền!";
                 return RedirectToAction("Add", "CarManage");
             }
-            else if (_context.User.Where(u => u.HoTen.Equals(_carmanage.HoTenNguoiNhap)).Select(u => u.UserID).ToList().Count() == 0)
+            else if (_context.User.Where(u => u.Username.Equals(_carmanage.Username)).Select(u => u.UserID).ToList().Count() == 0)
             {
-                TempData["alertMessage"] = "This User Does Not Exist";
-                return RedirectToAction("Add", "CarManage");
+                TempData["alertMessage"] = "Tài khoản này không tồn tại!";
+                return RedirectToAction("Add", "CarManage", new { area = "Admin" });
             }
             else
             {
+                List<string> imagePaths = new List<string>();  // Danh sách lưu đường dẫn ảnh
+                if (images != null && images.Count > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Car");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    foreach (var image in images)
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(image.FileName) + "_" + _carmanage.Username + "_" + _carmanage.VIN + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + Path.GetExtension(image.FileName);
+                        imagePaths.Add(fileName);  // Lưu đường dẫn ảnh vào danh sách
+
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(stream);
+                        }
+                    }
+                }
+
+                // Chuyển danh sách đường dẫn ảnh thành chuỗi phân cách bằng dấu phẩy (nếu cần)
+                string imagePathString = string.Join(",", imagePaths);
+
                 var c = new Car
                 {
                     VIN = _carmanage.VIN,
@@ -136,24 +167,45 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                     MauSac = _carmanage.MauSac,
                     DongCo = _carmanage.DongCo,
                     NgayNhap = _carmanage.NgayNhap,
-                    NguoiNhapID = _context.User.Where(u => u.HoTen.Equals(_carmanage.HoTenNguoiNhap)).Select(u => u.UserID).FirstOrDefault(),
-                    PhieuXuatID = null
-                };
-                var ct = new Car_Trans
-                {
-                    TransID = null
+                    GiaNhap = _carmanage.GiaNhap,
+                    GiaBan = _carmanage.GiaBan,
+                    NguoiNhapID = _context.User.Where(u => u.Username.Equals(_carmanage.Username)).Select(u => u.UserID).FirstOrDefault(),
+                    PhieuXuatID = null,
+                    CarImage = imagePathString // Lưu chuỗi đường dẫn ảnh vào cơ sở dữ liệu
                 };
                 _context.Car.Add(c);
                 await _context.SaveChangesAsync();
+
+                var ct = new Car_Trans
+                {
+                    CarID = c.CarID,
+                    TransID = null
+                };
                 _context.CarTrans.Add(ct);
                 await _context.SaveChangesAsync();
-                TempData["alertMessage"] = "Action Completed";
+
+                var sameCars = _context.Car.Where(c => c.DongXeID.Equals(_carmanage.DongXeID)
+                && c.DongCo.Equals(_carmanage.DongCo)
+                && c.DoiXe.Equals(_carmanage.DoiXe)
+                && c.MauSac.Equals(_carmanage.MauSac)).ToList();
+
+                foreach (var car in  sameCars)
+                {
+                    car.GiaNhap = _carmanage.GiaNhap;
+                    car.GiaBan = _carmanage.GiaBan;
+                    car.CarImage = imagePathString;
+                    _context.Car.Update(car);
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["alertMessage"] = "Thêm xe " + c.VIN + " thành công!";
                 return RedirectToAction("XeChuaBan", "CarManage");
             }
         }
-        
+
+
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(long? id)
         {
             var c = _context.Car.Where(c => c.CarID.Equals(id)).FirstOrDefault();
             var dx = _context.DongXe.Where(dx => dx.DongXeID.Equals(c.DongXeID)).FirstOrDefault();
@@ -171,14 +223,14 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                           DongCo = c.DongCo,
                           NgayNhap = c.NgayNhap,
                           CarImage = c.CarImage,
-                          HoTenNguoiNhap = u.HoTen,
+                          Username = u.Username,
                           TrangThai = "Chưa Bán"
 
                       };
             return View("Delete", cm);
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             var delCar = _context.Car.Find(id);
             var delCarTrans = _context.CarTrans.Find(id);
@@ -191,10 +243,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         }
         
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(long? id)
         {
             var c = _context.Car.Where(c => c.CarID.Equals(id)).FirstOrDefault();
-            var hx = _context.HangXe.Select(hx => new HangXe { HangXeID = hx.HangXeID, TenHangXe = hx.TenHangXe }).ToList();
+            var dx = _context.DongXe.Where(d => d.DongXeID.Equals(c.DongXeID)).FirstOrDefault();
+            var hx = _context.HangXe.Where(h => h.HangXeID.Equals(dx.HangXeID)).FirstOrDefault();
+            var hxList = _context.HangXe.Select(hx => new HangXe { HangXeID = hx.HangXeID, TenHangXe = hx.TenHangXe }).ToList();
             var ct = _context.CarTrans.Where(ct => ct.CarID.Equals(c.CarID)).FirstOrDefault();
             var u = _context.User.Where(u => u.UserID.Equals(c.NguoiNhapID)).FirstOrDefault();
             var cm = new CarManage
@@ -205,32 +259,108 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                           MauSac = c.MauSac,
                           DongCo = c.DongCo,
                           NgayNhap = c.NgayNhap,
+                          GiaNhap = c.GiaNhap,
+                          GiaBan = c.GiaBan,
                           CarImage = c.CarImage,
-                          HoTenNguoiNhap = u.HoTen,
+                          Username = u.Username,
+                          HangXeID = hx.HangXeID,
+                          TenHangXe = hx.TenHangXe,
+                          DongXeID = c.DongXeID,
+                          TenDongXe = dx.TenDongXe,
                           TrangThai = "Còn Trong Kho",
-                          ListHangXe = hx
-                      };
-            return View("Edit", cm);
-        }    
-        [HttpPost]
-        public async Task<IActionResult> Edit(CarManage _cm)
-        {
-            var editCar = new Car
-            {
-                CarID = _cm.CarID,
-                VIN = _cm.VIN,
-                DongXeID = _context.DongXe.Where(dx => dx.TenDongXe.Equals(_cm.TenDongXe)).Select(dx => dx.DongXeID).FirstOrDefault(),
-                DoiXe = _cm.DoiXe,
-                MauSac = _cm.MauSac,
-                DongCo = _cm.DongCo,
-                CarImage = _cm.CarImage,
-                PhieuXuatID = _cm.PhieuXuatID,
-                NgayNhap = _cm.NgayNhap,
-                NguoiNhapID = _context.User.Where(u => u.HoTen.Equals(_cm.HoTenNguoiNhap)).Select(u => u.UserID).FirstOrDefault()
+                          ListHangXe = hxList
             };
-            _context.Car.Update(editCar);
-            await _context.SaveChangesAsync();
-            TempData["alertMessage"] = "Action Completed";
+
+            return View("Edit", cm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CarManage _carmanage, IList<IFormFile> images)
+        {
+            var VINduplicate = _context.Car
+                .Where(c => c.VIN.Equals(_carmanage.VIN) && c.CarID != _carmanage.CarID)
+                .ToList();
+
+            if (VINduplicate.Count() > 0)
+            {
+                TempData["alertMessage"] = "Tên đăng nhập đã tồn tại!";
+                return RedirectToAction("Edit", "CarManage", new { id = _carmanage.CarID });
+            }
+
+            var editCar = await _context.Car
+                .FirstOrDefaultAsync(c => c.CarID == _carmanage.CarID);
+
+            if (editCar != null)
+            {
+                List<string> imagePaths = new List<string>();
+                if (images != null && images.Count > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Car");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    foreach (var image in images)
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(image.FileName) + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + Path.GetExtension(image.FileName);
+                        imagePaths.Add(fileName);  // Lưu đường dẫn ảnh vào danh sách
+
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(stream);
+                        }
+                    }
+                }
+
+                // Nếu có ảnh mới, thay thế ảnh cũ
+                if (imagePaths.Any())
+                {
+                    editCar.CarImage = string.Join(",", imagePaths);
+                }
+
+                // Cập nhật các trường khác của Car nếu cần
+                editCar.VIN = _carmanage.VIN;
+                editCar.DongXeID = _context.DongXe.Where(dx => dx.TenDongXe.Equals(_carmanage.TenDongXe)).Select(dx => dx.DongXeID).FirstOrDefault();
+                editCar.DoiXe = _carmanage.DoiXe;
+                editCar.MauSac = _carmanage.MauSac;
+                editCar.DongCo = _carmanage.DongCo;
+                editCar.PhieuXuatID = _carmanage.PhieuXuatID;
+                editCar.GiaNhap = _carmanage.GiaNhap;
+                editCar.NgayNhap = _carmanage.NgayNhap;
+                editCar.GiaBan = _carmanage.GiaBan;
+                editCar.NguoiNhapID = _context.User.Where(u => u.Username.Equals(_carmanage.Username)).Select(u => u.UserID).FirstOrDefault();
+
+                // Cập nhật đối tượng Car trong cơ sở dữ liệu
+                _context.Car.Update(editCar);
+                await _context.SaveChangesAsync();
+
+                var sameCars = _context.Car.Where(c => c.DongXeID.Equals(_carmanage.DongXeID)
+                && c.DongCo.Equals(_carmanage.DongCo)
+                && c.DoiXe.Equals(_carmanage.DoiXe)
+                && c.MauSac.Equals(_carmanage.MauSac)).ToList();
+
+                foreach (var car in sameCars)
+                {
+
+                    car.GiaNhap = _carmanage.GiaNhap;
+                    car.GiaBan = _carmanage.GiaBan;
+                    if (imagePaths.Any())
+                    {
+                        car.CarImage = string.Join(",", imagePaths);
+                    }
+                    _context.Car.Update(car);
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["alertMessage"] = "Cập nhật xe " + editCar.VIN + " thành công!";
+            }
+            else
+            {
+                TempData["alertMessage"] = "Không tìm thấy xe!";
+            }
+
             return RedirectToAction("XeChuaBan", "CarManage");
         }
 

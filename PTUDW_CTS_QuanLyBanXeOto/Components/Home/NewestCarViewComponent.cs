@@ -23,7 +23,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                        join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
                                        join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
                                        orderby c.NgayNhap descending
-                                        select new Category
+                                        select new CarModel
                                         {
                                         TenHangXe = hx.TenHangXe,
                                         TenDongXe = dx.TenDongXe,
@@ -33,9 +33,18 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
                                         GiaBan = c.GiaBan,
                                         CarImage = c.CarImage,
                                         NgayNhap = c.NgayNhap
-                                        }).Take(2).ToList();
+                                        }).Take(5).ToList();
+
+            foreach (var car in listofNewestCar)
+            {
+                if (!string.IsNullOrEmpty(car.CarImage))
+                {
+                    car.CarImage = car.CarImage.Split(',')[0]; // Lấy ảnh đầu tiên từ chuỗi CarImage
+                }
+            }
+
             //Trả về view NewestCar với dữ liệu là listofNewestCar là những chiếc xe vừa được nhập mới nhất
-                return await Task.FromResult((IViewComponentResult)View("NewestCar", listofNewestCar));
+            return await Task.FromResult((IViewComponentResult)View("NewestCar", listofNewestCar));
             }
         }
 }

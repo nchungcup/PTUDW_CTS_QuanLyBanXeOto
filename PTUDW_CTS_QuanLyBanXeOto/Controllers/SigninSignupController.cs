@@ -37,9 +37,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
             if (data.Count() > 0)
             {
                 var usession = (from u in _context.User
-                            where u.Username == username && u.Password == password
-                            select u.TypeID).FirstOrDefault();
-                if(usession == 1)
+                            where u.Username == username && u.Password == password select u).FirstOrDefault();
+                if(usession.TypeID == 1)
                 {
                     if (remember == "on")
                     {
@@ -62,6 +61,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                 }    
                 else
                 {
+                    if (!usession.IsActive)
+                    {
+                        TempData["alertMessage"] = "Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản trị viên!";
+                        return RedirectToAction("Signin", "SigninSignup");
+                    } 
+                        
                     if (remember == "on")
                     {
                         HttpContext.Response.Cookies.Append("username", username, cookieOptions);
@@ -88,10 +93,10 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                 var u = _context.User.Where(u => u.Username.Equals(username) && u.Password != password).Select(u => u).Count();
                 if ( u == 1)
                 {
-                    TempData["alertMessage"] = "Wrong Password! Try Again";
+                    TempData["alertMessage"] = "Mật khẩu sai!";
                     return RedirectToAction("Signin", "SigninSignup");
                 }    
-                TempData["alertMessage"] = "This Account Does Not Exist In The System! Try Again";
+                TempData["alertMessage"] = "Tài khoản không tồn tại!";
                 return RedirectToAction("Signin","SigninSignup");
             }                
         }
@@ -109,22 +114,22 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
             var CMNDduplicate = _context.User.Where(u => u.Username.Equals(_user.CMND)).ToList();
             if(userduplicate.Count() > 0)
             {
-                TempData["alertMessage"] = "This User Already Exists On The System";
+                TempData["alertMessage"] = "Tên đăng nhập đã tồn tại!";
                 return RedirectToAction("Signup", "SigninSignup");
             }  
             else if(emailduplicate.Count() > 0)
             {
-                TempData["alertMessage"] = "This Email Already Exists On The System";
+                TempData["alertMessage"] = "Email đã tồn tại!";
                 return RedirectToAction("Signup", "SigninSignup");
             }    
             else if(phoneduplicate.Count() > 0)
             {
-                TempData["alertMessage"] = "This Phone Number Already Exists On The System";
+                TempData["alertMessage"] = "Số điện thoại đã tồn tại!";
                 return RedirectToAction("Signup", "SigninSignup");
             }    
             else if(CMNDduplicate.Count() > 0)
             {
-                TempData["alertMessage"] = "This Identity Card Number Already Exists On The System";
+                TempData["alertMessage"] = "Số CMND/CCCD đã tồn tại!";
                 return RedirectToAction("Signup", "SigninSignup");
             }    
             else
@@ -138,7 +143,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                     Email = _user.Email,
                     SoDienThoai = _user.SoDienThoai,
                     Username = _user.Username,
-                    Password = _user.Password
+                    Password = _user.Password,
+                    IsActive = true
                 };
 
                 _context.User.Add(us);

@@ -38,9 +38,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                                 where ca.UserID == us.UserID
                                 join c in _context.Car on ca.CarID equals c.CarID
                                 join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
-                                group c by new { c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
+                                join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
+                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
                                 select new CartView
-                                { 
+                                {
+                                    HangXeID = groupc.Key.HangXeID,
+                                    TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     CarImage = groupc.Key.CarImage,
                                     TenDongXe = groupc.Key.TenDongXe,
@@ -50,11 +53,18 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                                     GiaBan = groupc.Key.GiaBan,
                                     SoLuong = groupc.Count()
                                 }).ToList();
+                foreach (var car in cartview)
+                {
+                    if (!string.IsNullOrEmpty(car.CarImage))
+                    {
+                        car.CarImage = car.CarImage.Split(',')[0]; // Lấy ảnh đầu tiên từ chuỗi CarImage
+                    }
+                }
                 return View(cartview);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
-        public async Task<IActionResult> AddCart(int dxid, string mausac, int doixe, string dongco)
+        public async Task<IActionResult> AddCart(long dxid, string mausac, long doixe, string dongco)
         {
             var Soluongcon = (from c in _context.Car
                               join ct in _context.CarTrans on c.CarID equals ct.CarID
@@ -106,7 +116,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                     }    
             }
         }
-        public async Task<IActionResult> Plus(int dxid, string mausac, int doixe, string dongco)
+        public async Task<IActionResult> Plus(long dxid, string mausac, long doixe, string dongco)
         {
             var Soluongcon = (from c in _context.Car
                               join ct in _context.CarTrans on c.CarID equals ct.CarID
@@ -152,7 +162,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                 }
             }
         }
-        public async Task<IActionResult> Minus(int dxid, string mausac, int doixe, string dongco)
+        public async Task<IActionResult> Minus(long dxid, string mausac, long doixe, string dongco)
         {
             var clientses = HttpContext.Session.GetString("client");
             if (clientses == null)
@@ -197,7 +207,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                 }
             }
         }
-        public async Task<IActionResult> Remove(int dxid, string mausac, int doixe, string dongco)
+        public async Task<IActionResult> Remove(long dxid, string mausac, long doixe, string dongco)
         {
             var clientses = HttpContext.Session.GetString("client");
             var us = _context.User.Where(u => u.Username.Equals(clientses)).FirstOrDefault();
@@ -214,7 +224,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("CartList", "Cart");
         }
-        public async Task<IActionResult> ThanhToan(int tongtien, int thue, List<CartView> cartview)
+        public async Task<IActionResult> ThanhToan(long tongtien, long thue, List<CartView> cartview)
         {
             var clientses = HttpContext.Session.GetString("client");
             var us = _context.User.Where(u => u.Username.Equals(clientses)).FirstOrDefault();

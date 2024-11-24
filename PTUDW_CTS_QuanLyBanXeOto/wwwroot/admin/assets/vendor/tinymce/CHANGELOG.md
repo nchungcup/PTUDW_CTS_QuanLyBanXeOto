@@ -1392,7 +1392,7 @@ Full documentation for the version 5 features and changes is available at https:
 
 ### Changed
 - Changed Tiny 5 mobile skin to look more uniform with desktop. #TINY-2650
-- Blacklisted table, th and td as inline editor target. #TINY-717
+- blacklisted table, th and td as inline editor target. #TINY-717
 
 ### Fixed
 - Fixed an issue where tab panel heights weren't sizing properly on smaller screens and weren't updating on resize. #TINY-3242

@@ -40,7 +40,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                      }).ToList();
             return View(w);
         }
-        public IActionResult WaittingConfirm(int transid)
+        public IActionResult WaittingConfirm(long transid)
         {
             var trans = _context.Transaction.Where(t => t.TransID.Equals(transid)).FirstOrDefault();
             var u = _context.User.Where(u => u.UserID.Equals(trans.KhachHangID)).FirstOrDefault();
@@ -96,7 +96,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                      }).ToList();
             return View(w);
         }
-        public IActionResult PendingConfirm(int transid)
+        public IActionResult PendingConfirm(long transid)
         {
             var trans = _context.Transaction.Where(t => t.TransID.Equals(transid)).FirstOrDefault();
             var u = _context.User.Where(u => u.UserID.Equals(trans.KhachHangID)).FirstOrDefault();
@@ -162,7 +162,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                      }).ToList();
             return View(w);
         }
-        public async Task<IActionResult> Cancel(int transid)
+        public async Task<IActionResult> Cancel(long transid)
         {
             var cancelt = _context.Transaction.Find(transid);
             var cancelct = _context.CarTrans.Where(ct => ct.TransID.Equals(transid)).Select(ct => ct.CarID).ToList();

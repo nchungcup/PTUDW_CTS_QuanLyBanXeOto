@@ -11,7 +11,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class HangXeDetail
     {
         [Key]
-        public int HangXeID { get; set; }
+        public long HangXeID { get; set; }
         public string TenHangXe { get; set; }
         public string XuatXu { get; set; }
         public string LogoImage { get; set; }

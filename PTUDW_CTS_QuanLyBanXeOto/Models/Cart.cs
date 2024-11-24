@@ -11,8 +11,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class Cart
     {
         [Key]
-        public int CartID { get; set; }
-        public int UserID { get; set; }
-        public int CarID { get; set; }
+        public long CartID { get; set; }
+        public long UserID { get; set; }
+        public long CarID { get; set; }
     }
 }

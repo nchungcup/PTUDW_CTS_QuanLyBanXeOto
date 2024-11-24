@@ -5,26 +5,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
-@if (null != TempData["alertMessage"])
-{
-    <script type="text/javascript">
-            alert("@TempData["alertMessage"]");
-    </script>
-}
+
 <main id="main" class="main">
     <div class="pagetitle">
         <div class="row justify-content-center">
             <div class="col-md-7 col-lg-5">
                 <div class="login-wrap p-4 p-md-5">
-                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="Edit" class="login-form">
+                    <form id="car-form" method="post" asp-area="Admin" asp-controller="CarManage" asp-action="Edit" class="login-form" style="display: flex; flex-direction: column; gap: 10px;">
                         <input type="hidden" name="CarID" value="@Model.CarID">
                         <div class="form-group">
                             <b>VIN</b><input name="VIN" type="text" class="form-control rounded-left" value="@Model.VIN" style="text-align: center" autocomplete="off" required>
                         </div>
                         <div class="form-group" style="max-width: min-content;">
                             <b>Hãng Xe</b>
-                            <select name="TenHangXe" id="HangXe" onchange="loadDongXe(this.value)">
-                                <option selected="selected">--Chọn Hãng Xe--</option>
+                            <select class="form-select-sm" name="TenHangXe" id="HangXe" onchange="loadDongXe(this.value)" asp-for="@Model.TenHangXe">
+                                <option>--Chọn Hãng Xe--</option>
                                 @foreach (var hx in Model.ListHangXe)
                                 {
                                     <option value="@hx.TenHangXe">@hx.TenHangXe</option>
@@ -33,31 +28,96 @@
                         </div>
                         <div class="form-group" style="max-width: min-content;">
                             <b>Dòng Xe</b>
-                            <select name="TenDongXe" id="DongXe">
-                                <option selected="selected">--Chọn Dòng Xe--</option>
+                            <select class="form-select-sm" name="TenDongXe" id="DongXe" asp-for="@Model.TenDongXe">
+                                <option>--Chọn Dòng Xe--</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="max-width: min-content;">
+                            <b>Đời Xe</b>
+                            <select id="DoiXe" name="DoiXe" class="form-select-sm" asp-for="@Model.DoiXe" style="text-align: center;" required>
+                                <option value="" disabled selected hidden>Chọn năm</option>
+                                @for (int year = 1950; year <= 2100; year++)
+                                {
+                                    <option value="@year">@year</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group" style="max-width: min-content;">
+                            <b>Màu Sắc</b>
+                            <select name="MauSac" asp-for="@Model.MauSac" class="form-select-sm" style="text-align: center" required>
+                                <option value="Đen">Đen</option>
+                                <option value="Trắng">Trắng</option>
+                                <option value="Bạc">Bạc</option>
+                                <option value="Xanh Dương">Xanh Dương</option>
+                                <option value="Đỏ">Đỏ</option>
+                                <option value="Xám">Xám</option>
+                                <option value="Xanh Lá">Xanh Lá</option>
+                                <option value="Vàng">Vàng</option>
+                                <option value="Cam">Cam</option>
+                                <option value="Nâu">Nâu</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="max-width: min-content;">
+                            <b>Động Cơ</b>
+                            <select name="DongCo" asp-for="@Model.DongCo" class="form-select-sm" style="text-align: center;" required>
+                                <option value="" disabled selected hidden>Chọn loại động cơ</option>
+                                <option value="Động cơ xăng (Gasoline Engine)">Động cơ xăng (Gasoline Engine)</option>
+                                <option value="Động cơ Diesel">Động cơ Diesel</option>
+                                <option value="Động cơ Hybrid">Động cơ Hybrid</option>
+                                <option value="Động cơ Plug-in Hybrid (PHEV)">Động cơ Plug-in Hybrid (PHEV)</option>
+                                <option value="Động cơ Điện (Electric Engine)">Động cơ Điện (Electric Engine)</option>
+                                <option value="Động cơ Wankel (Rotary Engine)">Động cơ Wankel (Rotary Engine)</option>
+                                <option value="Động cơ Turbine">Động cơ Turbine</option>
+                                <option value="Động cơ Hydrogen (Fuel Cell Engine)">Động cơ Hydrogen (Fuel Cell Engine)</option>
+                                <option value="Động cơ 2 kỳ (2-Stroke Engine)">Động cơ 2 kỳ (2-Stroke Engine)</option>
+                                <option value="Động cơ 4 kỳ (4-Stroke Engine)">Động cơ 4 kỳ (4-Stroke Engine)</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <b>Đời Xe</b><input name="DoiXe" type="text" class="form-control rounded-left" value="@Model.DoiXe" style="text-align: center" autocomplete="off" required>
+                            <label for="images"><b>Chọn Ảnh</b></label>
+                            <input name="images" id="images" type="file" accept="image/*" class="form-control rounded-left" style="text-align: center" onchange="previewImage(event)" multiple>
+
+                            <div id="previewContainer" style="padding: 30px 0px; position: relative; text-align: -webkit-center;">
+                                <!-- Nút chuyển ảnh trái -->
+                                <a class="btn" id="prevBtn" style="position: absolute; top: 50%; left: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">‹</a>
+                                
+                                <img id="preview" src="" alt="Xem trước ảnh" style="max-width: 100%; max-height: 200px; display: none;">
+
+                                <!-- Nút chuyển ảnh phải -->
+                                <a class="btn" id="nextBtn" style="position: absolute; top: 50%; right: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">›</a>
+                            </div>
                         </div>
+
                         <div class="form-group">
-                            <b>Màu Sắc</b><input name="MauSac" type="text" class="form-control rounded-left" value="@Model.MauSac" style="text-align: center" autocomplete="off" required>
-                        </div>
-                        <div class="form-group">
-                            <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" value="@Model.DongCo" style="text-align: center" autocomplete="off" required>
+                            <b>Giá nhập</b>
+                            <div style="display: flex; align-items: center;">
+                                <input name="GiaNhap" id="giaNhap" type="text" min="0" value="@Model.GiaNhap" class="form-control rounded-left" placeholder="Nhập giá nhập" style="text-align: center; flex: 1;" autocomplete="off" required>
+                                <span style="margin-left: 10px;">VNĐ</span>
+                            </div>
+                            <small id="giaNhapChu" style="display: block; margin-top: 5px; font-style: italic; color: gray;">
+                            </small>
                         </div>
                         <div class="form-group">
                             <b>Ngày Nhập</b><input id="NgayNhap" name="NgayNhap" type="text" class="form-control rounded-left" value="@Model.NgayNhap" style="text-align: center" autocomplete="off" readonly>
                         </div>
                         <div class="form-group">
-                            <b>Người Nhập</b><input name="HoTenNguoiNhap" type="text" value="@Model.HoTenNguoiNhap" class="form-control rounded-left" style="text-align: center" readonly>
+                            <b>Giá bán</b>
+                            <div style="display: flex; align-items: center;">
+                                <input name="GiaBan" id="giaBan" type="text" min="0" value="@Model.GiaBan" class="form-control rounded-left" placeholder="Nhập giá bán" style="text-align: center; flex: 1;" autocomplete="off" required>
+                                <span style="margin-left: 10px;">VNĐ</span>
+                            </div>
+                            <small id="giaBanChu" style="display: block; margin-top: 5px; font-style: italic; color: gray;">
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <b>Người Nhập</b><input name="Username" type="text" value="@Model.Username" class="form-control rounded-left" style="text-align: center" readonly>
                         </div>
                         <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
                             <button type="submit" class="btn btn-primary rounded submit">Xác nhận</button>
                         </div>
                         <div class="form-group mt-4">
                             <div class="w-100 text-center">
-                                <p class="mb-1"><a href='/Admin/CarManage/XeChuaBan'>Hủy</a></p>
+                                <p class="mb-1"><a class="btn btn-danger" href='/Admin/CarManage/XeChuaBan'>Hủy</a></p>
                             </div>
                         </div>
                     </form>
@@ -67,23 +127,188 @@
     </div>
 </main>
 <script>
-    @*Ajax xử lý hiển thị dòng xe khi 1 hãng xe được nhấp vào *@
-
     function loadDongXe(TenHangXe) {
-        console.log(TenHangXe)
         $.ajax({
             url: '/Admin/CarManage/loadDongXe?TenHangXe=' + TenHangXe,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 $('#DongXe').empty();
-                $('#DongXe').append("<option selected="+'selected'+">--Chọn Dòng Xe--</option>");
-                $.each(data, function (id, option) {
-                    $("#DongXe").append("<option value=" + option.tenDongXe + ">" + option.tenDongXe + "</option>")
-                })
+                $('#DongXe').append("<option>--Chọn Dòng Xe--</option>");
+                $.each(data, function (index, dongXe) {
+                    var option = $('<option>').val(dongXe.tenDongXe).text(dongXe.tenDongXe);
+                    if (dongXe.tenDongXe === '@Model.TenDongXe') {
+                        option.prop('selected', true);
+                    }
+                    $('#DongXe').append(option);
+                });
 
-                }
-            });
+            }
+        });
     };
+
+    $(document).ready(function () {
+        var tenHangXe = '@Model.TenHangXe';  // Giá trị mặc định từ model
+        if (tenHangXe) {
+            loadDongXe(tenHangXe);  // Gọi hàm loadDongXe với giá trị mặc định
+        }
+    });
+
+    let currentImageIndex = 0; // Chỉ số ảnh hiện tại
+    let images = []; // Mảng chứa các ảnh
+
+    function previewImage(event) {
+        const files = event.target.files;
+        images = []; // Reset mảng ảnh
+        currentImageIndex = 0; // Reset chỉ số ảnh hiện tại
+
+        const previewElement = document.getElementById("preview");
+        previewElement.style.display = "none"; // Ẩn ảnh hiện tại
+
+        const previewContainer = document.getElementById("previewContainer");
+
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                images.push(e.target.result); // Thêm ảnh vào mảng
+
+                if (i === 0) {
+                    previewElement.src = images[currentImageIndex];
+                    previewElement.style.display = "block";
+                }
+            };
+
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+    // Chuyển đến ảnh trước
+    document.getElementById("prevBtn").addEventListener("click", function () {
+        if (images.length > 1) {
+            currentImageIndex = (currentImageIndex === 0) ? images.length - 1 : currentImageIndex - 1;
+            document.getElementById("preview").src = images[currentImageIndex];
+        }
+    });
+
+    // Chuyển đến ảnh sau
+    document.getElementById("nextBtn").addEventListener("click", function () {
+        if (images.length > 1) {
+            currentImageIndex = (currentImageIndex === images.length - 1) ? 0 : currentImageIndex + 1;
+            document.getElementById("preview").src = images[currentImageIndex];
+        }
+    });
+
+    function numberToWords(number) {
+        const units = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+        const tens = ["", "", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"];
+        const scales = ["", "nghìn", "triệu", "tỷ"];
+
+        if (number === 0) return "không";
+
+        let words = [];
+        let scaleIndex = 0;
+
+        while (number > 0) {
+            let chunk = number % 1000;
+            if (chunk > 0) {
+                let chunkWords = [];
+                if (chunk >= 100) {
+                    chunkWords.push(units[Math.floor(chunk / 100)] + " trăm");
+                    chunk %= 100;
+                }
+                if (chunk >= 20) {
+                    chunkWords.push(tens[Math.floor(chunk / 10)]);
+                    chunk %= 10;
+                } else if (chunk >= 10) {
+                    chunkWords.push("mười");
+                    chunk %= 10;
+                }
+                if (chunk > 0) {
+                    chunkWords.push(units[chunk]);
+                }
+                words.unshift(chunkWords.join(" ") + " " + scales[scaleIndex]);
+            }
+            number = Math.floor(number / 1000);
+            scaleIndex++;
+        }
+
+        return words.join(" ").trim();
+    }
+
+    function formatNumber(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function unformatNumber(number) {
+        return parseInt(number.replace(/,/g, ""));
+    }
+
+    const giaNhapInput = document.getElementById("giaNhap");
+    const giaNhapChu = document.getElementById("giaNhapChu");
+    const giaBanInput = document.getElementById("giaBan");
+    const giaBanChu = document.getElementById("giaBanChu");
+
+    function updateGiaChu(inputElement, chuElement) {
+        let rawValue = unformatNumber(inputElement.value);
+        if (!isNaN(rawValue) && rawValue !== "") {
+            rawValue = parseInt(rawValue); // Chuyển về số nguyên
+            if (rawValue > 100000000000) {
+                rawValue = 100000000000; // Giới hạn giá trị tối đa
+            }
+            inputElement.value = formatNumber(rawValue); // Định dạng lại giá trị
+            chuElement.textContent = numberToWords(rawValue) + " đồng"; // Số tiền bằng chữ
+        } else {
+            chuElement.textContent = "";
+        }
+    }
+
+    // Cập nhật khi người dùng nhập
+    giaNhapInput.addEventListener("input", function () {
+        updateGiaChu(giaNhapInput, giaNhapChu);
+    });
+
+    giaBanInput.addEventListener("input", function () {
+        updateGiaChu(giaBanInput, giaBanChu);
+    });
+
+    // Cập nhật khi trang load
+    $(document).ready(window.onload = function () {
+        updateGiaChu(giaNhapInput, giaNhapChu);
+        updateGiaChu(giaBanInput, giaBanChu);
+    });
+
+    $(document).ready(window.onload = function () {
+        const previewContainer = document.getElementById("preview");
+
+        // Truyền giá trị từ Razor vào JavaScript an toàn
+        const carImages = @Html.Raw(Json.Serialize(Model.CarImage));
+
+        // Kiểm tra nếu carImages không rỗng
+        if (carImages) {
+            const imagePaths = carImages.split(','); // Tách chuỗi ảnh từ dấu phẩy
+            imagePaths.forEach((imagePath) => {
+                const imageUrl = '/img/Car/' + imagePath.trim(); // Đảm bảo đường dẫn đúng
+                images.push(imageUrl); // Thêm ảnh vào mảng
+            });
+
+            // Nếu có ảnh, hiển thị ảnh đầu tiên
+            if (images.length > 0) {
+                const previewElement = document.getElementById("preview");
+                previewElement.style.display = "none"; // Ẩn ảnh hiện tại
+
+                for (let i = 0; i < images.length; i++) {
+                    if (i === 0) {
+                            previewElement.src = images[currentImageIndex];
+                            previewElement.style.display = "block";
+                    }
+                }
+            }
+        }
+    });
+
+    document.getElementById("car-form").addEventListener("submit", function () {
+        giaNhapInput.value = unformatNumber(giaNhapInput.value); // Loại bỏ dấu phẩy trước khi gửi
+        giaBanInput.value = unformatNumber(giaBanInput.value); // Loại bỏ dấu phẩy trước khi gửi
+    });
 </script>

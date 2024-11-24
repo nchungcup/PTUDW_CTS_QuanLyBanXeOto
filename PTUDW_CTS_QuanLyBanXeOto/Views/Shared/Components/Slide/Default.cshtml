@@ -1,9 +1,34 @@
-﻿<div class="templatemo-welcome welcome-slider">
+﻿<style>
+    .slider {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: auto;
+    }
+
+    .slider-inner {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        width: 100%;
+    }
+
+    .slide {
+        min-width: 100%;
+        flex-shrink: 0;
+        height: auto;
+    }
+
+    .slide img {
+        width: 100%;
+        height: auto;
+    }
+</style>
+<div class="templatemo-welcome welcome-slider">
     <div class="container">
         <div class="row">
-            <div class="flexslider">
-                <ul class="slides">
-                    <li>
+            <div class="slider">
+                <div class="slider-inner">
+                    <div class="slide">
                         <div class="about-slider">
                             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                 <img src="~/img/about/1.jpg" class="img-responsive" alt="Image">
@@ -15,15 +40,14 @@
                                 </h2>
                                 <p class="welcome-message">
                                     HHS cam kết chất lượng xe hoàn hảo. Với mỗi chiếc xe của chúng tôi, bạn sẽ cảm nhận được sự <span class="blue">sang trọng</span> và <span class="green">tiện nghi</span>.
-                                    Cảm ơn quý khách hàng đã chọn chúng tôi. Chúc quý khách có những phút giây tuyệt vời!
                                 </p>
                             </div>
                         </div>
-                    </li>
-                    <li>
+                    </div>
+                    <div class="slide">
                         <div class="about-slider">
                             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                                <img src="~/img/about/1.jpg" class="img-responsive" alt="Image">
+                                <img src="~/img/about/2.jpg" class="img-responsive" alt="Image">
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 about-slider-description">
                                 <h2 class="text-uppercase welcome-title">
@@ -31,13 +55,32 @@
                                     <span class="welcome-title-2">mẫu mã &amp; dịch vụ</span>
                                 </h2>
                                 <p class="welcome-message">
-                                    Với hơn 100 hãng xe và hơn 500 dòng xe, chúng tôi sẽ giúp bạn lựa chọn được chiếc xe phù hợp với chiếc xe mà bạn đang cần.
+                                    Với hơn 100 hãng xe và hơn 500 dòng xe, chúng tôi sẽ giúp bạn lựa chọn được chiếc xe phù hợp.
                                 </p>
                             </div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sliderInner = document.querySelector('.slider-inner');
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSliderPosition();
+        }
+
+        function updateSliderPosition() {
+            const offset = -currentSlide * 100;
+            sliderInner.style.transform = `translateX(${offset}%)`;
+        }
+        setInterval(nextSlide, 5000);
+    });
+</script>

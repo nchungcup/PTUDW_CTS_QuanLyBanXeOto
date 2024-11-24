@@ -11,8 +11,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
     public class DongXeDetail
     {
         [Key]
-        public int DongXeID { get; set; }
-        public int HangXeID { get; set; }
+        public long DongXeID { get; set; }
+        public long HangXeID { get; set; }
         public string TenDongXe { get; set; }
         public string NoiSanXuat { get; set; }
     }

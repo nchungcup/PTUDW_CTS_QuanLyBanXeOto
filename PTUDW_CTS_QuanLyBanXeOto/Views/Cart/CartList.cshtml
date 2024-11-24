@@ -6,7 +6,7 @@
             alert("@TempData["alertMessage"]");
     </script>
 }
-<div>
+<div style="background-color: black;">
     <section class="templatemo-top-section" style="margin-bottom: -20px">
         @await Component.InvokeAsync("MenuView")
         <div class="templatemo-welcome" style="margin: 0px">
@@ -22,14 +22,13 @@
                                         <table class="table">
                                             <thead class="thead-primary">
                                                 <tr>
-                                                    <th>&nbsp;</th>
-                                                    <th>&nbsp;</th>
-                                                    <th>Product</th>
-                                                    <th>Color</th>
-                                                    <th>Price</th>
-                                                    <th style="text-align: center">Quantity</th>
-                                                    <th>Total</th>
-                                                    <th>&nbsp;</th>
+                                                    <th style="text-align: center">Ảnh</th>
+                                                    <th style="text-align: center">Xe</th>
+                                                    <th style="text-align: center">Màu sắc</th>
+                                                    <th style="text-align: center">Đời</th>
+                                                    <th style="text-align: center">Động cơ</th>
+                                                    <th style="text-align: center">Giá</th>
+                                                    <th style="text-align: center">&nbsp;</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -37,11 +36,11 @@
                                                 {
                                                 <tr class="alert" role="alert">
                                                     <td>
-                                                        <div class="img" style="background-image: url(img/Car/@ca.CarImage);"></div>
+                                                        <div class="img"><img style="max-width:100px;" src="~/img/Car/@ca.CarImage" /></div>
                                                     </td>
                                                     <td>
                                                         <div class="email">
-                                                            <span>@ca.TenDongXe</span>
+                                                            <span>@ca.TenHangXe @ca.TenDongXe</span>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -59,15 +58,7 @@
                                                             <span>@ca.DongCo</span>
                                                         </div>
                                                     </td>
-                                                    <td>@ca.GiaBan</td>
-                                                    <td class="quantity" style="text-align: center">
-                                                        <div class="input-group" style="display: inline-flex;">
-                                                            <a class="btn btn-success" href="@Url.Action("Minus", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">-</a>
-                                                            <input type="text" name="quantity" class="quantity form-control input-number" value="@ca.SoLuong" min="1" max="100" readonly>
-                                                            <a class="btn btn-success" href="@Url.Action("Plus", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">+</a>
-                                                        </div>
-                                                    </td>
-                                                    <td>@(ca.GiaBan * ca.SoLuong)</td>
+                                                        <td>@ca.GiaBan.ToString("N0") VNĐ</td>
                                                     <td>
                                                         <a class="btn btn-danger" href="@Url.Action("Remove", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">
                                                             x
@@ -77,11 +68,12 @@
                                                 }
                                             </tbody>
                                         </table>
-                                        <div style="display: inline-grid; justify-content: end; width: 100%; text-align: end;">
-                                            <p>Tổng Giá Trị Sản Phẩm: <b>@Model.Sum(s => s.GiaBan * s.SoLuong) $</b></p> 
-                                            <p>Thuế: <b>@Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10) $</b></p>
-                                            <p>Chiết khấu: <input type="text" value="Chưa Áp Dụng" style="text-align: end;color: black;width: 41%;" readonly ></p>
-                                            <p>Tổng Tiền: <b>@(Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)) $</b></p>
+                                        <div style="display: inline-grid; justify-content: start; width: 100%; text-align: start; gap: 10px;">
+                                            <p>Tổng Giá Trị Sản Phẩm: <b>@Model.Sum(s => s.GiaBan * s.SoLuong).ToString("N0") VNĐ</b></p>
+                                            <p>Thuế: <b>@Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10).ToString("N0") VNĐ</b></p>
+                                            <p>Chiết khấu: <input type="text" value="Chưa Áp Dụng" style="text-align: center;color: black;width: 41%;" readonly ></p>
+                                            <p>Tổng Tiền: <b id="total">@((Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)).ToString("N0")) VNĐ</b></p>
+                                            <b id="totalText" class="text-muted"></b>
                                             <a class="btn btn-success" href="@Url.Action("ThanhToan", "Cart", new { tongtien = (Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)), thue = Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10), cartview = Model})">Thanh Toán</a>
                                         </div>
                                     </div>
@@ -94,3 +86,64 @@
         </div>
     </section>
 </div>
+
+<script>
+    const total = document.getElementById("total");
+    const totalText = document.getElementById("totalText");
+
+    function numberToWords(number) {
+        const units = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+        const tens = ["", "", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"];
+        const scales = ["", "nghìn", "triệu", "tỷ"];
+
+        if (number === 0) return "không";
+
+        let words = [];
+        let scaleIndex = 0;
+
+        while (number > 0) {
+            let chunk = number % 1000;
+            if (chunk > 0) {
+                let chunkWords = [];
+                if (chunk >= 100) {
+                    chunkWords.push(units[Math.floor(chunk / 100)] + " trăm");
+                    chunk %= 100;
+                }
+                if (chunk >= 20) {
+                    chunkWords.push(tens[Math.floor(chunk / 10)]);
+                    chunk %= 10;
+                } else if (chunk >= 10) {
+                    chunkWords.push("mười");
+                    chunk %= 10;
+                }
+                if (chunk > 0) {
+                    chunkWords.push(units[chunk]);
+                }
+                words.unshift(chunkWords.join(" ") + " " + scales[scaleIndex]);
+            }
+            number = Math.floor(number / 1000);
+            scaleIndex++;
+        }
+
+        return words.join(" ").trim();
+    }
+
+    function unformatNumber(number) {
+        const numericValue = number.replace(/[^0-9]/g, ""); // Chỉ giữ lại các ký tự số (0-9)
+        return parseInt(numericValue, 10) || 0; // Chuyển thành số nguyên, trả về 0 nếu không hợp lệ
+    }
+
+
+    function updateGiaChu(valueElement, chuElement) {
+        const rawValue = unformatNumber(valueElement.textContent);
+        if (!isNaN(rawValue) && rawValue > 0) {
+            chuElement.textContent = numberToWords(rawValue) + " đồng"; // Chuyển thành chữ
+        } else {
+            chuElement.textContent = "không đồng"; // Giá trị mặc định khi không hợp lệ
+        }
+    }
+
+    $(document).ready(window.onload = function () {
+        updateGiaChu(total, totalText);
+    });
+</script>

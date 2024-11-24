@@ -23,7 +23,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
                                    join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
                                    join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
                                    orderby c.GiaBan descending
-                                   select new Category
+                                   select new CarModel
                                    {
                                        TenHangXe = hx.TenHangXe,
                                        TenDongXe = dx.TenDongXe,
@@ -32,7 +32,16 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
                                        DongCo = c.DongCo,
                                        GiaBan = c.GiaBan,
                                        CarImage = c.CarImage
-                                   }).Take(1).ToList();
+                                   }).Take(5).ToList();
+
+            foreach (var car in HighestPrice)
+            {
+                if (!string.IsNullOrEmpty(car.CarImage))
+                {
+                    car.CarImage = car.CarImage.Split(',')[0]; // Lấy ảnh đầu tiên từ chuỗi CarImage
+                }
+            }
+
             //Trả về view HighestPrice trong View, HighestPrice là xe có giá cao nhất trong sql
             return await Task.FromResult((IViewComponentResult)View("HighestPrice", HighestPrice));
         }
