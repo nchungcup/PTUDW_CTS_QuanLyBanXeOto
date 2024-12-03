@@ -1,17 +1,60 @@
-﻿@model List<CarModel>
-@foreach (var hp in Model)
-{
-    <div class="about-container-left">
-        <img src="~/img/Car/@hp.CarImage" alt="Image" class="img-responsive">
-    </div>
+﻿@model List<CarTypeModel>
+<div id="previewBestSellContainer" style="position: relative;" class="about-container about-container-2 margin-bottom-50">
+    <a class="btn" id="prevBtnBestSell" style="position: absolute; top: 50%; left: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">‹</a>
 
-    <div class="about-container-right">
-        <h2 class="about-title">@hp.TenHangXe - @hp.TenDongXe</h2>
-        <p class="about-description"><b>Giá trị hiện tại: </b>@hp.GiaBan</p>
-        <p class="about-description"><b>Đời Xe: </b>@hp.DoiXe</p>
-        <p class="about-description"><b>Động Cơ: </b>@hp.DongCo</p>
-        <p class="about-description"><b>Màu Sắc: </b>@hp.MauSac</p>
-        <p class="about-description"><b>Số Lượng Đã Bán: </b>@hp.SoLuong</p>
-        <a href="#" class="about-link">Chi tiết</a>
-    </div>
-}
+    <div id="previewBestSell" class="about-container about-container-2" style="width: 100%;"></div>
+
+    <a class="btn" id="nextBtnBestSell" style="position: absolute; top: 50%; right: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">›</a>
+</div>
+
+<script>
+    let currentBestSellCarIndex = 0;
+    let BestSellCar = @Html.Raw(Json.Serialize(Model)); // Serialize the model into JavaScript
+
+    function previewObjectBestSell() {
+        const previewElement = document.getElementById("previewBestSell");
+        const currentBestSellCar = BestSellCar[currentBestSellCarIndex];
+        const BestSellCarImageUrl = encodeURIComponent(currentBestSellCar.carImage);
+
+        previewElement.innerHTML =
+        `
+                <div class="about-container-left" style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%;">
+                        <img src="/img/Car/${BestSellCarImageUrl}" alt="Image" style="width:30vw; height: 30vh;">
+                </div>
+                <div class="about-container-right">
+                    <h3 class="about-title">${currentBestSellCar.tenHangXe} - ${currentBestSellCar.tenDongXe}</h3>
+                            <p class="about-description"><b>Giá trị hiện tại: </b>${new Intl.NumberFormat('vi-VN').format(currentBestSellCar.giaBan)} VNĐ</p >
+                    <p class="about-description"><b>Đời Xe: </b>${currentBestSellCar.doiXe}</p>
+                    <p class="about-description"><b>Động Cơ: </b>${currentBestSellCar.dongCo}</p>
+                    <p class="about-description"><b>Màu Sắc: </b>${currentBestSellCar.mauSac}</p>
+                </div>
+            `;
+    }
+
+    // Initialize the preview on page load
+    previewObjectBestSell();
+
+    // Navigate to previous BestSellCar
+    document.getElementById("prevBtnBestSell").addEventListener("click", function () {
+        if (BestSellCar.length > 1) {
+            currentBestSellCarIndex = (currentBestSellCarIndex === 0) ? BestSellCar.length - 1 : currentBestSellCarIndex - 1;
+            previewObjectBestSell(); // Re-render the preview for the previous BestSellCar
+        }
+    });
+
+    // Navigate to next BestSellCar
+    document.getElementById("nextBtnBestSell").addEventListener("click", function () {
+        if (BestSellCar.length > 1) {
+            currentBestSellCarIndex = (currentBestSellCarIndex === BestSellCar.length - 1) ? 0 : currentBestSellCarIndex + 1;
+            previewObjectBestSell(); // Re-render the preview for the next BestSellCar
+        }
+    });
+
+    // Auto-switch BestSellCars every 5 seconds
+    setInterval(function () {
+        if (BestSellCar.length > 1) {
+            currentBestSellCarIndex = (currentBestSellCarIndex === BestSellCar.length - 1) ? 0 : currentBestSellCarIndex + 1;
+            previewObjectBestSell(); // Re-render the preview for the next BestSellCar
+        }
+    }, 5000); // 5000 milliseconds = 5 seconds
+</script>

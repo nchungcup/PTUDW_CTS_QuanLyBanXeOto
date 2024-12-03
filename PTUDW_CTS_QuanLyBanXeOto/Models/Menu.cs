@@ -13,13 +13,13 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         [Key]
         public long MenuID { get; set; }
         public string MenuName { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
-        public long Levels { get; set; }
-        public long ParentID { get; set; }
+        public long? Levels { get; set; }
+        public long? ParentID { get; set; }
         public string Link { get; set; }
-        public long MenuOrder { get; set; }
-        public long Position { get; set; }
+        public long? MenuOrder { get; set; }
+        public long? Position { get; set; }
     }
 }

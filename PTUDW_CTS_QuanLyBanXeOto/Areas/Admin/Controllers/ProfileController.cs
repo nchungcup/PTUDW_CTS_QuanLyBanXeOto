@@ -25,7 +25,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         public IActionResult Profile()
         {
             var pf = (from u in _context.User
-                      where u.Username == HttpContext.Session.GetString("username")
+                      where u.Username == HttpContext.Session.GetString("username") && u.IsActive == true
                       select u).ToList();
             return View(pf);
         }
@@ -44,7 +44,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                 TypeID = _context.User.Where(u => u.UserID.Equals(user.UserID)).Select(u => u.TypeID).FirstOrDefault(),
                 UserImage = _context.User.Where(u => u.UserID.Equals(user.UserID)).Select(u => u.UserImage).FirstOrDefault(),
                 Username = _context.User.Where(u => u.UserID.Equals(user.UserID)).Select(u => u.Username).FirstOrDefault(),
-                Password = _context.User.Where(u => u.UserID.Equals(user.UserID)).Select(u => u.Password).FirstOrDefault()
+                Password = _context.User.Where(u => u.UserID.Equals(user.UserID)).Select(u => u.Password).FirstOrDefault(),
+                IsActive = user.IsActive
             };
             _context.User.Update(updateu);
             await _context.SaveChangesAsync();
@@ -55,21 +56,21 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         public IActionResult ChangePass()
         {
             var cp = (from u in _context.User
-                      where u.Username == HttpContext.Session.GetString("username")
+                      where u.Username == HttpContext.Session.GetString("username") && u.IsActive == true
                       select u).ToList();
             return View(cp);
         }
 
         public async Task<IActionResult> UpdatePass(User _user, string NewPassword1, string NewPassword2)
         {
-            if(_user.Password != _context.User.Where(u => u.UserID.Equals(_user.UserID)).Select(u => u.Password).FirstOrDefault())
+            if(_user.Password != _context.User.Where(u => u.UserID.Equals(_user.UserID) && u.IsActive == true).Select(u => u.Password).FirstOrDefault())
             {
-                TempData["alertMessage"] = "Wrong Old Password! Try Again";
+                TempData["alertMessage"] = "Sai mật khẩu cũ!";
                 return RedirectToAction("ChangePass", "Profile");
             }    
             else if(NewPassword1 != NewPassword2)
             {
-                TempData["alertMessage"] = "The New Password Re-entered The Second Time Is Wrong! Try Again";
+                TempData["alertMessage"] = "Mật khẩu mới nhập lại đã sai!";
                 return RedirectToAction("ChangePass", "Profile");
             }
             else 
@@ -90,7 +91,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                 };
                 _context.User.Update(updatepass);
                 await _context.SaveChangesAsync();
-                TempData["alertMessage"] = "Change Password Success!";
+                TempData["alertMessage"] = "Đổi mật khẩu thành công!";
                 return RedirectToAction("Profile", "Profile");
             }
         }

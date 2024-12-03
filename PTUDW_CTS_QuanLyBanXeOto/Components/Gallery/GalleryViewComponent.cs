@@ -18,21 +18,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Gallery
         public async Task<IViewComponentResult> InvokeAsync()
         {
             //Lấy dữ liệu từ sql
-            var listofGallery = (from hx in _context.HangXe
-                                 select new
-                                 {
-                                     HangXeID = hx.HangXeID,
-                                     TenHangXe = hx.TenHangXe,
-                                     XuatXu = hx.XuatXu,
-                                     LogoImage = hx.LogoImage
-
-                                 }).AsEnumerable().Select(hx => new HangXeDetail
-                                 {
-                                     HangXeID = hx.HangXeID,
-                                     TenHangXe = hx.TenHangXe,
-                                     XuatXu = hx.XuatXu,
-                                     LogoImage = hx.LogoImage
-                                 }).ToList();
+            var listofGallery = _context.HangXe.Where(hx => hx.IsDeleted == false).ToList();
             //Trả về view default với dữ liệu là listofGallery
             return await Task.FromResult((IViewComponentResult)View("Default", listofGallery));
         }

@@ -1,0 +1,45 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models;
+@model CarTypeModel
+@using Microsoft.AspNetCore.Http;
+@using PTUDW_CTS_QuanLyBanXeOto.Models;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="login-wrap p-4 p-md-5">
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="DeleteCarType" asp-route-id="@Model.CarTypeID" class="login-form">
+                        <input type="hidden" name="CarTypeID" value="@Model.CarTypeID">
+                        <div class="form-group">
+                            <b>Hãng Xe</b><input name="TenHangXe" type="text" class="form-control rounded-left" value="@Model.TenHangXe" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Dòng Xe</b><input name="TenDongXe" type="text" class="form-control rounded-left" value="@Model.TenDongXe" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Đời Xe</b><input name="DoiXe" type="number" class="form-control rounded-left" value="@Model.DoiXe" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group">
+                            <b>Màu Sắc</b><input name="MauSac" type="text" class="form-control rounded-left" value="@Model.MauSac" style="text-align: center" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <b>Động Cơ</b><input name="DongCo" type="text" class="form-control rounded-left" value="@Model.DongCo" style="text-align: center" autocomplete="off" readonly>
+                        </div>
+                        <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
+                            <button type="submit" class="btn btn-danger rounded submit">Xác Nhận Xóa</button>
+                        </div>
+                        <div class="form-group mt-4">
+                            <div class="w-100 text-center">
+                                <p class="mb-1"><a href='/Admin/CarManage/CarTypeManage?id=@Model.DongXeID'>Hủy</a></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

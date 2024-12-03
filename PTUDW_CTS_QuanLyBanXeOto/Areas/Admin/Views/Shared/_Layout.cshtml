@@ -192,24 +192,37 @@
     @if (null != TempData["alertMessage"])
     {
         <script type="text/javascript">
-            alert('@Html.Raw(TempData["alertMessage"].ToString())');
+            document.addEventListener('DOMContentLoaded', function () {
+                var toastLiveExample = document.getElementById('liveToast');
+                var toast = new bootstrap.Toast(toastLiveExample);
+                document.getElementById('toastMessage').textContent = '@Html.Raw(TempData["alertMessage"].ToString())';
+                toast.show();
+            });
         </script>
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="liveToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toastMessage">
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
     }
+
 
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
             <a href="@Url.Action("Index", "Home" )" class="logo d-flex align-items-center">
-                <img src="~/img/Favicon.png" alt="">
+                <img src="~/img/Favicon.svg" alt="">
                 <span class="d-none d-lg-block">Trang Quản Trị</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
-
         @await Component.InvokeAsync("AdminInfo")
     </header><!-- End Header -->
-
     @await Component.InvokeAsync("AdminMenu")
     @RenderBody()
 

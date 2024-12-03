@@ -8,23 +8,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
-    <link href="~/img/Favicon.png" rel="icon" />
-
+    <link href="~/img/Favicon.svg" rel="icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="~/SigninSignup/css/style.css">
 
-    @{ Layout = null; }
+    @{
+        Layout = null;
+    }
 </head>
 <body>
     @if (null != TempData["alertMessage"])
     {
-<script type="text/javascript">
-                       alert("@TempData["alertMessage"]");
-</script>}
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('errorMessage').textContent = '@Html.Raw(TempData["alertMessage"].ToString())';
+                document.getElementById('errorMessage').style.display = 'block';
+            });
+        </script>
+    }
     @{
         string check = "on".Equals(@Context.Request.Cookies["remember"]) ? "checked" : "";
-     }
+    }
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">
@@ -54,6 +59,8 @@
                             <div class="form-group">
                                 <div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-lock"></span></div>
                                 <input type="password" class="form-control rounded-left" name="password" value="@Context.Request.Cookies["password"]" autocomplete="off" required>
+                                <!-- Display error message below the password input -->
+                                <span id="errorMessage" class="text-danger" style="display:none; text-align: center;"></span>
                             </div>
                             <div class="form-group d-flex align-items-center">
                                 <div class="w-100">
@@ -91,4 +98,3 @@
 
 </body>
 </html>
-

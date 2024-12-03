@@ -21,7 +21,12 @@
                             <b>Số Điện Thoại</b><input name="SoDienThoai" type="text" class="form-control rounded-left" value="@Model.SoDienThoai" style="text-align: center" autocomplete="off" readonly>
                         </div>
                         <div class="form-group">
-                            <b>Thanh Toán</b><input name="ThanhToan" type="text" class="form-control rounded-left" placeholder="Phương Thức Thanh Toán" style="text-align: center" autocomplete="off" required>
+                            <b>Thanh Toán</b><select name="ThanhToan" class="form-control rounded-left" style="text-align: center" required>
+                                <option value="" disabled selected hidden>Chọn phương thức thanh toán</option>
+                                <option value="Chuyển khoản">Chuyển khoản</option>
+                                <option value="Tiền mặt">Tiền mặt</option>
+                            </select>
+
                         </div>
                         <div class="form-group">
                             <b>Ngày Tạo Đơn</b><input name="NgayTaoDon" type="datetime" class="form-control rounded-left" value="@Model.NgayTaoDon" style="text-align: center" autocomplete="off" readonly>

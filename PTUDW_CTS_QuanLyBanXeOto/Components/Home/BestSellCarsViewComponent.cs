@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PTUDW_CTS_QuanLyBanXeOto.Models;
 using System;
 using System.Collections.Generic;
@@ -18,35 +19,37 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var listofBestSellingCars = (from ct in _context.CarTrans
-                                         join t in _context.Transaction on ct.TransID equals t.TransID
-                                         join c in _context.Car on ct.CarID equals c.CarID
-                                         join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
+            var listofBestSellingCars = (from ctp in _context.CarType
+                                         join c in _context.Car on ctp.CarTypeID equals c.CarTypeID
+                                         join t in _context.Transaction on c.TransactionID equals t.TransID
+                                         join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                          join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                         where t.TrangThai == "Thành công"
-                                         group ct by new { c.CarID, hx.TenHangXe, dx.TenDongXe, c.DoiXe, c.MauSac, c.DongCo, c.GiaBan, c.CarImage } into g
+                                         where t.TrangThai == "Hoàn thành"
+                                         where ctp.IsDeleted == false && c.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                         group c by new { hx.HangXeID, hx.TenHangXe, dx.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.MauSac, ctp.DongCo, ctp.GiaBan, ctp.CarImage } into g
                                          orderby g.Count() descending
-                                         select new CarModel
+                                         select new CarTypeModel
                                          {
+                                             HangXeID = g.Key.HangXeID,
                                              TenHangXe = g.Key.TenHangXe,
+                                             DongXeID = g.Key.DongXeID,
                                              TenDongXe = g.Key.TenDongXe,
                                              DoiXe = g.Key.DoiXe,
                                              MauSac = g.Key.MauSac,
                                              DongCo = g.Key.DongCo,
                                              GiaBan = g.Key.GiaBan,
-                                             CarImage = g.Key.CarImage,
-                                             SoLuong = g.Count() // Số lượng bán
+                                             CarImage = g.Key.CarImage
                                          }).Take(5).ToList();
 
             foreach (var car in listofBestSellingCars)
             {
+                car.SoLuong = _context.Car.Where(c => c.TransactionID == null && c.CarTypeID.Equals(car.CarTypeID)).Count();
                 if (!string.IsNullOrEmpty(car.CarImage))
                 {
                     car.CarImage = car.CarImage.Split(',')[0]; // Lấy ảnh đầu tiên từ chuỗi CarImage
                 }
             }
 
-            //Trả về view NewestCar với dữ liệu là listofNewestCar là những chiếc xe vừa được nhập mới nhất
             return await Task.FromResult((IViewComponentResult)View("BestSellCars", listofBestSellingCars));
         }
     }

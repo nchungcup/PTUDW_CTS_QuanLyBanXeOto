@@ -15,5 +15,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public string TenHangXe { get; set; }
         public string XuatXu { get; set; }
         public string LogoImage { get; set; }
+        public bool? IsDeleted { get; set; }
+
     }
 }

@@ -13,6 +13,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         [Key]
         public long CartID { get; set; }
         public long UserID { get; set; }
-        public long CarID { get; set; }
+        public long CarTypeID { get; set; }
+        public long SoLuong { get; set; }
     }
 }

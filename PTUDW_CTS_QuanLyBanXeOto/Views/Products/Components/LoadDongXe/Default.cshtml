@@ -1,32 +1,186 @@
-﻿@model List<CarModel>
-<h3 class="tm-gallery-title">@Model.Select(dx => dx.TenHangXe).FirstOrDefault() (@Model.Count())</h3>
-@foreach (var dx in Model)
+﻿@model List<CarTypeModel>
+<style>
+    .infoCar {
+        width: 50%;
+        display: flex;
+        gap: 20px;
+        padding: 5px 0px;
+        border-radius: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .infoCar:hover {
+    background-color: gray;
+    cursor: pointer;
+    transform: scale(0.95);
+    }
+
+    .text-center {
+        display: flex;
+        justify-content: center;
+        gap: 10px; /* Khoảng cách giữa các nút */
+    }
+
+</style>
+@if (Model.Count() > 0)
 {
-    <div id="filter" class="tm-item-container">
-        <img src="~/img/Car/@dx.CarImage" alt="Image" class="tm-image-container">
-        <p class="tm-item-description">
-            @dx.TenHangXe @dx.TenDongXe
-        </p>
-        <p>
-            <b>Đời Xe:</b> @dx.DoiXe
-        </p>
-        <p>
-            <b>Màu Sắc:</b> @dx.MauSac
-        </p>
-        <p>
-            <b>Động Cơ:</b> @dx.DongCo
-        </p>
-        <p>
-            <b>Tình trạng kho:</b> @(dx.SoLuong > 0 ? "Còn xe" : "Hết xe")
-        </p>
-        <div class="tm-item-price-container">
-            <span class="tm-item-price">@dx.GiaBan.ToString("N0") VNĐ</span>
+    foreach (var dx in Model)
+    {
+        <div class="infoCar" data-dongxeid="@dx.DongXeID" data-doixe="@dx.DoiXe" data-dongco="@dx.DongCo" data-bs-toggle="modal" data-bs-target="#carDetailsModal">
+            <div style="margin-left: 10px;">
+                <img src="~/img/Car/@dx.CarImage" alt="Image" class="tm-image-container" style="max-height: 7.5vw;">
+            </div>
+            <div style="align-self: center;">
+                <p class="tm-item-description">
+                    @dx.TenHangXe @dx.TenDongXe @dx.DoiXe
+                </p>
+                <div class="tm-item-price-container">
+                    @if (@dx.GiaMin == @dx.GiaMax)
+                    {
+                        <span class="tm-item-price">@dx.GiaMin.ToString("N0") VNĐ</span>
+                    }
+                    else
+                    {
+                        <span class="tm-item-price">@dx.GiaMin.ToString("N0") VNĐ - @dx.GiaMax.ToString("N0") VNĐ</span>
+                    }
+                </div>
+            </div>
         </div>
-        <div>
-            <a href="@Url.Action("AddCart", "Cart", new { dxid = dx.DongXeID, mausac = dx.MauSac, doixe = dx.DoiXe, dongco = dx.DongCo })" class="tm-item-add-btn">
-                <span class="tm-item-action">Thêm vào giỏ</span>
-                <img src="~/img/plus.png" alt="Image">
-            </a>
-        </div>
+    }
+}
+else
+{
+    <div style="width: 100%; text-align: center;">
+        <h5>Không có xe nào!</h5>
     </div>
 }
+<div class="modal" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.8);">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="carDetailsModalLabel">Chi tiết xe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent">
+                    <!-- Nội dung chi tiết xe sẽ được load ở đây -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let carId = null;
+    let currentImageIndex = 0; // Chỉ số ảnh hiện tại
+    let images = []; // Mảng chứa các ảnh
+
+    function getImages(imageStrings) {
+        const previewContainer = document.getElementById("preview");
+        images = []; // Reset mảng ảnh
+        currentImageIndex = 0; // Reset chỉ số ảnh hiện tạiư
+
+        if (imageStrings) {
+            const imagePaths = imageStrings.split(','); // Tách chuỗi ảnh từ dấu phẩy
+            imagePaths.forEach((imagePath) => {
+                const imageUrl = '/img/Car/' + imagePath.trim(); // Đảm bảo đường dẫn đúng
+                images.push(imageUrl); // Thêm ảnh vào mảng
+            });
+
+            if (images.length > 0) {
+                const previewElement = document.getElementById("preview");
+                previewElement.style.display = "none"; // Ẩn ảnh hiện tại
+
+                for (let i = 0; i < images.length; i++) {
+                    if (i === 0) {
+                        previewElement.src = images[i];
+                        previewElement.style.display = "block";
+                    }
+                }
+            }
+        }
+    }
+
+    // Lắng nghe sự kiện click vào thông tin xe để lấy carId
+    document.addEventListener("click", function (event) {
+        if (event.target.closest(".infoCar")) {
+            // Lấy carId từ data-id của chiếc xe được chọn
+            dongxeid = event.target.closest(".infoCar").getAttribute("data-dongxeid");
+            doixe = event.target.closest(".infoCar").getAttribute("data-doixe");
+            dongco = event.target.closest(".infoCar").getAttribute("data-dongco");
+
+            // Hiển thị nội dung modal và tải thông tin chi tiết của xe
+            document.getElementById("modalContent").innerHTML = "<p>Đang tải thông tin...</p>";
+
+            fetch(`/Products/GetCarDetails?dongxeid=${dongxeid}&doixe=${doixe}&dongco=${dongco}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("modalContent").innerHTML = data;
+                })
+                .catch(error => {
+                    console.error("Lỗi khi tải thông tin chi tiết:", error);
+                    document.getElementById("modalContent").innerHTML = "<p>Không thể tải thông tin chi tiết.</p>";
+                });
+        }
+    });
+
+
+    // Cập nhật thông tin chi tiết xe theo màu sắc và carId
+    function updateCarList(imageStrings) {
+        const dongXeID = document.getElementById("dongXeIDDetail").value;
+        const dongCo = document.getElementById("dongCoDetail").value;
+        const doiXe = document.getElementById("doiXeDetail").value;
+        const selectedColor = document.getElementById("mauSacSelect").value;
+
+        // Gửi yêu cầu đến server để lấy thông tin xe theo màu sắc và carId
+        fetch('@Url.Action("GetCarDetailsWithColor", "Products")', {
+            method: 'POST',
+            body: new URLSearchParams({ dongxeid: dongXeID, doixe: doiXe, dongco: dongCo, mauSac: selectedColor })  // Sử dụng carId thay vì id cố định
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Dữ liệu trả về:", data);
+                document.getElementById("hangXeDetail").textContent = data.tenHangXe;
+                document.getElementById("dongXeDetail").textContent = data.tenDongXe;
+                document.getElementById("doiXeDetail").textContent = data.doiXe;
+                document.getElementById("dongCoDetail").textContent = data.dongCo;
+                document.getElementById("tinhTrangDetail").textContent = data.soLuong > 0 ? `Còn ${data.soLuong} xe` : "Hết xe";
+                document.getElementById("giaDetail").textContent = `${data.giaBan.toLocaleString()} VNĐ`;
+                getImages(data.carImage);
+            })
+            .catch(error => console.error("Lỗi khi gửi yêu cầu:", error));
+    }
+
+
+    $(document).on("click", "#prevBtn", function () {
+        if (images.length > 1) {
+            currentImageIndex = (currentImageIndex === 0) ? images.length - 1 : currentImageIndex - 1;
+            console.log(images[currentImageIndex]);
+            $("#preview").attr("src", images[currentImageIndex]);
+        }
+    });
+
+    $(document).on("click", "#nextBtn", function () {
+        if (images.length > 1) {
+            currentImageIndex = (currentImageIndex === images.length - 1) ? 0 : currentImageIndex + 1;
+            console.log(images[currentImageIndex]);
+            $("#preview").attr("src", images[currentImageIndex]);
+        }
+    });
+
+    function addToCartHandler() {
+        const selectedColor = document.getElementById("mauSacSelect").value;
+
+        if (!selectedColor) {
+            alert("Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng.");
+            return;
+        }
+
+        const dongXeID = document.getElementById("dongXeIDDetail").value;
+        const dongCo = document.getElementById("dongCoDetail").value;
+        const doiXe = document.getElementById("doiXeDetail").value;
+
+        const url = `/Cart/AddCart?dxid=${dongXeID}&mausac=${encodeURIComponent(selectedColor)}&doixe=${doiXe}&dongco=${encodeURIComponent(dongCo)}`;
+
+        window.location.href = url;
+    }
+</script>

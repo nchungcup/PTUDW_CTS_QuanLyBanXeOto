@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Components
 {
@@ -16,175 +17,160 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components
         {
             _context = context;
         }
-        public async Task<IViewComponentResult> InvokeAsync(string TenHangXe, string MauSac, string DongCo)
+        public async Task<IViewComponentResult> InvokeAsync(string TenHangXe, string MauSac, string DongCo, int DoiXe, long giaMin, long giaMax)
         {
-            List<CarModel> listofDongXe = new List<CarModel>();
+            List<CarTypeModel> listofDongXe = new List<CarTypeModel>();
             if (TenHangXe == "All" && DongCo == null && MauSac == null)
             {
-                var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
                 //Lấy dữ liệu từ sql
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             else if (TenHangXe == "All" && DongCo != null && MauSac == null)
             {
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where c.DongCo == DongCo && ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where ctp.DongCo == DongCo && ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             else if (TenHangXe == "All" && DongCo == null && MauSac != null)
             {
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where c.MauSac == MauSac && ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where ctp.MauSac == MauSac && ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             else if (TenHangXe != null && MauSac == null && DongCo == null)
             {
                 var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
                 //Lấy dữ liệu từ sql
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where dx.HangXeID == hxid && ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where dx.HangXeID == hxid && ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             else if (TenHangXe != null && DongCo != null && MauSac == null)
             {
                 var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where dx.HangXeID == hxid && c.DongCo == DongCo && ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where dx.HangXeID == hxid && ctp.DongCo == DongCo && ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             else if (TenHangXe != null && DongCo == null && MauSac != null)
             {
                 var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where dx.HangXeID == hxid && c.MauSac == MauSac && ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where dx.HangXeID == hxid && ctp.MauSac == MauSac && ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             else
             {
                 var hxid = _context.HangXe.Where(hx => hx.TenHangXe.Equals(TenHangXe)).Select(hx => hx.HangXeID).FirstOrDefault();
-                listofDongXe = (from dx in _context.DongXe
+                listofDongXe = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
                                 join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                join c in _context.Car on dx.DongXeID equals c.DongXeID
-                                join ct in _context.CarTrans on c.CarID equals ct.CarID into ctc
-                                from ct in ctc.DefaultIfEmpty()
-                                where dx.HangXeID == hxid && c.MauSac == MauSac && c.DongCo == DongCo && ct.TransID == null
-                                group c by new { hx.HangXeID, hx.TenHangXe, c.DongXeID, dx.TenDongXe, c.MauSac, c.DoiXe, c.DongCo, c.GiaBan, c.CarImage } into groupc
-                                select new CarModel
+                                where dx.HangXeID == hxid && ctp.MauSac == MauSac && ctp.DongCo == DongCo && ctp.GiaBan >= giaMin && ctp.GiaBan <= giaMax && ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                group ctp by new { hx.HangXeID, hx.TenHangXe, ctp.DongXeID, dx.TenDongXe, ctp.DoiXe, ctp.DongCo } into groupc
+                                select new CarTypeModel
                                 {
                                     HangXeID = groupc.Key.HangXeID,
                                     TenHangXe = groupc.Key.TenHangXe,
                                     DongXeID = groupc.Key.DongXeID,
                                     TenDongXe = groupc.Key.TenDongXe,
                                     DoiXe = groupc.Key.DoiXe,
-                                    MauSac = groupc.Key.MauSac,
                                     DongCo = groupc.Key.DongCo,
-                                    GiaBan = groupc.Key.GiaBan,
-                                    CarImage = groupc.Key.CarImage,
-                                    SoLuong = groupc.Count()
+                                    CarImage = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).FirstOrDefault().CarImage,
+                                    GiaMin = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Min(),
+                                    GiaMax = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.GiaBan).Max(),
+                                    MauSacKhaDung = _context.CarType.Where(c => c.DongXeID.Equals(groupc.Key.DongXeID) && c.DoiXe.Equals(groupc.Key.DoiXe) && c.DongCo.Equals(groupc.Key.DongCo)).Select(c => c.MauSac).Distinct().ToList()
                                 }).ToList();
             }
             foreach (var car in listofDongXe)

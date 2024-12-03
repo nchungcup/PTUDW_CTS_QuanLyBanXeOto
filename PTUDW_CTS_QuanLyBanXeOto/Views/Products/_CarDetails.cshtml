@@ -1,0 +1,37 @@
+﻿@model CarTypeModel
+<div>
+    <input id="dongXeIDDetail" value="@Model.DongXeID" hidden />
+    <input id="dongCoDetail" value="@Model.DongCo" hidden />
+    <input id="doiXeDetail" value="@Model.DoiXe" hidden />
+    <div>
+        <b>Danh sách màu xe:</b>
+        <select id="mauSacSelect" onchange="updateCarList()">
+            <option value="" disabled selected hidden>--Chọn màu sắc--</option>
+            @foreach (var mausac in Model.MauSacKhaDung)
+            {
+                <option value="@mausac">@mausac</option>
+            }
+        </select>
+    </div>
+    <div><b>Hãng xe:</b> <span id="hangXeDetail">@Model.TenHangXe</span></div>
+    <div><b>Dòng xe:</b> <span id="dongXeDetail">@Model.TenDongXe</span></div>
+    <div><b>Đời xe:</b> <span id="doiXeDetail">@Model.DoiXe</span></div>
+    <div><b>Động cơ:</b> <span id="dongCoDetail">@Model.DongCo</span></div>
+    <div><b>Tình trạng:</b> <span id="tinhTrangDetail">@(Model.SoLuong > 0 ? "Còn " + Model.SoLuong + " xe" : "Hết xe")</span></div>
+    <div><b>Giá:</b> <span id="giaDetail">@Model.GiaBan.ToString("N0") VNĐ</span></div>
+    <div class="form-group">
+        <div id="previewContainer" style="padding: 30px 0px; position: relative; text-align: -webkit-center;">
+            <a class="btn" id="prevBtn" style="position: absolute; top: 50%; left: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">‹</a>
+
+            <img id="preview" src="" alt="Xem trước ảnh" style="width: 100%; height: 100%; display: none;">
+
+            <a class="btn" id="nextBtn" style="position: absolute; top: 50%; right: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">›</a>
+        </div>
+    </div>
+    <div class="text-center">
+        <a id="addToCart" class="btn btn-success w-100" onclick="addToCartHandler()">
+            <span>Thêm vào giỏ hàng</span>
+            <i class="bi bi-cart"></i>
+        </a>
+    </div>
+</div>

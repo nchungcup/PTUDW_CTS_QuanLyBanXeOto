@@ -1,0 +1,171 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models;
+@model HangXeModel
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Danh Sách Dòng Xe</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("CarBrandManage", "CarManage")">Quản lý hãng xe</a></li>
+                <li class="breadcrumb-item active"><a href="@Url.Action("CarModelManage", "CarManage", new { id = Model.HangXeID })">@Model.TenHangXe</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div>
+       <a id="add-btn" class="btn btn-primary btn-sm" style="color: black" title="Thêm">Thêm Dòng Xe</a>
+    </div>
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th>Tên Dòng Xe</th>
+                    <th>Nơi Sản Xuất</th>
+                    <th>Chức Năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cm in Model.ListDongXe)
+                {
+                    <tr>
+                        <td>@cm.TenDongXe</td>
+                        <td>@cm.NoiSanXuat</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm detail-btn" method="get" asp-area="Admin" asp-controller="CarManage" asp-action="CarTypeManage" asp-route-id="@cm.DongXeID" title="Danh sách loại xe">Danh sách loại xe</a>
+                            <a href="#" class="btn btn-secondary btn-sm edit-btn" data-id="@cm.DongXeID" data-name="@cm.TenDongXe" data-NoiSanXuat="@cm.NoiSanXuat" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <a href="#" class="btn btn-danger btn-sm delete-btn" data-id="@cm.DongXeID" data-name="@cm.TenDongXe" title="Xóa"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Thêm -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Thêm Dòng Xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="AddDongXe">
+                        <input hidden id="addHangXeID" name="HangXeID" required />
+                        <div class="mb-3">
+                            <label for="addTenDongXe" class="form-label">Tên Dòng Xe</label>
+                            <input type="text" class="form-control" id="addTenDongXe" name="TenDongXe" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="addNoiSanXuat" class="form-label">Nơi Sản Xuất</label>
+                            <input type="text" class="form-control" id="addNoiSanXuat" name="NoiSanXuat" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sửa -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Sửa Dòng Xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="EditDongXe">
+                        <input type="hidden" id="editDongXeID" name="DongXeID" />
+                        <input hidden id="editHangXeID" name="HangXeID" required />
+                        <div class="mb-3">
+                            <label for="editTenDongXe" class="form-label">Tên Dòng Xe</label>
+                            <input type="text" class="form-control" id="editTenDongXe" name="TenDongXe" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editNoiSanXuat" class="form-label">Nơi Sản Xuất</label>
+                            <input type="text" class="form-control" id="editNoiSanXuat" name="NoiSanXuat" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xóa -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Xác Nhận Xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa Dòng xe <strong id="deleteTenDongXe"></strong> không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="DeleteDongXe">
+                        <input hidden id="deleteHangXeID" name="HangXeID" required />
+                        <input type="hidden" id="deleteDongXeID" name="DongXeID" />
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Modal Thêm
+        const addBtns = document.getElementById("add-btn");
+        addBtns.addEventListener("click", function (event) {
+            event.preventDefault();
+            // Hiển thị modal
+            document.getElementById("addHangXeID").value = '@Model.HangXeID';
+            var addModal = new bootstrap.Modal(document.getElementById("addModal"));
+            addModal.show();
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Modal Sửa
+        const editBtns = document.querySelectorAll(".edit-btn");
+        editBtns.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const id = this.getAttribute("data-id");
+                const name = this.getAttribute("data-name");
+                const NoiSanXuat = this.getAttribute("data-NoiSanXuat");
+
+                document.getElementById("editHangXeID").value = '@Model.HangXeID';
+                document.getElementById("editDongXeID").value = id;
+                document.getElementById("editTenDongXe").value = name;
+                document.getElementById("editNoiSanXuat").value = NoiSanXuat;
+
+                // Hiển thị modal
+                var editModal = new bootstrap.Modal(document.getElementById("editModal"));
+                editModal.show();
+            });
+        });
+
+        // Modal Xóa
+        const deleteBtns = document.querySelectorAll(".delete-btn");
+        deleteBtns.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const id = this.getAttribute("data-id");
+                const name = this.getAttribute("data-name");
+                document.getElementById("deleteDongXeID").value = id;
+                document.getElementById("deleteTenDongXe").textContent = name;
+                document.getElementById("deleteHangXeID").value = '@Model.HangXeID';
+                // Hiển thị modal
+                var deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+                deleteModal.show();
+            });
+        });
+    });
+</script>

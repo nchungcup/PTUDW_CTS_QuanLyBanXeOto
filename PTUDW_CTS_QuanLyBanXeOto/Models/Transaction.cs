@@ -13,14 +13,13 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         [Key]
         public long TransID { get; set; }
         public long KhachHangID { get; set; }
-        public DateTime? NgayTaoDon { get; set; }
+        public DateTime NgayTaoDon { get; set; }
         public string ThanhToan { get; set; }
         public string TrangThai { get; set; }
         public long? NguoiXuLyID { get; set; }
         public DateTime? NgayDuyet { get; set; }
         public long? NguoiDuyetID { get; set; }
         public long ChietKhau { get; set; }
-        public long Thue { get; set; }
         public long TongTien { get; set; }
     }
 }

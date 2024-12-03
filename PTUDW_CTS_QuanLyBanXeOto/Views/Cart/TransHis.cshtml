@@ -3,13 +3,13 @@
 @if (null != TempData["alertMessage"])
 {
     <script type="text/javascript">
-            alert("@TempData["alertMessage"]");
+        alert("@TempData["alertMessage"]");
     </script>
 }
-<div>
-    <section class="templatemo-top-section" style="margin-bottom: -20px">
+<div style="background-color: black;">
+    <section class="templatemo-top-section">
         @await Component.InvokeAsync("MenuView")
-        <div class="templatemo-welcome" style="margin: 0px">
+        <div class="templatemo-welcome">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
@@ -22,45 +22,45 @@
                                         <table class="table">
                                             <thead class="thead-primary">
                                                 <tr>
-                                                    <th>Ngày Tạo Đơn</th>
-                                                    <th>Trạng Thái</th>
-                                                    <th>Tổng Tiền</th>
-                                                    <th>Hình Thức Thanh Toán</th>
-                                                    <th>Ngày Nhận Xe Và Xuất Đơn</th>
+                                                    <th class="text-center">Ngày Tạo Đơn</th>
+                                                    <th class="text-center">Trạng Thái</th>
+                                                    <th class="text-center">Tổng Tiền</th>
+                                                    <th class="text-center">Hình Thức Thanh Toán</th>
+                                                    <th class="text-center">Ngày Nhận Xe Và Xuất Đơn</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach (var tran in Model)
                                                 {
-                                                <tr class="alert" role="alert">
-                                                    @{ var nd = tran.NgayDuyet.ToString();}
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@tran.NgayTaoDon</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@tran.TrangThai</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@tran.TongTien</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@(tran.ThanhToan == null ? "Đơn Bị Hủy Tại Khâu Này" : tran.ThanhToan)</span>
-                                                        </div>
-                                                    </td>
+                                                    <tr class="alert text-center" role="alert">
+                                                        <td>
+                                                            <div class="email">
+                                                                <span>@tran.NgayTaoDon</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="email">
+                                                                <span>@tran.TrangThai</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="email">
+                                                                <span>@tran.TongTien.ToString("N0") VNĐ</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="email">
+                                                                <span>@(tran.ThanhToan == null ? tran.TrangThai : tran.ThanhToan)</span>
+                                                            </div>
+                                                        </td>
 
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@(nd == "" ? "Đơn Bị Hủy Tại Khâu Này" : nd)</span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        <td>
+                                                            <div class="email">
+                                                                <span>@(tran.NgayDuyet?.ToString("dd/MM/yyyy") == null ? tran.TrangThai : tran.NgayDuyet?.ToString("dd/MM/yyyy"))</span>
+                                                            </div>
+                                                        </td>
+
+                                                    </tr>
                                                 }
                                             </tbody>
                                         </table>

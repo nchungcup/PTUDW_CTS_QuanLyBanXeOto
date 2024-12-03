@@ -23,25 +23,19 @@
         <!--Highest Price-->
         <div>
             <h4 class="about-container-3">Giá Cao Nhất</h4>
-            <div class="about-container">
-                @await Component.InvokeAsync("HighestPrice")
-            </div>
+            @await Component.InvokeAsync("HighestPrice")
         </div>
 
         <!--Newest Car-->
         <div>
             <h4 class="about-container-3">Mới Nhập Gần Đây</h4>
-            <div class="about-container-2 margin-bottom-50">
-                @await Component.InvokeAsync("NewestCar")
-            </div>
+            @await Component.InvokeAsync("NewestCar")
         </div>
 
         <!--Leader-->
         <div>
             <h4 class="about-container-3">Được Ưa Chuộng Nhất</h4>
-            <div class="about-container-2">
-                @await Component.InvokeAsync("BestSellCars")
-            </div>
+            @await Component.InvokeAsync("BestSellCars")
         </div>
 
         @await Component.InvokeAsync("Banner")

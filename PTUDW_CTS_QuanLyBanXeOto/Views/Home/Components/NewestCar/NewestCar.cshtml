@@ -1,11 +1,60 @@
-﻿@model List<CarModel>
-@foreach (var c in Model)
-{
-<div class="about-container-inner">
-    <h3 class="about-title-2">@c.TenHangXe - @c.TenDongXe</h3>
-    <img src="~/img/Car/@c.CarImage" alt="Image" class="img-responsive margin-bottom-15">
-    <p class="about-description"><b>Vừa Nhập Lúc: </b>@c.NgayNhap</p>
-    <p class="about-description"><b>Màu Sắc: </b>@c.MauSac</p>
-    <a href="#" class="about-link about-link-2">Chi tiết</a>
+﻿@model List<CarTypeModel>
+<div id="previewNewestCarContainer" style="position: relative;" class="about-container about-container-2 margin-bottom-50">
+    <a class="btn" id="prevBtnNewestCar" style="position: absolute; top: 50%; left: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">‹</a>
+
+    <div id="previewNewestCar" class="about-container about-container-2" style="width: 100%;"></div>
+
+    <a class="btn" id="nextBtnNewestCar" style="position: absolute; top: 50%; right: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">›</a>
 </div>
-}
+
+<script>
+    let currentnewestCarIndex = 0;
+    let newestCar = @Html.Raw(Json.Serialize(Model)); // Serialize the model into JavaScript
+
+    function previewObjectNewestCar() {
+        const previewElement = document.getElementById("previewNewestCar");
+        const currentnewestCar = newestCar[currentnewestCarIndex];
+
+        const newestCarImageUrl = encodeURIComponent(currentnewestCar.carImage);
+        previewElement.innerHTML =
+            `
+                    <div class="about-container-left" style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%;">
+                        <img src="/img/Car/${newestCarImageUrl}" alt="Image" style="width:30vw; height: 30vh;">
+                    </div>
+                    <div class="about-container-right">
+                        <h3 class="about-title">${currentnewestCar.tenHangXe} - ${currentnewestCar.tenDongXe}</h3>
+                                <p class="about-description"><b>Giá trị hiện tại: </b>${new Intl.NumberFormat('vi-VN').format(currentnewestCar.giaBan)} VNĐ</p >
+                        <p class="about-description"><b>Đời Xe: </b>${currentnewestCar.doiXe}</p>
+                        <p class="about-description"><b>Động Cơ: </b>${currentnewestCar.dongCo}</p>
+                        <p class="about-description"><b>Màu Sắc: </b>${currentnewestCar.mauSac}</p>
+                    </div>
+                `;
+    }
+
+    // Initialize the preview on page load
+    previewObjectNewestCar();
+
+    // Navigate to previous newestCar
+    document.getElementById("prevBtnNewestCar").addEventListener("click", function () {
+        if (newestCar.length > 1) {
+            currentnewestCarIndex = (currentnewestCarIndex === 0) ? newestCar.length - 1 : currentnewestCarIndex - 1;
+            previewObjectNewestCar(); // Re-render the preview for the previous newestCar
+        }
+    });
+
+    // Navigate to next newestCar
+    document.getElementById("nextBtnNewestCar").addEventListener("click", function () {
+        if (newestCar.length > 1) {
+            currentnewestCarIndex = (currentnewestCarIndex === newestCar.length - 1) ? 0 : currentnewestCarIndex + 1;
+            previewObjectNewestCar(); // Re-render the preview for the next newestCar
+        }
+    });
+
+    // Auto-switch newestCars every 5 seconds
+    setInterval(function () {
+        if (newestCar.length > 1) {
+            currentnewestCarIndex = (currentnewestCarIndex === newestCar.length - 1) ? 0 : currentnewestCarIndex + 1;
+            previewObjectNewestCar(); // Re-render the preview for the next newestCar
+        }
+    }, 5000); // 5000 milliseconds = 5 seconds
+</script>

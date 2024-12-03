@@ -42,11 +42,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                 TypeID = u.TypeID,
                 UserImage = u.UserImage,
                 Username = u.Username,
-                Password = u.Password
+                Password = u.Password,
+                IsActive = u.IsActive
             };
             _context.User.Update(updateu);
             await _context.SaveChangesAsync();
-            TempData["alertMessage"] = "Update Success!";
+            TempData["alertMessage"] = "Cập nhật thông tin thành công!";
             return RedirectToAction("Profile", "ClientProfile");
         }
 
@@ -60,12 +61,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
         {
             if (_user.Password != _context.User.Where(u => u.UserID.Equals(_user.UserID)).Select(u => u.Password).FirstOrDefault())
             {
-                TempData["alertMessage"] = "Wrong Old Password! Try Again";
+                TempData["alertMessage"] = "Mật khẩu cũ sai!";
                 return RedirectToAction("ChangePass", "ClientProfile");
             }
             else if (NewPassword1 != NewPassword2)
             {
-                TempData["alertMessage"] = "The New Password Re-entered The Second Time Is Wrong! Try Again";
+                TempData["alertMessage"] = "Mật khẩu nhập lại sai!";
                 return RedirectToAction("ChangePass", "ClientProfile");
             }
             else
@@ -83,11 +84,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                     TypeID = up.TypeID,
                     UserImage = up.UserImage,
                     Username = up.Username,
-                    Password = NewPassword1
+                    Password = NewPassword1,
+                    IsActive = up.IsActive
                 };
                 _context.User.Update(updatepass);
                 await _context.SaveChangesAsync();
-                TempData["alertMessage"] = "Change Password Success!";
+                TempData["alertMessage"] = "Đổi mật khẩu thành công!";
                 return RedirectToAction("Profile", "ClientProfile");
             }
         }

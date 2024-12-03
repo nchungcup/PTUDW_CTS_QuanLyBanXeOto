@@ -1,16 +1,60 @@
-﻿@model List<CarModel>
-@foreach (var hp in Model)
-{
-    <div class="about-container-left">
-        <img src="~/img/Car/@hp.CarImage" alt="Image" class="img-responsive">
-    </div>
-    
-    <div class="about-container-right">
-        <h2 class="about-title">@hp.TenHangXe - @hp.TenDongXe</h2>
-        <p class="about-description"><b>Giá trị hiện tại: </b>@hp.GiaBan</p>
-        <p class="about-description"><b>Đời Xe: </b>@hp.DoiXe</p>
-        <p class="about-description"><b>Động Cơ: </b>@hp.DongCo</p>
-        <p class="about-description"><b>Màu Sắc: </b>@hp.MauSac</p>
-        <a href="#" class="about-link">Chi tiết</a>
-    </div>
-}
+﻿@model List<CarTypeModel>
+<div id="previewHighestPriceContainer" style="position: relative;" class="about-container about-container-2 margin-bottom-50">
+    <a class="btn" id="prevBtnHighestPrice" style="position: absolute; top: 50%; left: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">‹</a>
+
+    <div id="previewHighestPrice" class="about-container about-container-2" style="width: 100%;"></div>
+
+    <a class="btn" id="nextBtnHighestPrice" style="position: absolute; top: 50%; right: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">›</a>
+</div>
+
+<script>
+    let currenthighestPriceCarIndex = 0;
+    let highestPriceCar = @Html.Raw(Json.Serialize(Model)); // Serialize the model into JavaScript
+
+    function previewObjectHighestPrice() {
+        const previewElement = document.getElementById("previewHighestPrice");
+        const currenthighestPriceCar = highestPriceCar[currenthighestPriceCarIndex];
+        const highestPriceCarImageUrl = encodeURIComponent(currenthighestPriceCar.carImage);
+
+        previewElement.innerHTML = 
+        `
+                <div class="about-container-left" style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%;">
+                        <img src="/img/Car/${highestPriceCarImageUrl}" alt="Image" style="width:30vw; height: 30vh;">
+                </div>
+                <div class="about-container-right">
+                    <h3 class="about-title">${currenthighestPriceCar.tenHangXe} - ${currenthighestPriceCar.tenDongXe}</h3>
+                            <p class="about-description"><b>Giá trị hiện tại: </b>${new Intl.NumberFormat('vi-VN').format(currenthighestPriceCar.giaBan)} VNĐ</p >
+                    <p class="about-description"><b>Đời Xe: </b>${currenthighestPriceCar.doiXe}</p>
+                    <p class="about-description"><b>Động Cơ: </b>${currenthighestPriceCar.dongCo}</p>
+                    <p class="about-description"><b>Màu Sắc: </b>${currenthighestPriceCar.mauSac}</p>
+                </div>
+            `;
+    }
+
+    // Initialize the preview on page load
+    previewObjectHighestPrice();
+
+    // Navigate to previous highestPriceCar
+    document.getElementById("prevBtnHighestPrice").addEventListener("click", function () {
+        if (highestPriceCar.length > 1) {
+            currenthighestPriceCarIndex = (currenthighestPriceCarIndex === 0) ? highestPriceCar.length - 1 : currenthighestPriceCarIndex - 1;
+            previewObjectHighestPrice(); // Re-render the preview for the previous highestPriceCar
+        }
+    });
+
+    // Navigate to next highestPriceCar
+    document.getElementById("nextBtnHighestPrice").addEventListener("click", function () {
+        if (highestPriceCar.length > 1) {
+            currenthighestPriceCarIndex = (currenthighestPriceCarIndex === highestPriceCar.length - 1) ? 0 : currenthighestPriceCarIndex + 1;
+            previewObjectHighestPrice(); // Re-render the preview for the next highestPriceCar
+        }
+    });
+
+    // Auto-switch highestPriceCars every 5 seconds
+    setInterval(function () {
+        if (highestPriceCar.length > 1) {
+            currenthighestPriceCarIndex = (currenthighestPriceCarIndex === highestPriceCar.length - 1) ? 0 : currenthighestPriceCarIndex + 1;
+            previewObjectHighestPrice(); // Re-render the preview for the next highestPriceCar
+        }
+    }, 5000); // 5000 milliseconds = 5 seconds
+</script>

@@ -2,14 +2,15 @@
 @using Microsoft.AspNetCore.Http;
 <div class="templatemo-header">
     <img class="templatemo-header-img" src="~/img/header.png" alt="Header">
-    <h1 class="templatemo-site-name"><img src="~/img/Lamborghini_Logo.svg" style="max-width:50px;"/></h1>
+    <h1 class="templatemo-site-name"><img src="~/img/Favicon.svg" style="max-width:50px;" /></h1>
     <div class="mobile-menu-icon">
         <i class="fa fa-bars"></i>
     </div>
     <div class="templatemo-nav-container">
         <nav class="templatemo-nav">
             <ul class="nav-item">
-                @{var mn = Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder).ToList();
+                @{
+                    var mn = Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder).ToList();
                     foreach (var item in mn)
                     {
                         <li><a href="/@item.ControllerName/@item.ActionName">@item.MenuName</a></li>
@@ -18,27 +19,27 @@
                 @if (Context.Session.GetString("client") == null)
                 {
                     <li>
-                        <a href="/SigninSignup/Signin" class="btn5-hover btn5">Sign In</a>
+                        <a href="@Url.Action("Signin", "SigninSignup")" class="btn5-hover btn5">Đăng nhập</a>
                     </li>
                     <li>
-                        <a href="/SigninSignup/Signup" class="btn5-hover btn5">Sign Up</a>
+                        <a href="@Url.Action("Signup", "SigninSignup")" class="btn5-hover btn5">Đăng ký</a>
                     </li>
 
                 }
                 else
                 {
-            <li style="color: white">
-                <a style="padding: 0px;" class="btn" href="/ClientProfile/Profile">
-                    <p>WELCOME <b>@Context.Session.GetString("client")</b></p>
-                </a>
-                <a href='@Url.Action("Logout", "SigninSignup")' class="btn5-hover btn5"> Logout </a>
-                <a href="@Url.Action("CartList", "Cart")" class="nav-link nav-icon">
-                    <i class="btn5-hover btn5 bi bi-basket-fill" style="font-size: xx-large; display: block; width: initial;"></i>
-                </a>
-                <a href="@Url.Action("TransHis", "Cart")" class="nav-link nav-icon">
-                    <i class="btn5-hover btn5 bi bi-clock-history" style="font-size: xx-large; display: block; width: initial;"></i>
-                </a>
-            </li>
+                    <li style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <a href="/ClientProfile/Profile">
+                            <p>XIN CHÀO <b>@Context.Session.GetString("client")</b></p>
+                        </a>
+                        <a class="btn btn-danger" href='@Url.Action("Logout", "SigninSignup")'> Đăng xuất </a>
+                        <a href="@Url.Action("CartList", "Cart")" class="btn btn-primary" style="padding: 7px;">
+                            <i class="bi bi-basket-fill" style="font-size: xx-large; width: initial;"></i>
+                        </a>
+                        <a href="@Url.Action("TransHis", "Cart")" class="btn btn-primary" style="padding: 8px;">
+                            <i class="bi bi-clock-history" style="font-size: xx-large; width: initial;"></i>
+                        </a>
+                    </li>
                 }
             </ul>
         </nav>

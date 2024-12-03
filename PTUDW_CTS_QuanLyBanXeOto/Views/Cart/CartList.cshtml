@@ -1,15 +1,9 @@
 ﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
-@model List<CartView>
-@if (null != TempData["alertMessage"])
-{
-    <script type="text/javascript">
-            alert("@TempData["alertMessage"]");
-    </script>
-}
+@model List<CartModel>
 <div style="background-color: black;">
     <section class="templatemo-top-section" style="margin-bottom: -20px">
         @await Component.InvokeAsync("MenuView")
-        <div class="templatemo-welcome" style="margin: 0px">
+        <div class="templatemo-welcome">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
@@ -22,59 +16,64 @@
                                         <table class="table">
                                             <thead class="thead-primary">
                                                 <tr>
-                                                    <th style="text-align: center">Ảnh</th>
-                                                    <th style="text-align: center">Xe</th>
-                                                    <th style="text-align: center">Màu sắc</th>
-                                                    <th style="text-align: center">Đời</th>
-                                                    <th style="text-align: center">Động cơ</th>
-                                                    <th style="text-align: center">Giá</th>
-                                                    <th style="text-align: center">&nbsp;</th>
+                                                    <th class="text-center">Ảnh</th>
+                                                    <th class="text-center">Xe</th>
+                                                    <th class="text-center">Màu sắc</th>
+                                                    <th class="text-center">Đời</th>
+                                                    <th class="text-center">Động cơ</th>
+                                                    <th class="text-center">Số lượng</th>
+                                                    <th class="text-center">Giá</th>
+                                                    <th class="text-center">Xóa</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach (var ca in Model)
                                                 {
-                                                <tr class="alert" role="alert">
-                                                    <td>
-                                                        <div class="img"><img style="max-width:100px;" src="~/img/Car/@ca.CarImage" /></div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@ca.TenHangXe @ca.TenDongXe</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@ca.MauSac</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@ca.DoiXe</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="email">
-                                                            <span>@ca.DongCo</span>
-                                                        </div>
-                                                    </td>
-                                                        <td>@ca.GiaBan.ToString("N0") VNĐ</td>
-                                                    <td>
-                                                        <a class="btn btn-danger" href="@Url.Action("Remove", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">
-                                                            x
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                                    <tr class="alert text-center" role="alert">
+                                                        <td style="align-content: center;">
+                                                            <div class="img"><img style="max-width:100px;" src="~/img/Car/@ca.CarImage" /></div>
+                                                        </td>
+                                                        <td style="align-content: center;">
+                                                            <div class="email">
+                                                                <span>@ca.TenHangXe @ca.TenDongXe</span>
+                                                            </div>
+                                                        </td>
+                                                        <td style="align-content: center;">
+                                                            <div class="email">
+                                                                <span>@ca.MauSac</span>
+                                                            </div>
+                                                        </td>
+                                                        <td style="align-content: center;">
+                                                            <div class="email">
+                                                                <span>@ca.DoiXe</span>
+                                                            </div>
+                                                        </td>
+                                                        <td style="align-content: center;">
+                                                            <div class="email">
+                                                                <span>@ca.DongCo</span>
+                                                            </div>
+                                                        </td>
+                                                        <td style="align-content: center;">
+                                                            <a class="btn btn-primary" href="@Url.Action("Minus", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">-</a>
+                                                            <span id="quantity">@ca.SoLuong</span>
+                                                            <a class="btn btn-primary" href="@Url.Action("Plus", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">+</a>
+                                                        </td>
+                                                        <td style="align-content: center;">@(ca.GiaBan.ToString("N0") ?? "0") VNĐ</td>
+                                                        <td style="align-content: center;">
+                                                            <a class="btn btn-danger" href="@Url.Action("Remove", "Cart", new { dxid = ca.DongXeID, mausac = ca.MauSac, doixe = ca.DoiXe, dongco = ca.DongCo })">
+                                                                x
+                                                            </a>
+                                                        </td>
+                                                    </tr>
                                                 }
                                             </tbody>
                                         </table>
                                         <div style="display: inline-grid; justify-content: start; width: 100%; text-align: start; gap: 10px;">
                                             <p>Tổng Giá Trị Sản Phẩm: <b>@Model.Sum(s => s.GiaBan * s.SoLuong).ToString("N0") VNĐ</b></p>
-                                            <p>Thuế: <b>@Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10).ToString("N0") VNĐ</b></p>
-                                            <p>Chiết khấu: <input type="text" value="Chưa Áp Dụng" style="text-align: center;color: black;width: 41%;" readonly ></p>
-                                            <p>Tổng Tiền: <b id="total">@((Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)).ToString("N0")) VNĐ</b></p>
-                                            <b id="totalText" class="text-muted"></b>
-                                            <a class="btn btn-success" href="@Url.Action("ThanhToan", "Cart", new { tongtien = (Model.Sum(s => s.GiaBan * s.SoLuong) + Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10)), thue = Model.Sum(s => s.GiaBan * s.SoLuong * 1 / 10), cartview = Model})">Thanh Toán</a>
+                                            <p>Chiết khấu: <input type="text" value="Chưa Áp Dụng" style="text-align: center;color: black;width: 41%;" readonly></p>
+                                            <div style="display: flex;  gap: 10px;">Tổng Tiền: <b id="total">@(Model.Sum(s => s.GiaBan * s.SoLuong).ToString("N0")) VNĐ</b><p id="totalText" style="color: gray;"></p></div>
+
+                                            <button id="btnThanhToan" class="btn btn-success">Thanh Toán</button>
                                         </div>
                                     </div>
                                 </div>
@@ -88,6 +87,31 @@
 </div>
 
 <script>
+    $('#btnThanhToan').click(function () {
+        const cartData = @Html.Raw(Json.Serialize(Model));
+        const tongtien = @Model.Sum(s => s.GiaBan * s.SoLuong);
+
+        $.ajax({
+            url: '@Url.Action("ThanhToan", "Cart")',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ tongtien, cartview: cartData }),
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message); // Hoặc hiển thị thông báo tại một vị trí trong giao diện
+                    // Điều hướng nếu cần thiết
+                    window.location.href = response.redirectUrl;
+                } else {
+                    alert(response.message); // Hoặc hiển thị thông báo lỗi
+                }
+            },
+            error: function (error) {
+                alert("Có lỗi xảy ra, vui lòng thử lại sau.");
+            }
+        });
+    });
+
+
     const total = document.getElementById("total");
     const totalText = document.getElementById("totalText");
 

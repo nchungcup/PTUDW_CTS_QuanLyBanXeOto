@@ -21,10 +21,12 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
             _logger = logger;
             _context = datacontext;
         }
+
         public IActionResult Signin()
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Signin(string username, string password, string remember = "off")
@@ -100,12 +102,14 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                 return RedirectToAction("Signin","SigninSignup");
             }                
         }
+
+
         public IActionResult Signup()
         {
             return View();
         }
 
-        [HttpPost("Signup")]
+        [HttpPost]
         public async Task<IActionResult> Signup(User _user)
         {
             var userduplicate = _context.User.Where(u => u.Username.Equals(_user.Username)).ToList();

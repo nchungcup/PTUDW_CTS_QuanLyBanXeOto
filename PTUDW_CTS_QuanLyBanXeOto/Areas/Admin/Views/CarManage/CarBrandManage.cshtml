@@ -1,0 +1,197 @@
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Models;
+@model IList<HangXeModel>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Danh Sách Hãng Xe</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="@Url.Action("CarBrandManage", "CarManage")">Quản lý hãng xe</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div>
+        <a id="add-btn" class="btn btn-primary btn-sm" style="color: black" title="Thêm Hãng Xe">Thêm Hãng Xe</a>
+        <a href="/Admin/CarManage/AddCarType" class="btn btn-primary btn-sm" style="color: black" title="Thêm Loại Xe">Thêm Loại Xe</a>
+    </div>
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th>Tên Hãng Xe</th>
+                    <th>Xuất Xứ</th>
+                    <th>Logo</th>
+                    <th>Chức Năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cm in Model)
+                {
+                    <tr>
+                        <td>@cm.TenHangXe</td>
+                        <td>@cm.XuatXu</td>
+                        <td><img src="/img/Logo/@cm.LogoImage" alt="Logo @cm.TenHangXe" style="width:50px; height: 50px;"/></td>
+                        <td>
+                            <a class="btn btn-primary btn-sm detail-btn" method="get" asp-area="Admin" asp-controller="CarManage" asp-action="CarModelManage" asp-route-id="@cm.HangXeID" title="Danh sách dòng xe">Danh sách dòng xe</a>
+                            <a href="#" class="btn btn-secondary btn-sm edit-btn" data-id="@cm.HangXeID" data-name="@cm.TenHangXe" data-xuatxu="@cm.XuatXu" data-logo="@cm.LogoImage" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <a href="#" class="btn btn-danger btn-sm delete-btn" data-id="@cm.HangXeID" data-name="@cm.TenHangXe" title="Xóa"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Thêm -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Thêm Hãng Xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="AddHangXe" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="addTenHangXe" class="form-label">Tên Hãng Xe</label>
+                            <input type="text" class="form-control" id="addTenHangXe" name="TenHangXe" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="addXuatXu" class="form-label">Xuất Xứ</label>
+                            <input type="text" class="form-control" id="addXuatXu" name="XuatXu" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="addLogoImage" class="form-label">Ảnh Logo</label>
+                            <input type="file" class="form-control" id="addLogoImage" name="addLogoImage" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sửa -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Sửa Hãng Xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="EditHangXe">
+                        <input type="hidden" id="editHangXeID" name="HangXeID" />
+                        <div class="mb-3">
+                            <label for="editTenHangXe" class="form-label">Tên Hãng Xe</label>
+                            <input type="text" class="form-control" id="editTenHangXe" name="TenHangXe" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editXuatXu" class="form-label">Xuất Xứ</label>
+                            <input type="text" class="form-control" id="editXuatXu" name="XuatXu" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLogoImage" class="form-label">Ảnh Logo</label>
+                            <input type="file" class="form-control" id="editLogoImage" name="editLogoImage" required />
+                            <img id="editLogoPreview" src="" alt="Preview Logo" style="max-width: 100px; margin-top: 10px;" />
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xóa -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Xác Nhận Xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa hãng xe <strong id="deleteTenHangXe"></strong> không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form method="post" asp-area="Admin" asp-controller="CarManage" asp-action="DeleteHangXe">
+                        <input type="hidden" id="deleteHangXeID" name="HangXeID" />
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Modal Thêm
+        const addBtns = document.getElementById("add-btn");
+        addBtns.addEventListener("click", function (event) {
+            event.preventDefault();
+            // Hiển thị modal
+            var addModal = new bootstrap.Modal(document.getElementById("addModal"));
+            addModal.show();
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Modal Sửa
+        const editLogoInput = document.getElementById("editLogoImage");
+        const editLogoPreview = document.getElementById("editLogoPreview");
+
+        editLogoInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    editLogoPreview.src = e.target.result; // Gán ảnh vào thẻ <img>
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Modal Sửa
+        const editBtns = document.querySelectorAll(".edit-btn");
+        editBtns.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const id = this.getAttribute("data-id");
+                const name = this.getAttribute("data-name");
+                const xuatxu = this.getAttribute("data-xuatxu");
+                const logo = this.getAttribute("data-logo");
+
+                document.getElementById("editHangXeID").value = id;
+                document.getElementById("editTenHangXe").value = name;
+                document.getElementById("editXuatXu").value = xuatxu;
+
+                // Hiển thị logo cũ
+                editLogoPreview.src = `/img/Logo/${logo}`;
+
+                // Hiển thị modal
+                var editModal = new bootstrap.Modal(document.getElementById("editModal"));
+                editModal.show();
+            });
+        });
+
+        // Modal Xóa
+        const deleteBtns = document.querySelectorAll(".delete-btn");
+        deleteBtns.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const id = this.getAttribute("data-id");
+                const name = this.getAttribute("data-name");
+                document.getElementById("deleteHangXeID").value = id;
+                document.getElementById("deleteTenHangXe").textContent = name;
+
+                // Hiển thị modal
+                var deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+                deleteModal.show();
+            });
+        });
+    });
+</script>

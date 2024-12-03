@@ -15,5 +15,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public long HangXeID { get; set; }
         public string TenDongXe { get; set; }
         public string NoiSanXuat { get; set; }
+        public bool? IsDeleted { get; set; }
+
     }
 }

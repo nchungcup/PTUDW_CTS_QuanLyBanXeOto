@@ -18,31 +18,31 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Components.Home
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //Lấy dữ liệu từ sql
-            var HighestPrice = (from c in _context.Car
-                                   join dx in _context.DongXe on c.DongXeID equals dx.DongXeID
-                                   join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
-                                   orderby c.GiaBan descending
-                                   select new CarModel
-                                   {
-                                       TenHangXe = hx.TenHangXe,
-                                       TenDongXe = dx.TenDongXe,
-                                       DoiXe = c.DoiXe,
-                                       MauSac = c.MauSac,
-                                       DongCo = c.DongCo,
-                                       GiaBan = c.GiaBan,
-                                       CarImage = c.CarImage
-                                   }).Take(5).ToList();
+            var HighestPrice = (from ctp in _context.CarType
+                                join dx in _context.DongXe on ctp.DongXeID equals dx.DongXeID
+                                join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
+                                where ctp.IsDeleted == false && dx.IsDeleted == false && hx.IsDeleted == false
+                                orderby ctp.GiaBan descending
+                                select new CarTypeModel
+                                {
+                                    TenHangXe = hx.TenHangXe,
+                                    TenDongXe = dx.TenDongXe,
+                                    DoiXe = ctp.DoiXe,
+                                    MauSac = ctp.MauSac,
+                                    DongCo = ctp.DongCo,
+                                    GiaBan = ctp.GiaBan,
+                                    CarImage = ctp.CarImage
+                                }).Take(5).ToList();
 
             foreach (var car in HighestPrice)
             {
+                car.SoLuong = _context.Car.Where(c => c.TransactionID == null && c.CarTypeID.Equals(car.CarTypeID)).Count();
                 if (!string.IsNullOrEmpty(car.CarImage))
                 {
                     car.CarImage = car.CarImage.Split(',')[0]; // Lấy ảnh đầu tiên từ chuỗi CarImage
                 }
             }
 
-            //Trả về view HighestPrice trong View, HighestPrice là xe có giá cao nhất trong sql
             return await Task.FromResult((IViewComponentResult)View("HighestPrice", HighestPrice));
         }
     }
