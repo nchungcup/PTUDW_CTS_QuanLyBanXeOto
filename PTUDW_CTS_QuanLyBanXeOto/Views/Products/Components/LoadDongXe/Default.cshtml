@@ -1,18 +1,19 @@
 ﻿@model List<CarTypeModel>
 <style>
     .infoCar {
-        width: 50%;
-        display: flex;
-        gap: 20px;
-        padding: 5px 0px;
+        width: 30%;
+        padding: 5px;
         border-radius: 10px;
+        border: 1px solid black;
+        margin: 5px;
         transition: background-color 0.3s ease, transform 0.3s ease;
+        max-height: 36%;
     }
 
     .infoCar:hover {
-    background-color: gray;
-    cursor: pointer;
-    transform: scale(0.95);
+        background-color: gray;
+        cursor: pointer;
+        transform: scale(0.95);
     }
 
     .text-center {
@@ -27,21 +28,19 @@
     foreach (var dx in Model)
     {
         <div class="infoCar" data-dongxeid="@dx.DongXeID" data-doixe="@dx.DoiXe" data-dongco="@dx.DongCo" data-bs-toggle="modal" data-bs-target="#carDetailsModal">
-            <div style="margin-left: 10px;">
-                <img src="~/img/Car/@dx.CarImage" alt="Image" class="tm-image-container" style="max-height: 7.5vw;">
-            </div>
-            <div style="align-self: center;">
-                <p class="tm-item-description">
+            <img src="~/img/Car/@dx.CarImage" alt="Image" class="card-img-top img-rounded">
+            <div style="text-align: center;" class="card-body mt-4">
+                <p class="card-text tm-item-price">
                     @dx.TenHangXe @dx.TenDongXe @dx.DoiXe
                 </p>
-                <div class="tm-item-price-container">
+                <div>
                     @if (@dx.GiaMin == @dx.GiaMax)
                     {
-                        <span class="tm-item-price">@dx.GiaMin.ToString("N0") VNĐ</span>
+                        <span class="tm-item-price">@dx.GiaMin.ToString("N0")VNĐ</span>
                     }
                     else
                     {
-                        <span class="tm-item-price">@dx.GiaMin.ToString("N0") VNĐ - @dx.GiaMax.ToString("N0") VNĐ</span>
+                        <span class="tm-item-price">@dx.GiaMin.ToString("N0")VNĐ-@dx.GiaMax.ToString("N0")VNĐ</span>
                     }
                 </div>
             </div>
@@ -54,14 +53,14 @@ else
         <h5>Không có xe nào!</h5>
     </div>
 }
-<div class="modal" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.8);">
+<div class="modal modal-xl" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.8);">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="carDetailsModalLabel">Chi tiết xe</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="background-color: seashell">
                 <div id="modalContent">
                     <!-- Nội dung chi tiết xe sẽ được load ở đây -->
                 </div>
@@ -183,4 +182,11 @@ else
 
         window.location.href = url;
     }
+
+    setInterval(function () {
+        if (images.length > 1) {
+            currentImageIndex = (currentImageIndex === images.length - 1) ? 0 : currentImageIndex + 1;
+            $("#preview").attr("src", images[currentImageIndex]);
+        }
+    }, 5000);
 </script>

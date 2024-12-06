@@ -448,6 +448,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateCar(int carTypeId, List<string> vin)
         {
+            var carType = _context.CarType.Where(ctp => ctp.CarTypeID.Equals(carTypeId)).FirstOrDefault();
             var vinCars = _context.Car.Where(c => c.CarTypeID.Equals(carTypeId) && c.IsDeleted == false && c.TransactionID == null).ToList();
 
             if (vin == null || !vin.Any())
@@ -476,6 +477,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                 {
                     CarTypeID = carTypeId,
                     VIN = vinCode,
+                    GiaNhap = carType.GiaNhap,
+                    GiaBan = carType.GiaBan,
                     IsDeleted = false
                 });
             }
@@ -489,9 +492,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         public IActionResult GetVinList(int carTypeId)
         {
             var vinList = _context.Car
-                .Where(c => c.CarTypeID == carTypeId && c.IsDeleted == false)
-                .Select(c => c.VIN)
-                .ToList();
+                .Where(c => c.CarTypeID == carTypeId && c.IsDeleted == false).ToList();
 
             return Json(new { success = true, vins = vinList });
         }

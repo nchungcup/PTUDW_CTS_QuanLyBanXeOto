@@ -4,11 +4,11 @@
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>User Manage</h1>
+        <h1>Quản lý khách hàng</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Quản lý khách hàng</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -22,6 +22,7 @@
                     <th>Số Căn Cước Công Dân</th>
                     <th>Số Điện Thoại</th>
                     <th>Email</th>
+                    <th>Trạng thái tài khoản</th>
                     <th>Chức Năng</th>
                 </tr>
             </thead>
@@ -35,6 +36,7 @@
                         <td>@u.CMND</td>
                         <td>@u.SoDienThoai</td>
                         <td>@u.Email</td>
+                        <td>@(u.IsActive == true? "Hoạt động" : "Đã khóa")</td>
                         <td>
                             <a method="get" asp-area="Admin" asp-controller="UserManage" asp-action="Edit" asp-route-id="@u.UserID" class="btn btn-primary btn-sm" title="Sửa"><i class="bi bi-pencil"></i></a>
                             <a method="get" asp-area="Admin" asp-controller="UserManage" asp-action="Delete" asp-route-id="@u.UserID" class="btn btn-danger btn-sm" title="Xóa"><i class="bi bi-trash"></i></a>

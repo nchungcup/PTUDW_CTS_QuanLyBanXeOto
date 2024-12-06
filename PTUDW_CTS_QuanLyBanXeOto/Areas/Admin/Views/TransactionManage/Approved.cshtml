@@ -3,11 +3,11 @@
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Transaction Manage - Approved</h1>
+        <h1>Quản lý đơn hàng đã hoàn thành</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Quản lý đơn hàng đã hoàn thành</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -19,12 +19,13 @@
                     <th>Họ Và Tên Khách Hàng</th>
                     <th>Số Điện Thoại</th>
                     <th>Ngày Tạo Đơn</th>
-                    <th>Thanh Toán</th>
+                    <th>Phương Thức Thanh Toán</th>
                     <th>Trạng Thái</th>
                     <th>Họ Tên Người Xử Lý</th>
                     <th>Họ Tên Người Duyệt</th>
                     <th>Ngày Duyệt</th>
                     <th>Tổng Tiền</th>
+                    <th>Chức năng</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +40,10 @@
                     <td>@trans.HoTenNguoiXuLy</td>
                     <td>@trans.HoTenNguoiDuyet</td>
                     <td>@trans.NgayDuyet</td>
-                    <td>@trans.TongTien</td>
+                    <td>@trans.TongTien.ToString("N0") VNĐ</td>
+                    <td>
+                        <a method="get" href="" class="btn btn-primary btn-sm" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
+                    </td>
                 </tr>
                 }
             <tbody>

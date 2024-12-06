@@ -31,8 +31,8 @@
                     <tr>
                         <td>@cm.DoiXe</td>
                         <td>@cm.MauSac</td>
-                        <td>@cm.GiaNhap</td>
-                        <td>@cm.GiaBan</td>
+                        <td>@cm.GiaNhap.ToString("N0") VNĐ</td>
+                        <td>@cm.GiaBan.ToString("N0") VNĐ</td>
                         <td>@cm.SoLuong</td>
                         <td>
                             <a method="get" asp-area="Admin" asp-controller="CarManage" asp-action="DetailCarType" asp-route-id="@cm.CarTypeID" class="btn btn-primary btn-sm" title="Chi tiết"><i class="bi bi-eye"></i></a>
@@ -54,7 +54,8 @@
                     <h5 class="modal-title" id="addCarModalLabel">Nhập Mã VIN</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow-y:scroll; height: 80vh;">
+                    <span style="color: red;">Lưu ý: những xe đã được thanh toán sẽ không thể xóa hoặc sửa!</span>
                     <form id="addCarForm">
                         <input type="hidden" id="carTypeId" name="carTypeId" value="" />
                         <div id="vin-list">
@@ -89,11 +90,13 @@
                 success: function (response) {
                     if (response.success) {
                         // Thêm các VIN hiện có vào modal
+                        console.log(response);
                         response.vins.forEach(function (vin) {
+                            const isDisabled = vin.transactionID !== null ? 'disabled' : '';
                             const vinInput = `
                                 <div class="vin-item d-flex mb-2">
-                                    <input type="text" name="vin[]" value="${vin}" class="form-control me-2" placeholder="Nhập mã VIN" />
-                                    <button type="button" class="btn btn-danger btn-remove-vin">Xóa</button>
+                                    <input type="text" name="vin[]" value="${vin.vin}" class="form-control me-2" placeholder="Nhập mã VIN" ${isDisabled}/>
+                                    <button type="button" class="btn btn-danger btn-remove-vin" ${isDisabled}>Xóa</button>
                                 </div>`;
                             $("#vin-list").append(vinInput);
                         });

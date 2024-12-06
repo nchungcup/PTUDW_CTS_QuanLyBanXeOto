@@ -1,7 +1,7 @@
 ﻿<!doctype html>
 @using Microsoft.AspNetCore.Http;
 
-<html lang="en">
+<html lang="vi">
 <head>
     <title>Login</title>
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
         Layout = null;
     }
 </head>
-<body>
+<body style="background-color: antiquewhite;">
     @if (null != TempData["alertMessage"])
     {
         <script type="text/javascript">
@@ -33,16 +33,11 @@
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 text-center mb-5">
-                    <h2 class="heading-section">Welcome To HSH Company</h2>
-                </div>
-            </div>
-            <div class="row justify-content-center">
                 <div class="col-md-7 col-lg-5">
                     <div class="login-wrap p-4 p-md-5">
                         <div class="d-flex">
                             <div class="w-100">
-                                <h3 class="mb-4">Sign In</h3>
+                                <h3 class="mb-4">Đăng nhập</h3>
                             </div>
                             <div class="w-100">
                                 <p class="social-media d-flex justify-content-end">
@@ -65,25 +60,24 @@
                             <div class="form-group d-flex align-items-center">
                                 <div class="w-100">
                                     <label class="checkbox-wrap checkbox-primary mb-0">
-                                        Remember Me
+                                        Ghi nhớ tài khoản
                                         <input type="checkbox" name="remember" @check>
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
                                 <div class="w-100 d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary rounded submit">Login</button>
+                                    <button type="submit" class="btn btn-primary rounded submit">Đăng nhập</button>
                                 </div>
                             </div>
                             <div class="form-group mt-4">
                                 <div class="w-100 text-center">
-                                    <p class="mb-1">Don't have an account? <a href="@Url.Action("Signup", "SigninSignup")">Sign Up</a></p>
-                                    <p><a href="#">Forgot Password</a></p>
+                                    <p class="mb-1">Chưa có tài khoản? <a href="@Url.Action("Signup", "SigninSignup")">Đăng ký</a></p>
                                 </div>
                             </div>
                             <br />
                             <div>
                                 <div class="w-100 text-center">
-                                    <a href="@Url.Action("Index", "Home" )">Back to Home</a>
+                                    <a href="@Url.Action("Index", "Home" )">Về trang chủ</a>
                                 </div>
                             </div>
                         </form>

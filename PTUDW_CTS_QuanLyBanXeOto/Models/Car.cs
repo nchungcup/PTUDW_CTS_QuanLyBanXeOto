@@ -12,6 +12,8 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Models
         public long CarTypeID { get; set; }
         public string VIN { get; set; }
         public long? TransactionID { get; set; }
+        public long? GiaBan { get; set; }
+        public long? GiaNhap { get; set; }
         public bool? IsDeleted { get; set; }
     }
 }

@@ -3,11 +3,11 @@
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Transaction Manage - Waitting</h1>
+        <h1>Quản lý đơn hàng chờ xác nhận</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Quản lý đơn hàng chờ xác nhận</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -32,8 +32,13 @@
                         <td>@trans.NgayTaoDon</td>
                         <td>@trans.TrangThai</td>
                         <td>
+                            <a method="get" href="" class="btn btn-primary btn-sm" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
                             <a method="get" href="@Url.Action("WaittingConfirm", "TransactionManage", new { area = "Admin", transid = trans.TransID })" class="btn btn-success btn-sm" title="Xử Lý"><i class="bi bi-check-circle-fill"></i></a>
-                            <a method="get" href="@Url.Action("Cancel", "TransactionManage", new { area = "Admin", transid = trans.TransID })" class="btn btn-danger btn-sm" title="Hủy"><i class="bi bi-x-circle-fill"></i></a>
+                            <a data-href="@Url.Action("Cancel", "TransactionManage", new { area = "Admin", transid = trans.TransID })"
+                               class="btn btn-danger btn-sm btn-cancel"
+                               title="Hủy">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -42,3 +47,32 @@
     </div>
 
 </main><!-- End #main -->
+<!-- Modal -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmCancelModalLabel">Xác nhận hủy giao dịch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn hủy giao dịch này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <a id="confirmCancelBtn" href="#" class="btn btn-danger">Hủy giao dịch</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".btn-cancel").on("click", function (e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định
+            const url = $(this).data("href"); // Lấy URL từ thuộc tính data-href
+            $("#confirmCancelBtn").attr("href", url); // Gắn URL vào nút xác nhận
+            $("#confirmCancelModal").modal("show"); // Hiển thị modal
+        });
+    });
+
+</script>

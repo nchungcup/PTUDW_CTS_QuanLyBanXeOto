@@ -15,7 +15,7 @@
 
     @{ Layout = null; }
 </head>
-<body>
+<body style="background-color: antiquewhite;">
     @if (null != TempData["alertMessage"])
     {
         <script type="text/javascript">
@@ -28,16 +28,11 @@
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 text-center mb-5">
-                    <h2 class="heading-section">Welcome To HSH Company</h2>
-                </div>
-            </div>
-            <div class="row justify-content-center">
                 <div class="col-md-7 col-lg-5">
                     <div class="login-wrap p-4 p-md-5">
                         <div class="d-flex">
                             <div class="w-100">
-                                <h3 class="mb-4">Sign Up</h3>
+                                <h3 class="mb-4">Đăng ký</h3>
                             </div>
                             <div class="w-100">
                                 <p class="social-media d-flex justify-content-end">
@@ -48,28 +43,35 @@
                         </div>
                         <form method="post" asp-controller="SigninSignup" asp-action="Signup" class="login-form">
                             <div class="form-group">
-                                <b>Username</b><input name="Username" type="text" class="form-control rounded-left" placeholder="Username" style="text-align: center" required>
+                                <b>Tên tài khoản</b><input name="Username" type="text" class="form-control rounded-left" placeholder="Nhập tên tài khoản" style="text-align: center" required>
                             </div>
                             <div class="form-group">
-                                <b>Password</b><input name="Password" type="text" class="form-control rounded-left" placeholder="Password" style="text-align: center" required>
+                                <b>Mật khẩu</b><input name="Password" type="text" class="form-control rounded-left" placeholder="Nhập mật khẩu" style="text-align: center" required>
                             </div>
                             <div class="form-group">
-                                <b>Full Name</b><input name="HoTen" type="text" class="form-control rounded-left" placeholder="FullName" style="text-align: center" required>
+                            <b>Tên đầy đủ</b><input name="HoTen" type="text" class="form-control rounded-left" placeholder="Nhập tên đầy đủ" style="text-align: center" required>
                             </div>
                             <div class="form-group">
-                                <b>Address</b><input name="DiaChi" type="text" class="form-control rounded-left" placeholder="Address" style="text-align: center" required>
+                            <b>Địa chỉ</b><input name="DiaChi" type="text" class="form-control rounded-left" placeholder="Nhập địa chỉ" style="text-align: center" required>
                             </div>
                             <div class="form-group">
-                                <b>Indentity Card Number</b><input name="CMND" type="text" class="form-control rounded-left" placeholder="Identity Card Number" style="text-align: center" required>
+                            <b>Số căn cước công dân</b><input name="CMND" type="text" class="form-control rounded-left" placeholder="Nhập số căn cước công dân" style="text-align: center" required>
                             </div>
                             <div class="form-group">
-                                <b>Year Of Birth</b><input name="NamSinh" type="text" class="form-control rounded-left" placeholder="Year Of Birth" style="text-align: center" required>
+                                <b>Năm sinh</b>
+                                <select name="NamSinh" class="form-control rounded-left" style="text-align: center" required>
+                                    <option value="" disabled selected>Chọn năm</option>
+                                    @for (int year = 1950; year <= DateTime.Now.Year-18; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                             <div class="form-group">
-                                <b>Phone Number</b><input name="SoDienThoai" type="text" class="form-control rounded-left" placeholder="Phone Number" style="text-align: center" required>
+                            <b>Số điện thoại</b><input name="SoDienThoai" type="text" class="form-control rounded-left" placeholder="Nhập số điện thoại" style="text-align: center" required>
                             </div>
                             <div class="form-group">
-                                <b>Email</b><input name="Email" type="text" class="form-control rounded-left" placeholder="Email" style="text-align: center" required>
+                            <b>Email</b><input name="Email" type="text" class="form-control rounded-left" placeholder="Nhập email" style="text-align: center" required>
                             </div>
                             <!-- Display error message below the password input -->
                             <span id="errorMessage" class="text-danger" style="display:none; text-align: center;"></span>
@@ -80,13 +82,13 @@
                             </div>
                             <div class="form-group mt-4">
                                 <div class="w-100 text-center">
-                                    <p class="mb-1">Already have an account? <a href="@Url.Action("Signin", "SigninSignup")">Login</a></p>
+                                    <p class="mb-1">Đã có tài khoản? <a href="@Url.Action("Signin", "SigninSignup")">Đăng nhập</a></p>
                                 </div>
                             </div>
                             <br />
                             <div>
                                 <div class="w-100 text-center">
-                                    <a href="@Url.Action("Index", "Home" )">Back to Home</a>
+                                    <a href="@Url.Action("Index", "Home" )">Về trang chủ</a>
                                 </div>
                             </div>
                         </form>

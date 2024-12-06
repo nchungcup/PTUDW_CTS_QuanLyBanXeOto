@@ -207,6 +207,21 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                     }
                 }
 
+                var trans = new Transaction
+                {
+                    KhachHangID = us.UserID,
+                    NgayTaoDon = DateTime.Now,
+                    ThanhToan = null,
+                    TrangThai = "Chờ xác nhận",
+                    NguoiXuLyID = null,
+                    NgayDuyet = null,
+                    NguoiDuyetID = null,
+                    ChietKhau = 0,
+                    TongTien = tongtien
+                };
+                _context.Transaction.Add(trans);
+                await _context.SaveChangesAsync();
+
                 foreach (var cv in cartview)
                 {
                     var carType = _context.CarType.Where(ctp => ctp.DongXeID.Equals(cv.DongXeID) && ctp.MauSac.Equals(cv.MauSac) && ctp.DoiXe.Equals(cv.DoiXe) && ctp.DongCo.Equals(cv.DongCo)).FirstOrDefault();
@@ -215,21 +230,6 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
                                     select c).ToList();
                     if (carCheck.Count() >= cv.SoLuong)
                     {
-                        var trans = new Transaction
-                        {
-                            KhachHangID = us.UserID,
-                            NgayTaoDon = DateTime.Now,
-                            ThanhToan = null,
-                            TrangThai = "Chờ xác nhận",
-                            NguoiXuLyID = null,
-                            NgayDuyet = null,
-                            NguoiDuyetID = null,
-                            ChietKhau = 0,
-                            TongTien = tongtien
-                        };
-                        _context.Transaction.Add(trans);
-                        await _context.SaveChangesAsync();
-
                         var carsBought = carCheck.Take((int)cv.SoLuong);
                         foreach (var cb in carsBought)
                         {

@@ -170,6 +170,15 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
         public async Task<IActionResult> Cancel(long transid)
         {
             var cancelt = _context.Transaction.Find(transid);
+            var action = "";
+            if (cancelt.NguoiXuLyID == null)
+            {
+                action = "Waitting";
+            }
+            else
+            {
+                action = "Pending";
+            }
             var canceltran = new Transaction
             {
                 TransID = transid,
@@ -194,13 +203,14 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Cancelled", "TransactionManage");
+            TempData["alertMessage"] = "Đã hủy đơn hàng!";
+            return RedirectToAction(action, "TransactionManage");
         }
         public IActionResult Cancelled()
         {
             var canceltransview = (from trans in _context.Transaction
                                    join u in _context.User on trans.KhachHangID equals u.UserID
-                                   where trans.TrangThai == "Cancelled"
+                                   where trans.TrangThai == "Đã hủy"
                                    select new TransView
                                    {
                                        TransID = trans.TransID,
