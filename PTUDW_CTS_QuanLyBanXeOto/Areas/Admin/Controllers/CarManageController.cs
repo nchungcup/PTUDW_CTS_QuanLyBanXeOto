@@ -445,6 +445,32 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
             return RedirectToAction("CarBrandManage", "CarManage");
         }
 
+        [HttpGet]
+        public IActionResult DetailCarType(long? id)
+        {
+            var ctp = _context.CarType.Where(ctp => ctp.CarTypeID.Equals(id) && ctp.IsDeleted == false).FirstOrDefault();
+            var dx = _context.DongXe.Where(d => d.DongXeID.Equals(ctp.DongXeID) && d.IsDeleted == false).FirstOrDefault();
+            var hx = _context.HangXe.Where(h => h.HangXeID.Equals(dx.HangXeID) && h.IsDeleted == false).FirstOrDefault();
+            var hxList = _context.HangXe.Where(hx => hx.IsDeleted == false).Select(hx => new HangXeModel { HangXeID = hx.HangXeID, TenHangXe = hx.TenHangXe }).ToList();
+            var cm = new CarTypeModel
+            {
+                CarTypeID = ctp.CarTypeID,
+                DoiXe = ctp.DoiXe,
+                MauSac = ctp.MauSac,
+                DongCo = ctp.DongCo,
+                GiaNhap = ctp.GiaNhap,
+                GiaBan = ctp.GiaBan,
+                CarImage = ctp.CarImage,
+                HangXeID = hx.HangXeID,
+                TenHangXe = hx.TenHangXe,
+                DongXeID = ctp.DongXeID,
+                TenDongXe = dx.TenDongXe,
+                ListHangXe = hxList
+            };
+
+            return View(cm);
+        }
+
         [HttpPost]
         public IActionResult UpdateCar(int carTypeId, List<string> vin)
         {

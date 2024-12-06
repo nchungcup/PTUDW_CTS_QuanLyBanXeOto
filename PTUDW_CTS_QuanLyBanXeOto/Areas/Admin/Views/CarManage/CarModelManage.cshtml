@@ -11,8 +11,14 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
-    <div>
-       <a id="add-btn" class="btn btn-primary btn-sm" style="color: black" title="Thêm">Thêm Dòng Xe</a>
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+            <label for="searchInput" class="form-label">Tìm kiếm</label>
+            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a id="add-btn" class="btn btn-primary btn-sm" style="color: black" title="Thêm">Thêm Dòng Xe</a>
+        </div>
     </div>
     <div class="table-wrapper">
         <table class="fl-table">
@@ -165,6 +171,27 @@
                 // Hiển thị modal
                 var deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
                 deleteModal.show();
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const table = document.querySelector(".fl-table tbody");
+        const rows = table.querySelectorAll("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const tenDongXe = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                const noiSanXuat = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+
+                if (tenDongXe.includes(searchValue) || noiSanXuat.includes(searchValue)) {
+                    row.style.display = ""; // Hiển thị hàng
+                } else {
+                    row.style.display = "none"; // Ẩn hàng
+                }
             });
         });
     });

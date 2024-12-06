@@ -12,10 +12,11 @@
         <div class="row justify-content-center">
             <div class="col-md-7 col-lg-5">
                 <div class="login-wrap p-4 p-md-5">
-                    <form id="car-form" method="post" action="/Admin/CarManage/AddCarType" class="login-form" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 10px;">
+                    <form id="car-form" method="post" asp-area="Admin" asp-controller="CarManage" asp-action="EditCarType" class="login-form" style="display: flex; flex-direction: column; gap: 10px;">
+                        <input type="hidden" name="CarTypeID" value="@Model.CarTypeID">
                         <div class="form-group" style="max-width: min-content;">
                             <b>Hãng Xe</b>
-                            <select class="form-select-sm" name="TenHangXe" id="HangXe" onchange="loadDongXe(this.value)">
+                            <select class="form-select-sm" name="TenHangXe" id="HangXe" onchange="loadDongXe(this.value)" asp-for="@Model.TenHangXe" disabled>
                                 <option disabled selected hidden>--Chọn Hãng Xe--</option>
                                 @foreach (var hx in Model.ListHangXe)
                                 {
@@ -25,13 +26,13 @@
                         </div>
                         <div class="form-group" style="max-width: min-content;">
                             <b>Dòng Xe</b>
-                            <select class="form-select-sm" name="TenDongXe" id="DongXe">
+                            <select class="form-select-sm" name="TenDongXe" id="DongXe" asp-for="@Model.TenDongXe" disabled>
                                 <option disabled selected hidden>--Chọn Dòng Xe--</option>
                             </select>
                         </div>
                         <div class="form-group" style="max-width: min-content;">
                             <b>Đời Xe</b>
-                            <select id="DoiXe" name="DoiXe" class="form-select-sm" style="text-align: center;" required>
+                            <select id="DoiXe" name="DoiXe" class="form-select-sm" asp-for="@Model.DoiXe" style="text-align: center;" disabled>
                                 <option value="" disabled selected hidden>Chọn năm</option>
                                 @for (int year = 1950; year <= DateTime.Now.Year; year++)
                                 {
@@ -41,7 +42,7 @@
                         </div>
                         <div class="form-group" style="max-width: min-content;">
                             <b>Màu Sắc</b>
-                            <select name="MauSac" class="form-select-sm" style="text-align: center" required>
+                            <select name="MauSac" asp-for="@Model.MauSac" class="form-select-sm" style="text-align: center" disabled>
                                 <option value="Đen">Đen</option>
                                 <option value="Trắng">Trắng</option>
                                 <option value="Bạc">Bạc</option>
@@ -56,7 +57,7 @@
                         </div>
                         <div class="form-group" style="max-width: min-content;">
                             <b>Động Cơ</b>
-                            <select name="DongCo" class="form-select-sm" style="text-align: center;" required>
+                            <select name="DongCo" asp-for="@Model.DongCo" class="form-select-sm" style="text-align: center;" disabled>
                                 <option value="" disabled selected hidden>Chọn loại động cơ</option>
                                 <option value="Động cơ xăng (Gasoline Engine)">Động cơ xăng (Gasoline Engine)</option>
                                 <option value="Động cơ Diesel">Động cơ Diesel</option>
@@ -71,23 +72,21 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="images"><b>Chọn Ảnh</b></label>
-                            <input name="images" id="images" type="file" accept="image/*" class="form-control rounded-left" style="text-align: center" required onchange="previewImage(event)" multiple>
                             <div id="previewContainer" style="padding: 30px 0px; position: relative; text-align: -webkit-center;">
                                 <!-- Nút chuyển ảnh trái -->
                                 <a class="btn" id="prevBtn" style="position: absolute; top: 50%; left: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">‹</a>
 
-                                <!-- Ảnh xem trước -->
                                 <img id="preview" src="" alt="Xem trước ảnh" style="max-width: 100%; max-height: 200px; display: none;">
 
                                 <!-- Nút chuyển ảnh phải -->
                                 <a class="btn" id="nextBtn" style="position: absolute; top: 50%; right: 10px; z-index: 10; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; transform: translateY(-50%);">›</a>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <b>Giá nhập</b>
                             <div style="display: flex; align-items: center;">
-                                <input name="GiaNhap" id="giaNhap" type="text" min="0" asp-for="@Model.GiaNhap" class="form-control rounded-left" placeholder="Nhập giá nhập" style="text-align: center; flex: 1;" autocomplete="off" required>
+                                <input name="GiaNhap" id="giaNhap" type="text" min="0" value="@Model.GiaNhap" class="form-control rounded-left" placeholder="Nhập giá nhập" style="text-align: center; flex: 1;" autocomplete="off" disabled>
                                 <span style="margin-left: 10px;">VNĐ</span>
                             </div>
                             <small id="giaNhapChu" style="display: block; margin-top: 5px; font-style: italic; color: gray;">
@@ -96,14 +95,11 @@
                         <div class="form-group">
                             <b>Giá bán</b>
                             <div style="display: flex; align-items: center;">
-                                <input name="GiaBan" id="giaBan" type="text" min="0" asp-for="@Model.GiaBan" class="form-control rounded-left" placeholder="Nhập giá bán" style="text-align: center; flex: 1;" autocomplete="off" required>
+                                <input name="GiaBan" id="giaBan" type="text" min="0" value="@Model.GiaBan" class="form-control rounded-left" placeholder="Nhập giá bán" style="text-align: center; flex: 1;" autocomplete="off" disabled>
                                 <span style="margin-left: 10px;">VNĐ</span>
                             </div>
                             <small id="giaBanChu" style="display: block; margin-top: 5px; font-style: italic; color: gray;">
                             </small>
-                        </div>
-                        <div class="form-group d-flex align-items-center" style="justify-content: center; margin-top: 15px">
-                            <button type="submit" class="btn btn-primary rounded submit">Lưu</button>
                         </div>
                         <div class="form-group mt-4">
                             <div class="w-100 text-center">
@@ -137,8 +133,11 @@
         });
     };
 
-    $(function () {
-        $("#NgayNhap").datetimepicker();
+    $(document).ready(function () {
+        var tenHangXe = '@Model.TenHangXe';  // Giá trị mặc định từ model
+        if (tenHangXe) {
+            loadDongXe(tenHangXe);  // Gọi hàm loadDongXe với giá trị mặc định
+        }
     });
 
     let currentImageIndex = 0; // Chỉ số ảnh hiện tại
@@ -160,7 +159,6 @@
             reader.onload = function (e) {
                 images.push(e.target.result); // Thêm ảnh vào mảng
 
-                // Nếu là ảnh đầu tiên, hiển thị ảnh đó
                 if (i === 0) {
                     previewElement.src = images[currentImageIndex];
                     previewElement.style.display = "block";
@@ -229,7 +227,7 @@
     }
 
     function unformatNumber(number) {
-        return number.replace(/,/g, "");
+        return parseInt(number.replace(/,/g, ""));
     }
 
     const giaNhapInput = document.getElementById("giaNhap");
@@ -239,7 +237,6 @@
 
     function updateGiaChu(inputElement, chuElement) {
         let rawValue = unformatNumber(inputElement.value);
-
         if (!isNaN(rawValue) && rawValue !== "") {
             rawValue = parseInt(rawValue); // Chuyển về số nguyên
             if (rawValue > 100000000000) {
@@ -265,6 +262,35 @@
     $(document).ready(window.onload = function () {
         updateGiaChu(giaNhapInput, giaNhapChu);
         updateGiaChu(giaBanInput, giaBanChu);
+    });
+
+    $(document).ready(window.onload = function () {
+        const previewContainer = document.getElementById("preview");
+
+        // Truyền giá trị từ Razor vào JavaScript an toàn
+        const carImages = @Html.Raw(Json.Serialize(Model.CarImage));
+
+        // Kiểm tra nếu carImages không rỗng
+        if (carImages) {
+            const imagePaths = carImages.split(','); // Tách chuỗi ảnh từ dấu phẩy
+            imagePaths.forEach((imagePath) => {
+                const imageUrl = '/img/Car/' + imagePath.trim(); // Đảm bảo đường dẫn đúng
+                images.push(imageUrl); // Thêm ảnh vào mảng
+            });
+
+            // Nếu có ảnh, hiển thị ảnh đầu tiên
+            if (images.length > 0) {
+                const previewElement = document.getElementById("preview");
+                previewElement.style.display = "none"; // Ẩn ảnh hiện tại
+
+                for (let i = 0; i < images.length; i++) {
+                    if (i === 0) {
+                            previewElement.src = images[currentImageIndex];
+                            previewElement.style.display = "block";
+                    }
+                }
+            }
+        }
     });
 
     document.getElementById("car-form").addEventListener("submit", function () {

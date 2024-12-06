@@ -12,6 +12,12 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+            <label for="searchInput" class="form-label">Tìm kiếm</label>
+            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
+        </div>
+    </div>
     <div id="view" class="table-wrapper">
         <table class="fl-table">
             <thead>
@@ -48,3 +54,31 @@
     </div>
 
 </main><!-- End #main -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const table = document.querySelector(".fl-table tbody");
+        const rows = table.querySelectorAll("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const hoTen = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                const diaChi = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                const namSinh = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
+                const cccd = row.querySelector("td:nth-child(4)").textContent.toLowerCase();
+                const soDienThoai = row.querySelector("td:nth-child(5)").textContent.toLowerCase();
+                const email = row.querySelector("td:nth-child(6)").textContent.toLowerCase();
+                const trangThai = row.querySelector("td:nth-child(7)").textContent.toLowerCase();
+
+
+                if (hoTen.includes(searchValue) || diaChi.includes(searchValue) || namSinh.includes(searchValue) || cccd.includes(searchValue) || soDienThoai.includes(searchValue) || email.includes(searchValue) || trangThai.includes(searchValue)) {
+                    row.style.display = ""; // Hiển thị hàng
+                } else {
+                    row.style.display = "none"; // Ẩn hàng
+                }
+            });
+        });
+    });
+</script>

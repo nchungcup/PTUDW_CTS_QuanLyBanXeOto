@@ -10,10 +10,17 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
-    <div>
-        <a id="add-btn" class="btn btn-primary btn-sm" style="color: black" title="Thêm Hãng Xe">Thêm Hãng Xe</a>
-        <a href="/Admin/CarManage/AddCarType" class="btn btn-primary btn-sm" style="color: black" title="Thêm Loại Xe">Thêm Loại Xe</a>
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+            <label for="searchInput" class="form-label">Tìm kiếm</label>
+            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a id="add-btn" class="btn btn-primary btn-sm me-2" style="color: black" title="Thêm Hãng Xe">Thêm Hãng Xe</a>
+            <a href="/Admin/CarManage/AddCarType" class="btn btn-primary btn-sm" style="color: black" title="Thêm Loại Xe">Thêm Loại Xe</a>
+        </div>
     </div>
+
     <div class="table-wrapper">
         <table class="fl-table">
             <thead>
@@ -191,6 +198,27 @@
                 // Hiển thị modal
                 var deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
                 deleteModal.show();
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const table = document.querySelector(".fl-table tbody");
+        const rows = table.querySelectorAll("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const tenHangXe = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                const xuatXu = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+
+                if (tenHangXe.includes(searchValue) || xuatXu.includes(searchValue)) {
+                    row.style.display = ""; // Hiển thị hàng
+                } else {
+                    row.style.display = "none"; // Ẩn hàng
+                }
             });
         });
     });

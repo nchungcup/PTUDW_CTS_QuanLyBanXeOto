@@ -12,13 +12,19 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
-
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+            <label for="searchInput" class="form-label">Tìm kiếm</label>
+            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
+        </div>
+    </div>
     <div class="table-wrapper">
         <table class="fl-table">
             <thead>
                 <tr>
                     <th>Đời Xe</th>
                     <th>Màu</th>
+                    <th>Động Cơ</th>
                     <th>Giá Nhập</th>
                     <th>Giá Bán</th>
                     <th>Số Lượng</th>
@@ -31,6 +37,7 @@
                     <tr>
                         <td>@cm.DoiXe</td>
                         <td>@cm.MauSac</td>
+                        <td>@cm.DongCo</td>
                         <td>@cm.GiaNhap.ToString("N0") VNĐ</td>
                         <td>@cm.GiaBan.ToString("N0") VNĐ</td>
                         <td>@cm.SoLuong</td>
@@ -94,10 +101,10 @@
                         response.vins.forEach(function (vin) {
                             const isDisabled = vin.transactionID !== null ? 'disabled' : '';
                             const vinInput = `
-                                <div class="vin-item d-flex mb-2">
-                                    <input type="text" name="vin[]" value="${vin.vin}" class="form-control me-2" placeholder="Nhập mã VIN" ${isDisabled}/>
-                                    <button type="button" class="btn btn-danger btn-remove-vin" ${isDisabled}>Xóa</button>
-                                </div>`;
+                                    <div class="vin-item d-flex mb-2">
+                                        <input type="text" name="vin[]" value="${vin.vin}" class="form-control me-2" placeholder="Nhập mã VIN" ${isDisabled}/>
+                                        <button type="button" class="btn btn-danger btn-remove-vin" ${isDisabled}>Xóa</button>
+                                    </div>`;
                             $("#vin-list").append(vinInput);
                         });
 
@@ -116,10 +123,10 @@
         // Thêm trường VIN mới
         $(".btn-add-vin").on("click", function () {
             const vinInput = `
-                <div class="vin-item d-flex mb-2">
-                    <input type="text" name="vin[]" class="form-control me-2" placeholder="Nhập mã VIN" />
-                    <button type="button" class="btn btn-danger btn-remove-vin">Xóa</button>
-                </div>`;
+                    <div class="vin-item d-flex mb-2">
+                        <input type="text" name="vin[]" class="form-control me-2" placeholder="Nhập mã VIN" />
+                        <button type="button" class="btn btn-danger btn-remove-vin">Xóa</button>
+                    </div>`;
             $("#vin-list").append(vinInput);
         });
 
@@ -152,4 +159,25 @@
         });
     });
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const table = document.querySelector(".fl-table tbody");
+        const rows = table.querySelectorAll("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const doiXe = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                const mauSac = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                const dongCo = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
+
+                if (doiXe.includes(searchValue) || mauSac.includes(searchValue) || dongCo.includes(searchValue)) {
+                    row.style.display = ""; // Hiển thị hàng
+                } else {
+                    row.style.display = "none"; // Ẩn hàng
+                }
+            });
+        });
+    });
 </script>
