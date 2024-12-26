@@ -1,7 +1,4 @@
 ﻿@model List<HangXeDetail>
-@{
-    var dshangxe = Model.Select(hx => hx.TenHangXe);
-}
 @if (null != TempData["alertMessage"])
 {
     <script type="text/javascript">
@@ -9,7 +6,49 @@
     </script>
 }
 <style>
+    .custom-dropdown {
+        position: relative;
+        width: 100%;
+    }
+
+    .dropdown-btn {
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: left;
+        border: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        width: 100%;
+        background-color: black;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 3px;
+        cursor: pointer;
+    }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-item img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
 </style>
+
 <div>
     <section class="templatemo-top-section">
         @await Component.InvokeAsync("MenuView")
@@ -48,13 +87,19 @@
                     <ul style="display: flex; flex-direction: column; gap: 20px;">
                         <li>
                             <span>Hãng xe:</span>
-                            <select id="searchHangXe" style="background-color: black; width: 100%;">
-                                <option value="All">Chọn hãng xe</option>
-                                @foreach (var hangxe in dshangxe)
-                                {
-                                    <option value="@hangxe">@hangxe</option>
-                                }
-                            </select>
+                            <div class="custom-dropdown">
+                                <button class="dropdown-btn">Chọn hãng xe</button>
+                                <div class="dropdown-content">
+                                    @foreach (var hangxe in Model)
+                                    {
+                                        <div class="dropdown-item" data-value="@hangxe.TenHangXe">
+                                            <img src="~/img/Logo/@hangxe.LogoImage" alt="@hangxe.TenHangXe" />
+                                            <span>@hangxe.TenHangXe</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <input type="hidden" id="searchHangXe" value="All">
                         </li>
                         <li>
                             <span>Màu sắc:</span>
@@ -127,18 +172,65 @@
 </div>
 
 <script>
-    @*Ajax xử lý hiển thị dòng xe khi 1 hãng xe được nhấp vào *@
-        function loadDongXe() {
-            $.ajax({
-                url: '@Url.Action("LoadDongXe", "Products")',
-                data: { TenHangXe: $('#searchHangXe').val(), MauSac: $('#searchMauSac').val(), DongCo: $('#searchDongCo').val(), giaMin: $('#minRange').val(), giaMax: $('#maxRange').val() },
-                type: 'POST',
-                dataType: 'html',
-                success: function (data) {
-                    $("#DongXe").html(data)
-                }
-            });
-        };
+    document.addEventListener("DOMContentLoaded", function () {
+        const dropdownBtn = document.querySelector(".dropdown-btn");
+        const dropdownContent = document.querySelector(".dropdown-content");
+
+        // Toggle dropdown
+        dropdownBtn.addEventListener("click", () => {
+            dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+        });
+
+        // Handle selection
+        dropdownContent.addEventListener("click", (event) => {
+            const item = event.target.closest(".dropdown-item");
+            if (item) {
+                const value = item.getAttribute("data-value");
+                const text = item.querySelector("span").textContent;
+                dropdownBtn.textContent = text; // Hiển thị tên hãng xe
+                console.log(`Bạn đã chọn: ${text} (Giá trị: ${value})`);
+                dropdownContent.style.display = "none"; // Ẩn dropdown
+            }
+        });
+
+        // Ẩn dropdown khi click ra ngoài
+        document.addEventListener("click", (event) => {
+            if (!dropdownContent.contains(event.target) && !dropdownBtn.contains(event.target)) {
+                dropdownContent.style.display = "none";
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // Khi chọn một hãng xe từ danh sách tùy chỉnh
+        $(".dropdown-item").on("click", function () {
+            const selectedValue = $(this).data("value"); // Lấy giá trị từ data-value
+            $(".dropdown-btn").text($(this).text()); // Hiển thị tên hãng xe trong nút
+            $("#searchHangXe").val(selectedValue); // Gán giá trị vào phần tử ẩn
+        });
+
+        // Gọi AJAX khi trang load lần đầu
+        loadDongXe();
+    });
+
+    function loadDongXe() {
+        $.ajax({
+            url: '@Url.Action("LoadDongXe", "Products")',
+            data: {
+                TenHangXe: $('#searchHangXe').val(), // Lấy giá trị từ input ẩn
+                MauSac: $('#searchMauSac').val(),
+                DongCo: $('#searchDongCo').val(),
+                giaMin: $('#minRange').val(),
+                giaMax: $('#maxRange').val()
+            },
+            type: 'POST',
+            dataType: 'html',
+            success: function (data) {
+                $("#DongXe").html(data); // Cập nhật nội dung
+            }
+        });
+    }
+
 
     $(document).ready(function () {
         loadDongXe();
