@@ -7,7 +7,7 @@
         border: 1px solid black;
         margin: 5px;
         transition: background-color 0.3s ease, transform 0.3s ease;
-        max-height: 36%;
+        max-height:300px;
     }
 
     .infoCar:hover {
@@ -28,7 +28,7 @@
     foreach (var dx in Model)
     {
         <div class="infoCar" data-dongxeid="@dx.DongXeID" data-doixe="@dx.DoiXe" data-dongco="@dx.DongCo" data-bs-toggle="modal" data-bs-target="#carDetailsModal">
-            <img src="~/img/Car/@dx.CarImage" alt="Image" class="card-img-top img-rounded">
+            <img src="~/img/Car/@dx.CarImage" alt="Image" class="card-img-top img-rounded" style="height: 200px;">
             <div style="text-align: center;" class="card-body mt-4">
                 <p class="card-text tm-item-price">
                     @dx.TenHangXe @dx.TenDongXe @dx.DoiXe
@@ -36,7 +36,7 @@
                 <div>
                     @if (@dx.GiaMin == @dx.GiaMax)
                     {
-                        <span class="tm-item-price">@dx.GiaMin.ToString("N0")VNĐ</span>
+                        <span class="tm-item-price">@dx.GiaMin.ToString("N0") VNĐ</span>
                     }
                     else
                     {

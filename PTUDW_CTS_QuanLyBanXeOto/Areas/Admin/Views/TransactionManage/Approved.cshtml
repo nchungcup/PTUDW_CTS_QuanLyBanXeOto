@@ -2,79 +2,161 @@
 @model IList<TransView>
 
 <main id="main" class="main">
-    <div class="pagetitle">
-        <h1>Quản lý đơn hàng đã hoàn thành</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
-                <li class="breadcrumb-item active">Quản lý đơn hàng đã hoàn thành</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-    <div class="row align-items-center mb-3">
-        <div class="col-md-6">
-            <label for="searchInput" class="form-label">Tìm kiếm</label>
-            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
-        </div>
-    </div>
-    <div class="table-wrapper">
-        <table class="fl-table">
-            <thead>
-                <tr>
-                    <th>Họ Và Tên Khách Hàng</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Ngày Tạo Đơn</th>
-                    <th>Phương Thức Thanh Toán</th>
-                    <th>Trạng Thái</th>
-                    <th>Họ Tên Người Xử Lý</th>
-                    <th>Họ Tên Người Duyệt</th>
-                    <th>Ngày Duyệt</th>
-                    <th>Tổng Tiền</th>
-                    <th>Chức năng</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var trans in Model)
-                {
-                <tr>
-                    <td>@trans.HoTenKhachHang</td>
-                    <td>@trans.SoDienThoai</td>
-                    <td>@trans.NgayTaoDon</td>
-                    <td>@trans.ThanhToan</td>
-                    <td>@trans.TrangThai</td>
-                    <td>@trans.HoTenNguoiXuLy</td>
-                    <td>@trans.HoTenNguoiDuyet</td>
-                    <td>@trans.NgayDuyet</td>
-                    <td>@trans.TongTien.ToString("N0") VNĐ</td>
-                    <td>
-                        <a method="get" href="" class="btn btn-primary btn-sm" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
-                    </td>
-                </tr>
-                }
-            <tbody>
-        </table>
-    </div>
+	<div class="pagetitle">
+		<h1>Quản lý đơn hàng đã hoàn thành</h1>
+		<nav>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
+				<li class="breadcrumb-item active">Quản lý đơn hàng đã hoàn thành</li>
+			</ol>
+		</nav>
+	</div><!-- End Page Title -->
+	<div class="row align-items-center mb-3">
+		<div class="col-md-6">
+			<label for="searchInput" class="form-label">Tìm kiếm</label>
+			<input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
+		</div>
+	</div>
+	<div class="table-wrapper">
+		<table class="fl-table">
+			<thead>
+				<tr>
+					<th>Họ Và Tên Khách Hàng</th>
+					<th>Số Điện Thoại</th>
+					<th>Ngày Tạo Đơn</th>
+					<th>Phương Thức Thanh Toán</th>
+					<th>Trạng Thái</th>
+					<th>Họ Tên Người Xử Lý</th>
+					<th>Họ Tên Người Duyệt</th>
+					<th>Ngày Duyệt</th>
+					<th>Tổng Tiền</th>
+					<th>Chức năng</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var trans in Model)
+				{
+					<tr>
+						<td>@trans.HoTenKhachHang</td>
+						<td>@trans.SoDienThoai</td>
+						<td>@trans.NgayTaoDon</td>
+						<td>@trans.ThanhToan</td>
+						<td><a class="btn btn-success">@trans.TrangThai</a></td>
+						<td>@trans.HoTenNguoiXuLy</td>
+						<td>@trans.HoTenNguoiDuyet</td>
+						<td>@trans.NgayDuyet</td>
+						<td>@trans.TongTien.ToString("N0") VNĐ</td>
+						<td>
+							<a method="get" href="" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#carDetailsModal" onclick="loadModalContent(@trans.TransID)" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
+						</td>
+					</tr>
+				}
+			<tbody>
+		</table>
+	</div>
 
 </main><!-- End #main -->
+<!-- Modal chi tiết xe -->
+<div class="modal modal-xl" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.8);">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="carDetailsModalLabel">Chi tiết xe</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" style="background-color: seashell">
+				<div id="modalContent">
+					<!-- Nội dung chi tiết xe sẽ được load ở đây -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.getElementById("searchInput");
-        const table = document.querySelector(".fl-table tbody");
-        const rows = table.querySelectorAll("tr");
+				function loadModalContent(transID) {
+		$.ajax({
+			type: "GET",
+			url: `/Admin/TransactionManage/Details?transID=` + transID,
+			success: function (data) {
+				// Xóa nội dung cũ trong modal
+				$("#modalContent").html("");
 
-        searchInput.addEventListener("keyup", function () {
-            const searchValue = this.value.toLowerCase();
+				// Kiểm tra nếu dữ liệu trả về không rỗng
+				if (data && data.length > 0) {
+					// Tạo bảng chi tiết xe
+					let content = `
+						<table class="table table-bordered table-striped">
+							<thead>
+								<tr>
+									<th>Hình ảnh</th>
+									<th>Mã định danh</th>
+									<th>Động cơ</th>
+									<th>Đời xe</th>
+									<th>Màu sắc</th>
+									<th>Dòng xe</th>
+									<th>Hãng xe</th>
+								</tr>
+							</thead>
+							<tbody>
+					`;
 
-            rows.forEach(row => {
-                const hoTen = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
-                const soDienThoai = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+					// Lặp qua dữ liệu trả về bằng forEach và tạo các dòng trong bảng
+					data.forEach(item => {
+						const carImages = item.carImage.split(',');  // Tách chuỗi thành mảng
+						const firstImage = carImages[0].trim();
+						content += `
+							<tr>
+								<td><img src="/img/Car/${firstImage}" alt="Hình ảnh xe" style="max-width:100px; object-fit: contain;"></td>
+								<td>${item.vin}</td>
+								<td>${item.dongCo}</td>
+								<td>${item.doiXe}</td>
+								<td>${item.mauSac}</td>
+								<td>${item.tenDongXe}</td>
+								<td>${item.tenHangXe}</td>
+							</tr>
+						`;
+					});
 
-                if (hoTen.includes(searchValue) || soDienThoai.includes(searchValue)) {
-                    row.style.display = ""; // Hiển thị hàng
-                } else {
-                    row.style.display = "none"; // Ẩn hàng
-                }
-            });
-        });
-    });
+					// Đóng bảng
+					content += `
+							</tbody>
+						</table>
+					`;
+
+					// Thêm nội dung vào modal
+					$("#modalContent").html(content);
+
+					// Hiển thị modal
+					$("#carDetailsModal").modal("show");
+				} else {
+					alert("Không tìm thấy chi tiết xe.");
+				}
+			},
+			error: function () {
+				alert("Đã xảy ra lỗi khi tải chi tiết xe.");
+			}
+		});
+	}
+
+	document.addEventListener("DOMContentLoaded", function () {
+		const searchInput = document.getElementById("searchInput");
+		const table = document.querySelector(".fl-table tbody");
+		const rows = table.querySelectorAll("tr");
+
+		searchInput.addEventListener("keyup", function () {
+			const searchValue = this.value.toLowerCase();
+
+			rows.forEach(row => {
+				const hoTen = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+				const soDienThoai = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+
+				if (hoTen.includes(searchValue) || soDienThoai.includes(searchValue)) {
+					row.style.display = ""; // Hiển thị hàng
+				} else {
+					row.style.display = "none"; // Ẩn hàng
+				}
+			});
+		});
+	});
 </script>

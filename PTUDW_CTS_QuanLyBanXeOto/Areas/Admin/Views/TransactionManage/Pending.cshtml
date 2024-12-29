@@ -39,11 +39,11 @@
                         <td>@trans.SoDienThoai</td>
                         <td>@trans.ThanhToan</td>
                         <td>@trans.NgayTaoDon</td>
-                        <td>@trans.TrangThai</td>
+                        <td><a class="btn btn-primary">@trans.TrangThai</a></td>
                         <td>@trans.HoTenNguoiXuLy</td>
-                        <td>@trans.TongTien</td>
+                        <td>@trans.TongTien.ToString("N0") VNĐ</td>
                         <td>
-                            <a method="get" href="" class="btn btn-primary btn-sm" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
+                            <a method="get" href="" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#carDetailsModal" onclick="loadModalContent(@trans.TransID)" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
                             <a method="get" href="@Url.Action("PendingConfirm", "TransactionManage", new { area = "Admin", transid = trans.TransID })" class="btn btn-success btn-sm" title="Xử Lý"><i class="bi bi-check-circle-fill"></i></a>
                             <a data-href="@Url.Action("Cancel", "TransactionManage", new { area = "Admin", transid = trans.TransID })"
                                class="btn btn-danger btn-sm btn-cancel"
@@ -76,7 +76,89 @@
         </div>
     </div>
 </div>
+<!-- Modal chi tiết xe -->
+<div class="modal modal-xl" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.8);">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="carDetailsModalLabel">Chi tiết xe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: seashell">
+                <div id="modalContent">
+                    <!-- Nội dung chi tiết xe sẽ được load ở đây -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+                function loadModalContent(transID) {
+        $.ajax({
+            type: "GET",
+            url: `/Admin/TransactionManage/Details?transID=` + transID,
+            success: function (data) {
+                // Xóa nội dung cũ trong modal
+                $("#modalContent").html("");
+
+                // Kiểm tra nếu dữ liệu trả về không rỗng
+                if (data && data.length > 0) {
+                    // Tạo bảng chi tiết xe
+                    let content = `
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Hình ảnh</th>
+                                    <th>Mã định danh</th>
+                                    <th>Động cơ</th>
+                                    <th>Đời xe</th>
+                                    <th>Màu sắc</th>
+                                    <th>Dòng xe</th>
+                                    <th>Hãng xe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    // Lặp qua dữ liệu trả về bằng forEach và tạo các dòng trong bảng
+                    data.forEach(item => {
+                        const carImages = item.carImage.split(',');  // Tách chuỗi thành mảng
+                        const firstImage = carImages[0].trim();
+                        content += `
+                            <tr>
+                                <td><img src="/img/Car/${firstImage}" alt="Hình ảnh xe" style="max-width:100px; object-fit: contain;"></td>
+                                <td>${item.vin}</td>
+                                <td>${item.dongCo}</td>
+                                <td>${item.doiXe}</td>
+                                <td>${item.mauSac}</td>
+                                <td>${item.tenDongXe}</td>
+                                <td>${item.tenHangXe}</td>
+                            </tr>
+                        `;
+                    });
+
+                    // Đóng bảng
+                    content += `
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Thêm nội dung vào modal
+                    $("#modalContent").html(content);
+
+                    // Hiển thị modal
+                    $("#carDetailsModal").modal("show");
+                } else {
+                    alert("Không tìm thấy chi tiết xe.");
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi tải chi tiết xe.");
+            }
+        });
+    }
+
     $(document).ready(function () {
         $(".btn-cancel").on("click", function (e) {
             e.preventDefault(); // Ngăn chặn hành động mặc định

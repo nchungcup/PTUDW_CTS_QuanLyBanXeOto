@@ -264,9 +264,58 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Controllers
         public IActionResult TransHis()
         {
             var clientses = HttpContext.Session.GetString("client");
-            var u = _context.User.Where(u => u.Username.Equals(clientses)).FirstOrDefault();
-            var transhis = _context.Transaction.Where(t => t.KhachHangID.Equals(u.UserID)).OrderByDescending(t => t.NgayTaoDon).ToList();
+            var us = _context.User.Where(u => u.Username.Equals(clientses)).FirstOrDefault();
+            var transhis = (from trans in _context.Transaction
+                            join u in _context.User on trans.KhachHangID equals u.UserID
+                            where u.UserID == us.UserID
+                            select new TransView
+                            {
+                                TransID = trans.TransID,
+                                KhachHangID = trans.KhachHangID,
+                                HoTenKhachHang = _context.User.Where(u => u.UserID.Equals(trans.KhachHangID)).Select(u => u.HoTen).FirstOrDefault(),
+                                SoDienThoai = u.SoDienThoai,
+                                NgayTaoDon = trans.NgayTaoDon,
+                                ThanhToan = trans.ThanhToan,
+                                TrangThai = trans.TrangThai,
+                                NguoiXuLyID = trans.NguoiXuLyID,
+                                HoTenNguoiXuLy = _context.User.Where(u => u.UserID.Equals(trans.NguoiXuLyID)).Select(u => u.HoTen).FirstOrDefault(),
+                                NgayDuyet = trans.NgayDuyet,
+                                NguoiDuyetID = trans.NguoiDuyetID,
+                                HoTenNguoiDuyet = _context.User.Where(u => u.UserID.Equals(trans.NguoiDuyetID)).Select(u => u.HoTen).FirstOrDefault(),
+                                ChietKhau = trans.ChietKhau,
+                                TongTien = trans.TongTien,
+                            }).OrderByDescending(t => t.NgayTaoDon).ToList();
             return View(transhis);
+        }
+
+        [HttpGet]
+        public IActionResult Details(int transID)
+        {
+            var details = (from c in _context.Car
+                           join ct in _context.CarType on c.CarTypeID equals ct.CarTypeID
+                           join dx in _context.DongXe on ct.DongXeID equals dx.DongXeID
+                           join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
+                           where c.TransactionID == transID
+                           select new
+                           {
+                               VIN = c.VIN,
+                               CarID = c.CarID,
+                               CarImage = ct.CarImage,
+                               DongCo = ct.DongCo,
+                               DoiXe = ct.DoiXe,
+                               DongXeID = dx.DongXeID,
+                               HangXeID = hx.HangXeID,
+                               MauSac = ct.MauSac,
+                               TenDongXe = dx.TenDongXe,
+                               TenHangXe = hx.TenHangXe
+                           }).ToList();
+
+            if (details == null)
+            {
+                return NotFound(new { Message = "Không tìm thấy chi tiết giao dịch." });
+            }
+
+            return Json(details);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

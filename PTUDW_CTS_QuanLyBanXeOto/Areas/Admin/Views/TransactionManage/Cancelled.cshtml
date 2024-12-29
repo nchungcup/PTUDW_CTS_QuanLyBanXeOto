@@ -2,69 +2,65 @@
 @model IList<TransView>
 
 <main id="main" class="main">
-    <div class="pagetitle">
-        <h1>Quản lý đơn hàng đã hủy</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
-                <li class="breadcrumb-item active">Quản lý đơn hàng đã hủy</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-    <div class="row align-items-center mb-3">
-        <div class="col-md-6">
-            <label for="searchInput" class="form-label">Tìm kiếm</label>
-            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
-        </div>
-    </div>
-    <div class="table-wrapper">
-        <table class="fl-table">
-            <thead>
-                <tr>
-                    <th>Họ Và Tên Khách Hàng</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Ngày Tạo Đơn</th>
-                    <th>Trạng Thái</th>
-                    <th>Chức năng</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var trans in Model)
-                {
-                <tr>
-                    <td>@trans.HoTenKhachHang</td>
-                    <td>@trans.SoDienThoai</td>
-                    <td>@trans.NgayTaoDon</td>
-                    <td>@trans.TrangThai</td>
-                    <td>
-                        <a method="get" href="" class="btn btn-primary btn-sm" title="Xem chi tiết"><i class="bi bi-eye-fill"></i></a>
-                    </td>
-                </tr>
-                }
-            <tbody>
-        </table>
-    </div>
+	<div class="pagetitle">
+		<h1>Quản lý đơn hàng đã hủy</h1>
+		<nav>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
+				<li class="breadcrumb-item active">Quản lý đơn hàng đã hủy</li>
+			</ol>
+		</nav>
+	</div><!-- End Page Title -->
+	<div class="row align-items-center mb-3">
+		<div class="col-md-6">
+			<label for="searchInput" class="form-label">Tìm kiếm</label>
+			<input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa để tìm kiếm...">
+		</div>
+	</div>
+	<div class="table-wrapper">
+		<table class="fl-table">
+			<thead>
+				<tr>
+					<th>Họ Và Tên Khách Hàng</th>
+					<th>Số Điện Thoại</th>
+					<th>Ngày Tạo Đơn</th>
+					<th>Trạng Thái</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var trans in Model)
+				{
+					<tr>
+						<td>@trans.HoTenKhachHang</td>
+						<td>@trans.SoDienThoai</td>
+						<td>@trans.NgayTaoDon</td>
+						<td><a class="btn btn-danger">@trans.TrangThai</a></td>
+					</tr>
+				}
+			<tbody>
+		</table>
+	</div>
 
 </main><!-- End #main -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.getElementById("searchInput");
-        const table = document.querySelector(".fl-table tbody");
-        const rows = table.querySelectorAll("tr");
+	document.addEventListener("DOMContentLoaded", function () {
+		const searchInput = document.getElementById("searchInput");
+		const table = document.querySelector(".fl-table tbody");
+		const rows = table.querySelectorAll("tr");
 
-        searchInput.addEventListener("keyup", function () {
-            const searchValue = this.value.toLowerCase();
+		searchInput.addEventListener("keyup", function () {
+			const searchValue = this.value.toLowerCase();
 
-            rows.forEach(row => {
-                const hoTen = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
-                const soDienThoai = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+			rows.forEach(row => {
+				const hoTen = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+				const soDienThoai = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
 
-                if (hoTen.includes(searchValue) || soDienThoai.includes(searchValue)) {
-                    row.style.display = ""; // Hiển thị hàng
-                } else {
-                    row.style.display = "none"; // Ẩn hàng
-                }
-            });
-        });
-    });
+				if (hoTen.includes(searchValue) || soDienThoai.includes(searchValue)) {
+					row.style.display = ""; // Hiển thị hàng
+				} else {
+					row.style.display = "none"; // Ẩn hàng
+				}
+			});
+		});
+	});
 </script>

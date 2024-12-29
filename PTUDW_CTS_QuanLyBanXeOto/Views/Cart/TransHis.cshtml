@@ -1,76 +1,167 @@
-﻿@using PTUDW_CTS_QuanLyBanXeOto.Models
-@model List<Transaction>
+﻿@using PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models
+@using PTUDW_CTS_QuanLyBanXeOto.Models
+@model List<TransView>
 @if (null != TempData["alertMessage"])
 {
-    <script type="text/javascript">
-        alert("@TempData["alertMessage"]");
-    </script>
+	<script type="text/javascript">
+		alert("@TempData["alertMessage"]");
+	</script>
 }
 <div style="background-color: black;">
-    <section class="templatemo-top-section">
-        @await Component.InvokeAsync("MenuView")
-        <div class="templatemo-welcome">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
-                    </div>
-                    <section class="ftco-section">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-wrap">
-                                        <table class="table">
-                                            <thead class="thead-primary">
-                                                <tr>
-                                                    <th class="text-center">Ngày Tạo Đơn</th>
-                                                    <th class="text-center">Trạng Thái</th>
-                                                    <th class="text-center">Tổng Tiền</th>
-                                                    <th class="text-center">Hình Thức Thanh Toán</th>
-                                                    <th class="text-center">Ngày Nhận Xe Và Xuất Đơn</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var tran in Model)
-                                                {
-                                                    <tr class="alert text-center" role="alert">
-                                                        <td>
-                                                            <div class="email">
-                                                                <span>@tran.NgayTaoDon</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="email">
-                                                                <span>@tran.TrangThai</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="email">
-                                                                <span>@tran.TongTien.ToString("N0") VNĐ</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="email">
-                                                                <span>@(tran.ThanhToan == null ? tran.TrangThai : tran.ThanhToan)</span>
-                                                            </div>
-                                                        </td>
+	<section class="templatemo-top-section">
+		@await Component.InvokeAsync("MenuView")
+		<div class="templatemo-welcome">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+					</div>
+					<section class="ftco-section">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="table-wrap">
+										<table class="table">
+											<thead class="thead-primary">
+												<tr>
+													<th class="text-center">Ngày Tạo Đơn</th>
+													<th class="text-center">Trạng Thái</th>
+													<th class="text-center">Tổng Tiền</th>
+													<th class="text-center">Hình Thức Thanh Toán</th>
+													<th class="text-center">Ngày Nhận Xe Và Xuất Đơn</th>
+													<th class="text-center">Chi tiết</th>
+												</tr>
+											</thead>
+											<tbody>
+												@foreach (var tran in Model)
+												{
+													<tr class="alert text-center" role="alert">
+														<td>
+															<div class="email">
+																<span>@tran.NgayTaoDon</span>
+															</div>
+														</td>
+														<td>
+															<div class="email">
+																<span>@tran.TrangThai</span>
+															</div>
+														</td>
+														<td>
+															<div class="email">
+																<span>@tran.TongTien.ToString("N0") VNĐ</span>
+															</div>
+														</td>
+														<td>
+															<div class="email">
+																<span>@(tran.ThanhToan == null ? tran.TrangThai : tran.ThanhToan)</span>
+															</div>
+														</td>
+														<td>
+															<div class="email">
+																<span>@(tran.NgayDuyet?.ToString("dd/MM/yyyy") == null ? tran.TrangThai : tran.NgayDuyet?.ToString("dd/MM/yyyy"))</span>
+															</div>
+														</td>
+														<td>
+															<button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#carDetailsModal" onclick="loadModalContent(@tran.TransID)">
+																Xem Chi Tiết
+															</button>
+														</td>
+													</tr>
+												}
+											</tbody>
 
-                                                        <td>
-                                                            <div class="email">
-                                                                <span>@(tran.NgayDuyet?.ToString("dd/MM/yyyy") == null ? tran.TrangThai : tran.NgayDuyet?.ToString("dd/MM/yyyy"))</span>
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </div>
-    </section>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</section>
 </div>
+
+<!-- Modal chi tiết xe -->
+<div class="modal modal-xl" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.8);">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="carDetailsModalLabel">Chi tiết xe</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" style="background-color: seashell">
+				<div id="modalContent">
+					<!-- Nội dung chi tiết xe sẽ được load ở đây -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+				function loadModalContent(transID) {
+		$.ajax({
+			type: "GET",
+			url: `/Cart/Details?transID=` + transID,
+			success: function (data) {
+				// Xóa nội dung cũ trong modal
+				$("#modalContent").html("");
+
+				// Kiểm tra nếu dữ liệu trả về không rỗng
+				if (data && data.length > 0) {
+					// Tạo bảng chi tiết xe
+					let content = `
+						<table class="table table-bordered table-striped">
+							<thead>
+								<tr>
+									<th>Hình ảnh</th>
+									<th>Mã định danh</th>
+									<th>Động cơ</th>
+									<th>Đời xe</th>
+									<th>Màu sắc</th>
+									<th>Dòng xe</th>
+									<th>Hãng xe</th>
+								</tr>
+							</thead>
+							<tbody>
+					`;
+
+					// Lặp qua dữ liệu trả về bằng forEach và tạo các dòng trong bảng
+					data.forEach(item => {
+						const carImages = item.carImage.split(',');  // Tách chuỗi thành mảng
+						const firstImage = carImages[0].trim();
+						content += `
+							<tr>
+								<td><img src="/img/Car/${firstImage}" alt="Hình ảnh xe" style="max-width:100px; object-fit: contain;"></td>
+								<td>${item.vin}</td>
+								<td>${item.dongCo}</td>
+								<td>${item.doiXe}</td>
+								<td>${item.mauSac}</td>
+								<td>${item.tenDongXe}</td>
+								<td>${item.tenHangXe}</td>
+							</tr>
+						`;
+					});
+
+					// Đóng bảng
+					content += `
+							</tbody>
+						</table>
+					`;
+
+					// Thêm nội dung vào modal
+					$("#modalContent").html(content);
+
+					// Hiển thị modal
+					$("#carDetailsModal").modal("show");
+				} else {
+					alert("Không tìm thấy chi tiết xe.");
+				}
+			},
+			error: function () {
+				alert("Đã xảy ra lỗi khi tải chi tiết xe.");
+			}
+		});
+	}
+
+</script>

@@ -37,6 +37,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                          SoDienThoai = u.SoDienThoai,
                          NgayTaoDon = trans.NgayTaoDon,
                          TrangThai = trans.TrangThai,
+                         TongTien = trans.TongTien,
                      }).ToList();
             return View(w);
         }
@@ -90,7 +91,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                          TrangThai = trans.TrangThai,
                          NguoiXuLyID = trans.NguoiXuLyID,
                          HoTenNguoiXuLy = _context.User.Where(u => u.UserID.Equals(trans.NguoiXuLyID)).Select(u => u.HoTen).FirstOrDefault(),
-                         TongTien = trans.TongTien
+                         TongTien = trans.TongTien,
                      }).ToList();
             return View(w);
         }
@@ -163,7 +164,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                          NguoiDuyetID = trans.NguoiDuyetID,
                          HoTenNguoiDuyet = _context.User.Where(u => u.UserID.Equals(trans.NguoiDuyetID)).Select(u => u.HoTen).FirstOrDefault(),
                          ChietKhau = trans.ChietKhau,
-                         TongTien = trans.TongTien
+                         TongTien = trans.TongTien,
                      }).ToList();
             return View(w);
         }
@@ -194,7 +195,7 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
             };
             _context.Transaction.Update(canceltran);
             await _context.SaveChangesAsync();
-            
+
             var carInTrans = _context.Car.Where(c => c.TransactionID.Equals(canceltran.TransID)).ToList();
             foreach (var car in carInTrans)
             {
@@ -226,9 +227,39 @@ namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Controllers
                                        NguoiDuyetID = trans.NguoiDuyetID,
                                        HoTenNguoiDuyet = _context.User.Where(u => u.UserID.Equals(trans.NguoiDuyetID)).Select(u => u.HoTen).FirstOrDefault(),
                                        ChietKhau = trans.ChietKhau,
-                                       TongTien = trans.TongTien
+                                       TongTien = trans.TongTien,
                                    }).ToList();
             return View(canceltransview);
+        }
+
+        [HttpGet]
+        public IActionResult Details(int transID)
+        {
+            var details = (from c in _context.Car
+                           join ct in _context.CarType on c.CarTypeID equals ct.CarTypeID
+                           join dx in _context.DongXe on ct.DongXeID equals dx.DongXeID
+                           join hx in _context.HangXe on dx.HangXeID equals hx.HangXeID
+                           where c.TransactionID == transID
+                           select new
+                           {
+                               VIN = c.VIN,
+                               CarID = c.CarID,
+                               CarImage = ct.CarImage,
+                               DongCo = ct.DongCo,
+                               DoiXe = ct.DoiXe,
+                               DongXeID = dx.DongXeID,
+                               HangXeID = hx.HangXeID,
+                               MauSac = ct.MauSac,
+                               TenDongXe = dx.TenDongXe,
+                               TenHangXe = hx.TenHangXe
+                           }).ToList();
+
+            if (details == null)
+            {
+                return NotFound(new { Message = "Không tìm thấy chi tiết giao dịch." });
+            }
+
+            return Json(details);
         }
     }
 }

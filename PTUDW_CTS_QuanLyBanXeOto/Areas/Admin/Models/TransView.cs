@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PTUDW_CTS_QuanLyBanXeOto.Models;
 
 namespace PTUDW_CTS_QuanLyBanXeOto.Areas.Admin.Models
 {
